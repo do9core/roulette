@@ -19,6 +19,7 @@ import 'helpers.dart' show DoubleSum, IndexBuilder;
 
 /// Describe a total roulette
 class RouletteGroup {
+  /// Create a roulette group with given [units].
   RouletteGroup(this.units);
 
   /// Helper function to create a even [RouletteGroup].

@@ -8,10 +8,10 @@ This is a library provide a simple roulette widget which usually used for lotter
 * There are two types of roulette provided by this package:
 
   * Uniform roulette without text:
-    ![Uniform with no text](README.assets/uniform_no_text.png)
+    ![Uniform with no text](./README.assets/uniform_no_text.png)
 
   * Weight roulette with text:
-    ![Weight based with text](README.assets/weight_based_with_text.png)
+    ![Weight based with text](./README.assets/weight_based_with_text.png)
 
 ## Getting started
 

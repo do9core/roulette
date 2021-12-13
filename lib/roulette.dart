@@ -12,6 +12,8 @@
 /// See the License for the specific language governing permissions and
 /// limitations under the License.
 
+/// Roulette package
+/// @author do9core
 library roulette;
 
 export './src/roulette.dart' show Roulette;

@@ -1,4 +1,8 @@
-## 0.0.1+1 - 2021/12.13
+## 0.0.1+2 - 2021/12/14
+
+* Fix some document
+
+## 0.0.1+1 - 2021/12/13
 
 * Change min sdk version to 2.12.0(The first SDK that supports null safety)
 * Fix some pub score warnings

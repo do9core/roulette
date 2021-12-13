@@ -18,9 +18,7 @@ import 'roulette_style.dart';
 import 'roulette_controller.dart';
 import 'roulette_paint.dart';
 
-/// ルーレット(Roulette) Widget
-///
-/// This is an animatable widget.
+/// This is an animatable roulette widget.
 /// You need to present a [RouletteController] to controll this widget.
 class Roulette extends StatefulWidget {
   const Roulette({
