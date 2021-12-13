@@ -62,7 +62,3 @@ You could await the `rollTo` method's finish and then make some other actions.
 The `rollTo` method provides many options for you to control the rolling behavior. Please check the document for more information.
 
 For detailed usage sample, please check the example.
-
-## Additional information
-
-TBD.
