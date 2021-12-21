@@ -53,6 +53,37 @@ void main() {
         expect(animation.value, (minCircles + 3 / 5) * pi * 2);
       },
     );
+
+    testWidgets(
+      'ensure rollTo settle at target index with offset',
+      (WidgetTester tester) async {
+        await tester.pumpWidget(
+          RouletteWidgetTest(group: RouletteGroup.uniform(5)),
+        );
+        final state = tester
+            .state<_RouletteWidgetTestState>(find.byType(RouletteWidgetTest));
+        const minCircles = 1;
+        state.controller.rollTo(1, minRotateCircles: minCircles, offset: 1);
+        await tester.pumpAndSettle();
+        final animation = state.controller.animation;
+        expect(animation.value, (minCircles + 4 / 5) * pi * 2);
+      },
+    );
+
+    testWidgets(
+      'ensure reset to initial state when update group',
+      (WidgetTester tester) async {
+        await tester.pumpWidget(
+          RouletteWidgetTest(group: RouletteGroup.uniform(5)),
+        );
+        final state = tester
+            .state<_RouletteWidgetTestState>(find.byType(RouletteWidgetTest));
+        state.controller.rollTo(1);
+        await tester.pumpAndSettle();
+        state.controller.group = RouletteGroup.uniform(6);
+        expect(state.controller.animation.value, 0);
+      },
+    );
   });
 
   group('widget display tests', () {
