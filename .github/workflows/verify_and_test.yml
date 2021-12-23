@@ -1,0 +1,48 @@
+name: Verify & Test
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      
+      - name: Install Flutter
+        uses: britannio/action-install-flutter@v1.1
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Verify formatting
+        run: dart format --output=none --set-exit-if-changed .
+
+      - name: Analyze project source
+        run: dart analyze --fatal-infos
+        
+  logic-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      
+      - name: Install Flutter
+        uses: britannio/action-install-flutter@v1.1
+          
+      - name: Run logic tests
+        run: flutter test test/logic_test.dart
+
+  presentation-test:
+    # Should run on same os with golden files
+    runs-on: macos-11
+    steps:
+      - uses: actions/checkout@v2
+      
+      - name: Install Flutter
+        uses: britannio/action-install-flutter@v1.1
+          
+      - name: Run presentation tests
+        run: flutter test test/presentation_test.dart
