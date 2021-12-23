@@ -1,9 +1,4 @@
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-
-name: Dart
+name: Verify & Test
 
 on:
   push:
@@ -29,17 +24,25 @@ jobs:
       - name: Analyze project source
         run: dart analyze --fatal-infos
         
-  test:
-    # presentation test should run on the same platform with its development os
-    runs-on: macOS-latest
+  logic-test:
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       
       - name: Install Flutter
         uses: britannio/action-install-flutter@v1.1
           
-      - name: Install dependencies
-        run: flutter pub get
+      - name: Run logic tests
+        run: flutter test test/logic_test.dart
+
+  presentation-test:
+    # Should run on same os with golden files
+    runs-on: macos-11
+    steps:
+      - uses: actions/checkout@v2
+      
+      - name: Install Flutter
+        uses: britannio/action-install-flutter@v1.1
           
-      - name: Run tests
-        run: flutter test --no-pub
+      - name: Run presentation tests
+        run: flutter test test/presentation_test.dart
