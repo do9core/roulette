@@ -1,3 +1,6 @@
+[![Build Status](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2Fdo9core%2Froulette%2Fbadge%3Fref%3Dmain&style=flat)](https://actions-badge.atrox.dev/do9core/roulette/goto?ref=main)
+![License](https://img.shields.io/github/license/do9core/roulette)
+
 This is a library provide a simple roulette widget which usually used for lottery.
 
 ## Features
