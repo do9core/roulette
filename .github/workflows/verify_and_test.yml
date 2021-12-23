@@ -30,7 +30,8 @@ jobs:
         run: dart analyze --fatal-infos
         
   test:
-    runs-on: ubuntu-latest
+    # presentation test should run on the same platform with its development os
+    runs-on: macOS-latest
     steps:
       - uses: actions/checkout@v2
       
