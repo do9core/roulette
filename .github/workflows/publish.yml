@@ -12,8 +12,9 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Dart and Flutter Package Publisher
-        uses: k-paxian/dart-package-publisher@v1.3
+        uses: k-paxian/dart-package-publisher@master
         with:
           credentialJson: ${{ secrets.PUB_CREDENTIALS }}
           suppressBuildRunner: true
-          skipTests: true
+          skipTests: true # Test run by another workflow
+          flutter: true
