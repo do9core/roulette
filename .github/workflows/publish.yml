@@ -15,4 +15,5 @@ jobs:
         uses: k-paxian/dart-package-publisher@v1.3
         with:
           credentialJson: ${{ secrets.PUB_CREDENTIALS }}
-          flutter: true
+          suppressBuildRunner: true
+          skipTests: true
