@@ -9,11 +9,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v1
-      - name: Publish
-        uses: sakebook/actions-flutter-pub-publisher@v1.4.0
+        uses: actions/checkout@v2
+
+      - name: Dart and Flutter Package Publisher
+        uses: k-paxian/dart-package-publisher@v1.3
         with:
-          credential: ${{ secrets.PUB_CREDENTIALS }}
-          flutter_package: true
-          skip_test: true
-          dry_run: false
+          credentialJson: ${{ secrets.PUB_CREDENTIALS }}
+          flutter: true
