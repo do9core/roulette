@@ -1,4 +1,4 @@
-name: Verify & Test
+name: Verify and Test
 
 on:
   push:
@@ -7,7 +7,8 @@ on:
     branches: [ main ]
 
 jobs:
-  build:
+  check:
+    name: "Static analyze and Logic tests"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -24,18 +25,11 @@ jobs:
       - name: Analyze project source
         run: dart analyze --fatal-infos
         
-  logic-test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      
-      - name: Install Flutter
-        uses: britannio/action-install-flutter@v1.1
-          
       - name: Run logic tests
         run: flutter test test/logic_test.dart
 
   presentation-test:
+    name: "Presentation tests"
     # Should run on same os with golden files
     runs-on: macos-11
     steps:
