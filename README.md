@@ -12,10 +12,10 @@ This is a library provide a simple roulette widget which usually used for lotter
 * There are two types of roulette provided by this package:
 
   * Uniform roulette:
-    ![Uniform with no text](./README.assets/uniform_no_text.png)
+    ![Uniform with no text](https://raw.githubusercontent.com/do9core/roulette/main/README.assets/uniform_no_text.png)
 
   * Weight-based roulette:
-    ![Weight based with text](./README.assets/weight_based_with_text.png)
+    ![Weight based with text](https://raw.githubusercontent.com/do9core/roulette/main/README.assets/weight_based_with_text.png)
 
 ## Getting started
 
