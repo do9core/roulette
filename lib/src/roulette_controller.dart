@@ -23,27 +23,33 @@ import 'helpers.dart' hide DoubleSum;
 /// [Roulette] widget use [RouletteController] to control the rotate animation
 /// and [Roulette]'s display [RouletteGroup].
 class RouletteController with ChangeNotifier {
-  RouletteController({
+  RouletteController._(this._group, this._animation, this._controller);
+
+  /// Create a new RouletteController instance.
+  /// [group] is the [RouletteGroup] to display.
+  /// [vsync] is the [TickerProvider] to use for the animation.
+  factory RouletteController({
     required RouletteGroup group,
     required TickerProvider vsync,
-    bool clockwise = true,
-  })  : _controller = AnimationController(vsync: vsync),
-        _group = group;
+  }) {
+    final controller = AnimationController(vsync: vsync);
+    final animation = controller.drive(Tween<double>(begin: 0, end: 0));
+    return RouletteController._(group, animation, controller);
+  }
 
   RouletteGroup _group;
-  Animation<double>? _animation;
+  Animation<double> _animation;
   final AnimationController _controller;
 
   /// Current rotate animation
-  Animation<double> get animation =>
-      _animation ?? _controller.drive(Tween(begin: 0, end: 0));
+  Animation<double> get animation => _animation;
 
   /// Retrieve current displaying [RouletteGroup]
   RouletteGroup get group => _group;
 
   /// Set the [RouletteGroup] to refresh widget
   set group(RouletteGroup value) {
-    _animation = null;
+    _animation = _controller.drive(Tween<double>(begin: 0, end: 0));
     _group = value;
     notifyListeners();
     _controller.reset();
@@ -51,7 +57,7 @@ class RouletteController with ChangeNotifier {
 
   /// Reset animation to initial state
   void resetAnimation() {
-    _animation = null;
+    _animation = _controller.drive(Tween<double>(begin: 0, end: 0));
     notifyListeners();
     _controller.reset();
   }

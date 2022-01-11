@@ -39,10 +39,10 @@ class RouletteUnit {
     double weight = 1.0,
   }) : this(color: color, weight: weight);
 
-  /// Text content of this section
+  /// Text content of this sector
   final String? text;
 
-  /// Text style of this section
+  /// Text style of this sector
   final TextStyle? textStyle;
 
   /// Backgroud color of the sector
