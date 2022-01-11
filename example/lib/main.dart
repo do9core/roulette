@@ -36,26 +36,20 @@ class _HomePageState extends State<HomePage>
   late RouletteController _controller;
   bool _clockwise = true;
 
+  final colors = <Color>[
+    Colors.red.withAlpha(50),
+    Colors.green.withAlpha(30),
+    Colors.blue.withAlpha(70),
+    Colors.yellow.withAlpha(90),
+    Colors.amber.withAlpha(50),
+    Colors.indigo.withAlpha(70),
+  ];
+
   @override
   void initState() {
     final group = RouletteGroup.uniform(
-      6,
-      colorBuilder: (index) {
-        switch (index) {
-          case 0:
-            return Colors.red.withAlpha(50);
-          case 1:
-            return Colors.green.withAlpha(30);
-          case 2:
-            return Colors.blue.withAlpha(70);
-          case 3:
-            return Colors.yellow.withAlpha(90);
-          case 4:
-            return Colors.amber.withAlpha(50);
-          default:
-            return Colors.indigo.withAlpha(70);
-        }
-      },
+      colors.length,
+      colorBuilder: colors.elementAt,
     );
     _controller = RouletteController(vsync: this, group: group);
     super.initState();

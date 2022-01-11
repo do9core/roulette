@@ -1,5 +1,5 @@
 [![Pub](https://img.shields.io/pub/v/roulette.svg)](https://pub.dev/packages/roulette)
-[![Build Status](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2Fdo9core%2Froulette%2Fbadge%3Fref%3Dmain&style=flat)](https://actions-badge.atrox.dev/do9core/roulette/goto?ref=main)
+[![Verify & Test](https://github.com/do9core/roulette/actions/workflows/verify_and_test.yml/badge.svg)](https://github.com/do9core/roulette/actions/workflows/verify_and_test.yml)
 [![License](https://img.shields.io/github/license/do9core/roulette)](https://www.apache.org/licenses/LICENSE-2.0)
 
 This is a library provide a simple roulette widget which usually used for lottery.
@@ -11,10 +11,10 @@ This is a library provide a simple roulette widget which usually used for lotter
 * Easily control the roll animation and settle position
 * There are two types of roulette provided by this package:
 
-  * Uniform roulette without text:
+  * Uniform roulette:
     ![Uniform with no text](./README.assets/uniform_no_text.png)
 
-  * Weight roulette with text:
+  * Weight-based roulette:
     ![Weight based with text](./README.assets/weight_based_with_text.png)
 
 ## Getting started
@@ -32,7 +32,7 @@ RouletteController(
     RouletteUnit.noText(color: Colors.green),
     // ...other units
   ]),
-  vsync: this // provide a TickerProvider here
+  vsync: this // provide a TickerProvider here (usually by SingleTickerProviderStateMixin)
 );
 ```
 
