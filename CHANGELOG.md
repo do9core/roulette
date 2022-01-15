@@ -1,3 +1,7 @@
+## 0.1.0+1 - 2022/01/15
+
+* Readme document snapshot resource fix.
+
 ## 0.1.0 - 2022/01/11
 
 ### ⚠ Breaking changes:
