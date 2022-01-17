@@ -33,7 +33,7 @@ class RouletteGroup {
     int itemCount, {
     IndexBuilder<String?>? textBuilder,
     @Deprecated("use decorationBuilder instead")
-    IndexBuilder<Color>? colorBuilder,
+        IndexBuilder<Color>? colorBuilder,
     IndexBuilder<UnitDecoration>? decorationBuilder,
     IndexBuilder<TextStyle?>? textStyleBuilder,
   }) {

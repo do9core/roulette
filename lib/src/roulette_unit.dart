@@ -23,8 +23,7 @@ class RouletteUnit {
   const RouletteUnit({
     this.text,
     this.textStyle,
-    @Deprecated("use decoration instead")
-    this.color,
+    @Deprecated("use decoration instead") this.color,
     required this.weight,
     required this.decoration,
   });
@@ -33,16 +32,19 @@ class RouletteUnit {
   const RouletteUnit.text(
     String text, {
     TextStyle textStyle = RouletteStyle.defaultTextStyle,
-    @Deprecated("use decoration instead")
-    Color color = Colors.blue,
+    @Deprecated("use decoration instead") Color color = Colors.blue,
     double weight = 1.0,
     UnitDecoration decoration = const ColorDecoration(Colors.blue),
-  }) : this(text: text, textStyle: textStyle, decoration: decoration, weight: weight);
+  }) : this(
+          text: text,
+          textStyle: textStyle,
+          decoration: decoration,
+          weight: weight,
+        );
 
   /// Create a sector with only color but no text
   const RouletteUnit.noText({
-    @Deprecated("use ColorDecoration instead")
-    Color color = Colors.blue,
+    @Deprecated("use ColorDecoration instead") Color color = Colors.blue,
     UnitDecoration decoration = const ColorDecoration(Colors.blue),
     double weight = 1.0,
   }) : this(decoration: decoration, weight: weight);
@@ -62,5 +64,4 @@ class RouletteUnit {
 
   /// Weight of this sector
   final double weight;
-
 }
