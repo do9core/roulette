@@ -13,6 +13,7 @@
 /// limitations under the License.
 
 import 'package:flutter/material.dart';
+import 'package:roulette/src/decoration/color_decoration.dart';
 
 import 'dart:math';
 import 'dart:ui' as ui;
@@ -93,7 +94,10 @@ class _RoulettePainter extends CustomPainter {
       canvas.rotate(drewSweep);
 
       // Draw the section background
-      _paint.color = unit.color;
+      final decoration = unit.decoration;
+      if (decoration is ColorDecoration) {
+        _paint.color = decoration.color;
+      }
       _paint.strokeWidth = 0;
       _paint.style = ui.PaintingStyle.fill;
       canvas.drawArc(rect, 0.0 * i, sweep, true, _paint);

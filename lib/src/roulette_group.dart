@@ -13,6 +13,8 @@
 /// limitations under the License.
 
 import 'package:flutter/material.dart';
+import 'package:roulette/src/decoration/color_decoration.dart';
+import 'package:roulette/src/decoration/roulette_decoration.dart';
 
 import 'roulette_unit.dart';
 import 'helpers.dart' show DoubleSum, IndexBuilder;
@@ -30,7 +32,9 @@ class RouletteGroup {
   factory RouletteGroup.uniform(
     int itemCount, {
     IndexBuilder<String?>? textBuilder,
+    @Deprecated("use decorationBuilder instead")
     IndexBuilder<Color>? colorBuilder,
+    IndexBuilder<UnitDecoration>? decorationBuilder,
     IndexBuilder<TextStyle?>? textStyleBuilder,
   }) {
     final units = List.generate(
@@ -38,7 +42,8 @@ class RouletteGroup {
       (index) => RouletteUnit(
         text: textBuilder?.call(index),
         textStyle: textStyleBuilder?.call(index),
-        color: colorBuilder?.call(index) ?? Colors.blue,
+        decoration: decorationBuilder?.call(index) ??
+            const ColorDecoration(Colors.blue),
         weight: 1,
       ),
     );

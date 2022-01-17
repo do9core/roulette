@@ -14,7 +14,7 @@ void main() {
         final group = RouletteGroup.uniform(
           5,
           textBuilder: (index) => '$index',
-          colorBuilder: (index) => Colors.pink,
+          decorationBuilder: (index) => const ColorDecoration(Colors.pink),
         );
         final controller = RouletteController(group: group, vsync: tester);
         await tester.pumpWidget(Roulette(controller: controller));
@@ -30,7 +30,8 @@ void main() {
           final group = RouletteGroup.uniform(
             5,
             textBuilder: (index) => '$index',
-            colorBuilder: (index) => Colors.pinkAccent,
+            decorationBuilder: (index) =>
+                const ColorDecoration(Colors.pinkAccent),
           );
           await tester.pumpWidget(RouletteWidgetTest(group: group));
           await expectLater(
@@ -45,9 +46,9 @@ void main() {
         (WidgetTester tester) async {
           await tester.configScreenSize();
           final group = RouletteGroup(const [
-            RouletteUnit(color: Colors.red, weight: 1),
-            RouletteUnit(color: Colors.green, weight: 2),
-            RouletteUnit(color: Colors.cyan, weight: 3),
+            RouletteUnit(decoration: ColorDecoration(Colors.red), weight: 1),
+            RouletteUnit(decoration: ColorDecoration(Colors.green), weight: 2),
+            RouletteUnit(decoration: ColorDecoration(Colors.cyan), weight: 3),
           ]);
           await tester.pumpWidget(RouletteWidgetTest(group: group));
           await expectLater(
@@ -62,11 +63,11 @@ void main() {
         (WidgetTester tester) async {
           await tester.configScreenSize();
           final group = RouletteGroup(const [
-            RouletteUnit.noText(color: Colors.red),
-            RouletteUnit.noText(color: Colors.green),
-            RouletteUnit.noText(color: Colors.cyan),
-            RouletteUnit.noText(color: Colors.indigo),
-            RouletteUnit.noText(color: Colors.yellow),
+            RouletteUnit.noText(decoration: ColorDecoration(Colors.red)),
+            RouletteUnit.noText(decoration: ColorDecoration(Colors.green)),
+            RouletteUnit.noText(decoration: ColorDecoration(Colors.cyan)),
+            RouletteUnit.noText(decoration: ColorDecoration(Colors.indigo)),
+            RouletteUnit.noText(decoration: ColorDecoration(Colors.yellow)),
           ]);
           await tester.pumpWidget(RouletteWidgetTest(group: group));
           // Ensure initial state

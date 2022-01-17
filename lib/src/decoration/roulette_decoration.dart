@@ -12,13 +12,9 @@
 /// See the License for the specific language governing permissions and
 /// limitations under the License.
 
-/// Roulette package
-/// @author do9core
-library roulette;
+import '../roulette_unit.dart';
 
-export './src/roulette.dart' show Roulette;
-export './src/roulette_controller.dart' show RouletteController;
-export './src/roulette_group.dart' show RouletteGroup;
-export './src/roulette_unit.dart' show RouletteUnit;
-export './src/roulette_style.dart' show RouletteStyle;
-export './src/decoration/color_decoration.dart' show ColorDecoration;
+/// Decoration for [RouletteUnit]
+abstract class UnitDecoration {
+  const UnitDecoration();
+}

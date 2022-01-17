@@ -12,13 +12,12 @@
 /// See the License for the specific language governing permissions and
 /// limitations under the License.
 
-/// Roulette package
-/// @author do9core
-library roulette;
+import 'package:flutter/cupertino.dart';
 
-export './src/roulette.dart' show Roulette;
-export './src/roulette_controller.dart' show RouletteController;
-export './src/roulette_group.dart' show RouletteGroup;
-export './src/roulette_unit.dart' show RouletteUnit;
-export './src/roulette_style.dart' show RouletteStyle;
-export './src/decoration/color_decoration.dart' show ColorDecoration;
+import './roulette_decoration.dart';
+
+class ColorDecoration extends UnitDecoration {
+  const ColorDecoration(this.color) : super();
+
+  final Color color;
+}
