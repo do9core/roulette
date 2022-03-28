@@ -12,26 +12,26 @@ void main() {
   group('helpers tests', () {
     group('calculate end rotate test', () {
       test('ensure end rotate on target unit with no offset, clockwise', () {
-        final group = RouletteGroup.uniform(5);
+        final group = RouletteGroup.builder(5);
         final actual = calculateEndRotate(group, 0, true, 0);
         expect(actual, 4 / 5 * pi * 2);
       });
 
       test('ensure end rotate on target unit with offset, clockwise', () {
-        final group = RouletteGroup.uniform(5);
+        final group = RouletteGroup.builder(5);
         final actual = calculateEndRotate(group, 0, true, 0, offset: 1);
         expect(actual, pi * 2);
       });
 
       test('ensure end rotate on target unit with no offset, not clockwise',
           () {
-        final group = RouletteGroup.uniform(5);
+        final group = RouletteGroup.builder(5);
         final actual = calculateEndRotate(group, 0, false, 0);
         expect(actual, 0.0);
       });
 
       test('ensure end rotate on target unit with offset, not clockwise', () {
-        final group = RouletteGroup.uniform(5);
+        final group = RouletteGroup.builder(5);
         final actual = calculateEndRotate(group, 0, true, 0, offset: 1);
         expect(actual, pi * 2);
       });
@@ -41,7 +41,7 @@ void main() {
       'ensure rollTo settle at target index with offset',
       (WidgetTester tester) async {
         await tester.pumpWidget(
-          RouletteWidgetTest(group: RouletteGroup.uniform(5)),
+          RouletteWidgetTest(group: RouletteGroup.builder(5)),
         );
         final state = tester
             .state<RouletteWidgetTestState>(find.byType(RouletteWidgetTest));
@@ -57,13 +57,13 @@ void main() {
       'ensure reset to initial state when update group',
       (WidgetTester tester) async {
         await tester.pumpWidget(
-          RouletteWidgetTest(group: RouletteGroup.uniform(5)),
+          RouletteWidgetTest(group: RouletteGroup.builder(5)),
         );
         final state = tester
             .state<RouletteWidgetTestState>(find.byType(RouletteWidgetTest));
         state.controller.rollTo(1);
         await tester.pumpAndSettle();
-        state.controller.group = RouletteGroup.uniform(6);
+        state.controller.group = RouletteGroup.builder(6);
         expect(state.controller.animation.value, 0);
       },
     );
@@ -74,7 +74,7 @@ void main() {
       'ensure rollTo settle at target index',
       (WidgetTester tester) async {
         await tester.pumpWidget(
-          RouletteWidgetTest(group: RouletteGroup.uniform(5)),
+          RouletteWidgetTest(group: RouletteGroup.builder(5)),
         );
         final state = tester
             .state<RouletteWidgetTestState>(find.byType(RouletteWidgetTest));
@@ -91,10 +91,11 @@ void main() {
     testWidgets(
       'ensure roulette displayed',
       (WidgetTester tester) async {
-        final group = RouletteGroup.uniform(
+        final group = RouletteGroup.builder(
           5,
           textBuilder: (index) => '$index',
-          colorBuilder: (index) => Colors.pink,
+          decorationBuilder: (index) =>
+              const UnitDecoration(color: Colors.pink),
         );
         final controller = RouletteController(group: group, vsync: tester);
         await tester.pumpWidget(Roulette(controller: controller));

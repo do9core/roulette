@@ -12,14 +12,14 @@
 /// See the License for the specific language governing permissions and
 /// limitations under the License.
 
-import 'package:flutter/material.dart';
-import 'package:roulette/src/decoration/color_decoration.dart';
-import 'package:roulette/src/decoration/roulette_decoration.dart';
+import 'package:flutter/widgets.dart';
 
+import 'unit_decoration.dart';
 import 'roulette_unit.dart';
 import 'helpers.dart' show DoubleSum, IndexBuilder;
 
 /// Describe a total roulette
+@immutable
 class RouletteGroup {
   /// Create a roulette group with given [units].
   RouletteGroup(this.units);
@@ -29,11 +29,10 @@ class RouletteGroup {
   /// [textBuilder] is a function that return the text of the unit.
   /// [colorBuilder] is a function that return the color of the unit.
   /// [textStyleBuilder] is a function that return the text style of the unit.
+  @Deprecated('Use the general RouletteGroup.builder instead')
   factory RouletteGroup.uniform(
     int itemCount, {
     IndexBuilder<String?>? textBuilder,
-    @Deprecated("use decorationBuilder instead")
-        IndexBuilder<Color>? colorBuilder,
     IndexBuilder<UnitDecoration>? decorationBuilder,
     IndexBuilder<TextStyle?>? textStyleBuilder,
   }) {
@@ -42,13 +41,39 @@ class RouletteGroup {
       (index) => RouletteUnit(
         text: textBuilder?.call(index),
         textStyle: textStyleBuilder?.call(index),
-        decoration: decorationBuilder?.call(index) ??
-            const ColorDecoration(Colors.blue),
+        decoration: decorationBuilder?.call(index),
         weight: 1,
       ),
     );
     return RouletteGroup(units);
   }
+
+  /// Helper function to create a even [RouletteGroup].
+  /// [itemCount] is the number of items in the group.
+  /// [weightBuilder] is a function that return the weight of the unit.
+  /// [textBuilder] is a function that return the text of the unit.
+  /// [colorBuilder] is a function that return the color of the unit.
+  /// [textStyleBuilder] is a function that return the text style of the unit.
+  factory RouletteGroup.builder(
+    int itemCount, {
+    IndexBuilder<double> weightBuilder = defaultWeightBuilder,
+    IndexBuilder<String?>? textBuilder,
+    IndexBuilder<UnitDecoration>? decorationBuilder,
+    IndexBuilder<TextStyle?>? textStyleBuilder,
+  }) {
+    final units = List.generate(
+      itemCount,
+      (index) => RouletteUnit(
+        text: textBuilder?.call(index),
+        textStyle: textStyleBuilder?.call(index),
+        decoration: decorationBuilder?.call(index),
+        weight: weightBuilder.call(index),
+      ),
+    );
+    return RouletteGroup(units);
+  }
+
+  static double defaultWeightBuilder(int _) => 1;
 
   /// [RouletteUnit]s of this group
   final List<RouletteUnit> units;

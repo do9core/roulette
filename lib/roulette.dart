@@ -21,4 +21,5 @@ export './src/roulette_controller.dart' show RouletteController;
 export './src/roulette_group.dart' show RouletteGroup;
 export './src/roulette_unit.dart' show RouletteUnit;
 export './src/roulette_style.dart' show RouletteStyle;
-export './src/decoration/color_decoration.dart' show ColorDecoration;
+export './src/unit_decoration.dart'
+    show UnitDecoration, UnitImage, UnitImageDirection;

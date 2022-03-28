@@ -13,7 +13,6 @@
 /// limitations under the License.
 
 import 'package:flutter/material.dart';
-import 'package:roulette/src/decoration/color_decoration.dart';
 
 import 'dart:math';
 import 'dart:ui' as ui;
@@ -77,8 +76,6 @@ class _RoulettePainter extends CustomPainter {
     _drawSections(canvas, radius);
 
     canvas.restore();
-
-    _drawCenterSticker(canvas, radius);
   }
 
   _drawBackground(Canvas canvas, double radius, Rect rect) {
@@ -88,16 +85,23 @@ class _RoulettePainter extends CustomPainter {
     double drewSweep = 0;
     for (var i = 0; i < group.divide; i++) {
       final unit = group.units[i];
+
+      final decoration = unit.decoration;
+      if (decoration == null) continue;
+
       final sweep = 2 * pi * unit.weight / group.totalWeights;
 
       canvas.save();
       canvas.rotate(drewSweep);
 
-      // Draw the section background
-      final decoration = unit.decoration;
-      if (decoration is ColorDecoration) {
-        _paint.color = decoration.color;
+      // Draw the background color
+      final color = decoration.color;
+      if (color != null) {
+        _paint.color = color;
       }
+
+      // TODO: Draw other decorations
+
       _paint.strokeWidth = 0;
       _paint.style = ui.PaintingStyle.fill;
       canvas.drawArc(rect, 0.0 * i, sweep, true, _paint);
@@ -144,14 +148,6 @@ class _RoulettePainter extends CustomPainter {
 
       drewSweep += sweep;
     }
-  }
-
-  _drawCenterSticker(Canvas canvas, double radius) {
-    _paint.color = style.centerStickerColor;
-    _paint.strokeWidth = 0;
-    _paint.style = ui.PaintingStyle.fill;
-    canvas.drawCircle(
-        Offset.zero, radius * style.centerStickSizePercent, _paint);
   }
 
   @override

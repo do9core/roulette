@@ -11,10 +11,10 @@ void main() {
     testWidgets(
       'ensure roulette displayed',
       (WidgetTester tester) async {
-        final group = RouletteGroup.uniform(
+        final group = RouletteGroup.builder(
           5,
           textBuilder: (index) => '$index',
-          decorationBuilder: (index) => const ColorDecoration(Colors.pink),
+          decorationBuilder: (index) => const UnitDecoration(color: Colors.red),
         );
         final controller = RouletteController(group: group, vsync: tester);
         await tester.pumpWidget(Roulette(controller: controller));
@@ -27,11 +27,11 @@ void main() {
         'ensure roulette span uniform',
         (WidgetTester tester) async {
           await tester.configScreenSize();
-          final group = RouletteGroup.uniform(
+          final group = RouletteGroup.builder(
             5,
             textBuilder: (index) => '$index',
             decorationBuilder: (index) =>
-                const ColorDecoration(Colors.pinkAccent),
+                const UnitDecoration(color: Colors.pinkAccent),
           );
           await tester.pumpWidget(RouletteWidgetTest(group: group));
           await expectLater(
@@ -46,9 +46,18 @@ void main() {
         (WidgetTester tester) async {
           await tester.configScreenSize();
           final group = RouletteGroup(const [
-            RouletteUnit(decoration: ColorDecoration(Colors.red), weight: 1),
-            RouletteUnit(decoration: ColorDecoration(Colors.green), weight: 2),
-            RouletteUnit(decoration: ColorDecoration(Colors.cyan), weight: 3),
+            RouletteUnit(
+              decoration: UnitDecoration(color: Colors.red),
+              weight: 1,
+            ),
+            RouletteUnit(
+              decoration: UnitDecoration(color: Colors.green),
+              weight: 2,
+            ),
+            RouletteUnit(
+              decoration: UnitDecoration(color: Colors.cyan),
+              weight: 3,
+            ),
           ]);
           await tester.pumpWidget(RouletteWidgetTest(group: group));
           await expectLater(
@@ -63,11 +72,21 @@ void main() {
         (WidgetTester tester) async {
           await tester.configScreenSize();
           final group = RouletteGroup(const [
-            RouletteUnit.noText(decoration: ColorDecoration(Colors.red)),
-            RouletteUnit.noText(decoration: ColorDecoration(Colors.green)),
-            RouletteUnit.noText(decoration: ColorDecoration(Colors.cyan)),
-            RouletteUnit.noText(decoration: ColorDecoration(Colors.indigo)),
-            RouletteUnit.noText(decoration: ColorDecoration(Colors.yellow)),
+            RouletteUnit.noText(
+              decoration: UnitDecoration(color: Colors.red),
+            ),
+            RouletteUnit.noText(
+              decoration: UnitDecoration(color: Colors.green),
+            ),
+            RouletteUnit.noText(
+              decoration: UnitDecoration(color: Colors.cyan),
+            ),
+            RouletteUnit.noText(
+              decoration: UnitDecoration(color: Colors.indigo),
+            ),
+            RouletteUnit.noText(
+              decoration: UnitDecoration(color: Colors.yellow),
+            ),
           ]);
           await tester.pumpWidget(RouletteWidgetTest(group: group));
           // Ensure initial state
