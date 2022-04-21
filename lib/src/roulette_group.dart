@@ -22,7 +22,7 @@ import 'helpers.dart' show DoubleSum, IndexBuilder;
 @immutable
 class RouletteGroup {
   /// Create a roulette group with given [units].
-  RouletteGroup(this.units);
+  RouletteGroup(this.units) : totalWeights = units.sum((unit) => unit.weight);
 
   /// Helper function to create a even [RouletteGroup].
   /// [itemCount] is the number of items in the group.
@@ -79,7 +79,7 @@ class RouletteGroup {
   final List<RouletteUnit> units;
 
   /// Total weights count of the [units]
-  late final totalWeights = units.sum((unit) => unit.weight);
+  final double totalWeights;
 
   /// Parts count of [units].
   int get divide => units.length;
