@@ -1,4 +1,4 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 
 enum UnitImageDirection {
   radialIn, // radial from border to center
@@ -45,22 +45,41 @@ class UnitImage {
 }
 
 @immutable
-class UnitDecoration {
-  final Color? color;
-  final UnitImage? image;
-  final BoxBorder? border;
-  final Gradient? gradient;
-  final BlendMode? backgroundBlendMode;
+class UnitBorder {
+  const UnitBorder({this.edge, this.arc});
 
+  const UnitBorder.all(BorderSide side)
+      : edge = side,
+        arc = side;
+
+  const UnitBorder.none()
+      : edge = null,
+        arc = null;
+
+  final BorderSide? edge;
+  final BorderSide? arc;
+}
+
+@immutable
+class UnitDecoration {
   const UnitDecoration({
     this.color,
     this.image,
-    this.border,
+    this.border = defaultBorder,
     this.gradient,
     this.backgroundBlendMode,
   }) : assert(
           backgroundBlendMode == null || color != null || gradient != null,
-          "backgroundBlendMode applies to ZDecoration's background color or "
+          "backgroundBlendMode applies to UnitDecoration's background color or "
           'gradient, but no color or gradient was provided.',
         );
+
+  final Color? color;
+  final UnitImage? image;
+  final UnitBorder border;
+  final Gradient? gradient;
+  final BlendMode? backgroundBlendMode;
+
+  static const defaultBorder =
+      UnitBorder.all(BorderSide(width: 5, color: Colors.white));
 }

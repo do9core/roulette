@@ -49,7 +49,10 @@ class _HomePageState extends State<HomePage>
   void initState() {
     final group = RouletteGroup.builder(
       colors.length,
-      decorationBuilder: (index) => UnitDecoration(color: colors[index]),
+      decorationBuilder: (index) => UnitDecoration(
+        color: colors[index],
+        border: const UnitBorder.all(BorderSide(width: 4)),
+      ),
     );
     _controller = RouletteController(vsync: this, group: group);
     super.initState();
@@ -99,7 +102,6 @@ class _HomePageState extends State<HomePage>
                         controller: _controller,
                         // Configure roulette's appearance
                         style: const RouletteStyle(
-                          dividerThickness: 4,
                           textLayoutBias: .8,
                         ),
                       ),

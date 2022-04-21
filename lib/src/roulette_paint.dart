@@ -90,13 +90,16 @@ class _RoulettePainter extends CustomPainter {
     _paint.style = ui.PaintingStyle.fill;
 
     double drewSweep = 0;
+
     for (var i = 0; i < group.divide; i++) {
       final unit = group.units[i];
+      final sweep = 2 * pi * unit.weight / group.totalWeights;
 
       final decoration = unit.decoration;
-      if (decoration == null) continue;
-
-      final sweep = 2 * pi * unit.weight / group.totalWeights;
+      if (decoration == null) {
+        drewSweep += sweep;
+        continue;
+      }
 
       canvas.save();
       canvas.rotate(drewSweep);
@@ -107,20 +110,61 @@ class _RoulettePainter extends CustomPainter {
         _paint.color = color;
       }
 
-      // TODO: Draw other decorations
+      // Draw the background gradient
+      final gradient = decoration.gradient;
+      if (gradient != null) {
+        _paint.shader = gradient.createShader(rect);
+      }
 
       _paint.strokeWidth = 0;
       _paint.style = ui.PaintingStyle.fill;
-      canvas.drawArc(rect, 0.0 * i, sweep, true, _paint);
+      canvas.drawArc(rect, 0, sweep, true, _paint);
 
-      // Draw the section border
-      _paint.color = style.dividerColor;
-      _paint.strokeWidth = style.dividerThickness;
-      _paint.style = ui.PaintingStyle.stroke;
-      canvas.drawArc(rect, 0.0 * i, sweep, true, _paint);
+      // TODO: Draw other decorations
 
       canvas.restore();
+      drewSweep += sweep;
+    }
 
+    drewSweep = 0.0; // Drew sweep angle
+    for (var i = 0; i < group.divide; i++) {
+      // Draw each section with unit
+      final unit = group.units[i];
+      final sweep = 2 * pi * unit.weight / group.totalWeights;
+
+      canvas.save();
+      canvas.rotate(drewSweep + pi / 2 + sweep / 2);
+
+      canvas.restore();
+      drewSweep += sweep;
+    }
+
+    drewSweep = 0;
+    for (var i = 0; i < group.divide; i++) {
+      final unit = group.units[i];
+      final sweep = 2 * pi * unit.weight / group.totalWeights;
+
+      final decoration = unit.decoration;
+      if (decoration == null) {
+        drewSweep += sweep;
+        continue;
+      }
+
+      canvas.save();
+      canvas.rotate(drewSweep + pi + pi / 2);
+
+      // Draw the section border
+      final arc = decoration.border.arc;
+      if (arc != null) {
+        canvas.drawArc(rect, 0, sweep, false, arc.toPaint());
+      }
+
+      final edge = decoration.border.edge;
+      if (edge != null) {
+        canvas.drawLine(Offset.zero, Offset(0, radius), edge.toPaint());
+      }
+
+      canvas.restore();
       drewSweep += sweep;
     }
   }
@@ -132,14 +176,14 @@ class _RoulettePainter extends CustomPainter {
       final unit = group.units[i];
       final sweep = 2 * pi * unit.weight / group.totalWeights;
 
-      canvas.save();
-      canvas.rotate(drewSweep + pi / 2 + sweep / 2);
-
       final text = unit.text;
       if (text == null) {
-        canvas.restore();
+        drewSweep += sweep;
         continue;
       }
+
+      canvas.save();
+      canvas.rotate(drewSweep + pi / 2 + sweep / 2);
 
       final textStyle = unit.textStyle ?? style.textStyle;
       final pb = ui.ParagraphBuilder(ui.ParagraphStyle())

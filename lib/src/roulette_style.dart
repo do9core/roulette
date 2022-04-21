@@ -25,16 +25,20 @@ class RouletteStyle {
   );
 
   const RouletteStyle({
+    @Deprecated('Use UnitDecoration.border instead')
     this.dividerThickness = 5,
+    @Deprecated('Use UnitDecoration.border instead')
     this.dividerColor = const Color(0xFFFFFFFF),
     this.textLayoutBias = 0.85,
     this.textStyle = defaultTextStyle,
   });
 
   /// The thickness of divider between each parts
+  @Deprecated('Use UnitDecoration.border instead')
   final double dividerThickness;
 
   /// The color of divider between each parts
+  @Deprecated('Use UnitDecoration.border instead')
   final Color dividerColor;
 
   /// The text layout offset, used to determin where to draw the text
