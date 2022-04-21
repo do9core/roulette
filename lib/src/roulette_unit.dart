@@ -14,6 +14,7 @@
 
 import 'package:flutter/material.dart';
 
+import 'unit_decoration.dart';
 import 'roulette_style.dart';
 
 /// Describe a sector area of a [Roulette]
@@ -21,23 +22,28 @@ class RouletteUnit {
   const RouletteUnit({
     this.text,
     this.textStyle,
-    required this.color,
     required this.weight,
+    required this.decoration,
   });
 
   /// Create a sector with text
   const RouletteUnit.text(
     String text, {
     TextStyle textStyle = RouletteStyle.defaultTextStyle,
-    Color color = Colors.blue,
     double weight = 1.0,
-  }) : this(text: text, textStyle: textStyle, color: color, weight: weight);
+    UnitDecoration? decoration,
+  }) : this(
+          text: text,
+          textStyle: textStyle,
+          decoration: decoration,
+          weight: weight,
+        );
 
   /// Create a sector with only color but no text
   const RouletteUnit.noText({
-    Color color = Colors.blue,
+    UnitDecoration? decoration,
     double weight = 1.0,
-  }) : this(color: color, weight: weight);
+  }) : this(decoration: decoration, weight: weight);
 
   /// Text content of this sector
   final String? text;
@@ -45,8 +51,8 @@ class RouletteUnit {
   /// Text style of this sector
   final TextStyle? textStyle;
 
-  /// Backgroud color of the sector
-  final Color color;
+  /// Background decoration of the sector
+  final UnitDecoration? decoration;
 
   /// Weight of this sector
   final double weight;

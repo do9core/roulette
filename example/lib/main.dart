@@ -47,9 +47,12 @@ class _HomePageState extends State<HomePage>
 
   @override
   void initState() {
-    final group = RouletteGroup.uniform(
+    final group = RouletteGroup.builder(
       colors.length,
-      colorBuilder: colors.elementAt,
+      decorationBuilder: (index) => UnitDecoration(
+        color: colors[index],
+        border: const UnitBorder.all(BorderSide(width: 4)),
+      ),
     );
     _controller = RouletteController(vsync: this, group: group);
     super.initState();
@@ -94,14 +97,12 @@ class _HomePageState extends State<HomePage>
                     height: 260,
                     child: Padding(
                       padding: const EdgeInsets.only(top: 30),
-                      child: Roulette(
+                      child: AnimatedRoulette(
                         // Provide controller to update its state
                         controller: _controller,
                         // Configure roulette's appearance
                         style: const RouletteStyle(
-                          dividerThickness: 4,
                           textLayoutBias: .8,
-                          centerStickerColor: Color(0xFF45A3FA),
                         ),
                       ),
                     ),

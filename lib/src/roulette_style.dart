@@ -12,9 +12,10 @@
 /// See the License for the specific language governing permissions and
 /// limitations under the License.
 
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 /// Describe the render style of roulette.
+@immutable
 class RouletteStyle {
   /// Default section text style
   static const defaultTextStyle = TextStyle(
@@ -24,25 +25,20 @@ class RouletteStyle {
   );
 
   const RouletteStyle({
-    this.dividerThickness = 5,
-    this.dividerColor = Colors.white,
-    this.centerStickerColor = Colors.blue,
-    this.centerStickSizePercent = 0.1,
+    @Deprecated('Use UnitDecoration.border instead') this.dividerThickness = 5,
+    @Deprecated('Use UnitDecoration.border instead')
+        this.dividerColor = const Color(0xFFFFFFFF),
     this.textLayoutBias = 0.85,
     this.textStyle = defaultTextStyle,
   });
 
   /// The thickness of divider between each parts
+  @Deprecated('Use UnitDecoration.border instead')
   final double dividerThickness;
 
   /// The color of divider between each parts
+  @Deprecated('Use UnitDecoration.border instead')
   final Color dividerColor;
-
-  /// The color of the circle at center
-  final Color centerStickerColor;
-
-  /// The size percent of the circle at center
-  final double centerStickSizePercent;
 
   /// The text layout offset, used to determin where to draw the text
   final double textLayoutBias;

@@ -20,31 +20,38 @@ import 'dart:ui' as ui;
 import 'roulette_style.dart';
 import 'roulette_group.dart';
 
-/// Animated roulette core by [AnimatedWidget]
-class RoulettePaint extends AnimatedWidget {
+/// Animated roulette core
+class RoulettePaint extends StatelessWidget {
   const RoulettePaint({
     Key? key,
-    required Animation<double> animation,
+    required this.rotation,
     required this.style,
     required this.group,
-  }) : super(key: key, listenable: animation);
+  }) : super(key: key);
 
   final RouletteStyle style;
   final RouletteGroup group;
-
-  Animation<double> get _rotation => listenable as Animation<double>;
+  final double rotation;
 
   @override
   Widget build(BuildContext context) {
-    return AspectRatio(
-      aspectRatio: 1.0,
-      child: CustomPaint(
-        painter: _RoulettePainter(
-          rotate: _rotation.value,
-          style: style,
-          group: group,
-        ),
-      ),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final side = min(constraints.maxWidth, constraints.maxHeight);
+        return SizedBox(
+          width: side,
+          height: side,
+          child: RepaintBoundary(
+            child: CustomPaint(
+              painter: _RoulettePainter(
+                rotate: rotation,
+                style: style,
+                group: group,
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }
@@ -73,58 +80,101 @@ class _RoulettePainter extends CustomPainter {
     canvas.rotate(-pi / 2 + rotate);
 
     _drawBackground(canvas, radius, rect);
-    _drawSections(canvas, radius);
+    _drawText(canvas, radius);
 
     canvas.restore();
-
-    _drawCenterSticker(canvas, radius);
   }
 
-  _drawBackground(Canvas canvas, double radius, Rect rect) {
+  void _drawBackground(Canvas canvas, double radius, Rect rect) {
     _paint.strokeWidth = 0;
     _paint.style = ui.PaintingStyle.fill;
 
     double drewSweep = 0;
+    final gradientRect = Rect.fromCircle(
+      center: Offset(radius / 2, 0),
+      radius: radius / 2,
+    );
+
     for (var i = 0; i < group.divide; i++) {
       final unit = group.units[i];
       final sweep = 2 * pi * unit.weight / group.totalWeights;
 
+      final decoration = unit.decoration;
+      if (decoration == null) {
+        drewSweep += sweep;
+        continue;
+      }
+
       canvas.save();
       canvas.rotate(drewSweep);
 
-      // Draw the section background
-      _paint.color = unit.color;
+      // Draw the background color
+      final color = decoration.color;
+      if (color != null) {
+        _paint.color = color;
+      }
+
+      // Draw the background gradient
+      final gradient = decoration.gradient;
+      if (gradient != null) {
+        _paint.shader = gradient.createShader(gradientRect);
+      }
+
       _paint.strokeWidth = 0;
       _paint.style = ui.PaintingStyle.fill;
-      canvas.drawArc(rect, 0.0 * i, sweep, true, _paint);
+      canvas.drawArc(rect, 0, sweep, true, _paint);
 
-      // Draw the section border
-      _paint.color = style.dividerColor;
-      _paint.strokeWidth = style.dividerThickness;
-      _paint.style = ui.PaintingStyle.stroke;
-      canvas.drawArc(rect, 0.0 * i, sweep, true, _paint);
+      // TODO: Draw other decorations
 
       canvas.restore();
+      drewSweep += sweep;
+    }
 
+    drewSweep = 0;
+    for (var i = 0; i < group.divide; i++) {
+      final unit = group.units[i];
+      final sweep = 2 * pi * unit.weight / group.totalWeights;
+
+      final decoration = unit.decoration;
+      if (decoration == null) {
+        drewSweep += sweep;
+        continue;
+      }
+
+      canvas.save();
+      canvas.rotate(drewSweep);
+
+      // Draw the section border
+      final arc = decoration.border.arc;
+      if (arc != null) {
+        canvas.drawArc(rect, 0, sweep, false, arc.toPaint());
+      }
+
+      final edge = decoration.border.edge;
+      if (edge != null) {
+        canvas.drawLine(Offset.zero, Offset(radius, 0), edge.toPaint());
+      }
+
+      canvas.restore();
       drewSweep += sweep;
     }
   }
 
-  _drawSections(Canvas canvas, double radius) {
+  void _drawText(Canvas canvas, double radius) {
     double drewSweep = 0.0; // Drew sweep angle
     for (var i = 0; i < group.divide; i++) {
       // Draw each section with unit
       final unit = group.units[i];
       final sweep = 2 * pi * unit.weight / group.totalWeights;
 
-      canvas.save();
-      canvas.rotate(drewSweep + pi / 2 + sweep / 2);
-
       final text = unit.text;
       if (text == null) {
-        canvas.restore();
+        drewSweep += sweep;
         continue;
       }
+
+      canvas.save();
+      canvas.rotate(drewSweep + pi / 2 + sweep / 2);
 
       final textStyle = unit.textStyle ?? style.textStyle;
       final pb = ui.ParagraphBuilder(ui.ParagraphStyle())
@@ -140,14 +190,6 @@ class _RoulettePainter extends CustomPainter {
 
       drewSweep += sweep;
     }
-  }
-
-  _drawCenterSticker(Canvas canvas, double radius) {
-    _paint.color = style.centerStickerColor;
-    _paint.strokeWidth = 0;
-    _paint.style = ui.PaintingStyle.fill;
-    canvas.drawCircle(
-        Offset.zero, radius * style.centerStickSizePercent, _paint);
   }
 
   @override

@@ -1,4 +1,4 @@
-/// Copyright 2021 do9core
+/// Copyright 2022 do9core
 ///
 /// Licensed under the Apache License, Version 2.0 (the "License");
 /// you may not use this file except in compliance with the License.
@@ -13,37 +13,38 @@
 /// limitations under the License.
 
 import 'package:flutter/material.dart';
-import 'package:roulette/roulette.dart';
 
+import 'roulette_controller.dart';
 import 'roulette_paint.dart';
+import 'roulette_style.dart';
 
-/// This is an static roulette widget.
-///
-/// You can write your customized logic
-/// that provide the rotation value to controll its rolling behavior.
-class Roulette extends StatelessWidget {
-  const Roulette({
+/// This is an animatable roulette widget.
+/// You need to present a [RouletteController] to controll this widget.
+class AnimatedRoulette extends StatelessWidget {
+  const AnimatedRoulette({
     Key? key,
-    required this.group,
-    this.rotation = 0,
+    required this.controller,
     this.style = const RouletteStyle(),
   }) : super(key: key);
 
-  /// The rotation of the roulette.
-  final double rotation;
-
-  /// The display group of the roulette.
-  final RouletteGroup group;
+  /// Controls the roulette.
+  final RouletteController controller;
 
   /// The display style of the roulette.
   final RouletteStyle style;
 
   @override
   Widget build(BuildContext context) {
-    return RoulettePaint(
-      rotation: rotation,
-      style: style,
-      group: group,
+    return AnimatedBuilder(
+      animation: controller,
+      builder: (context, _) => AnimatedBuilder(
+        animation: controller.animation,
+        builder: (context, _) => RoulettePaint(
+          rotation: controller.animation.value,
+          style: style,
+          group: controller.group,
+        ),
+      ),
     );
   }
 }
