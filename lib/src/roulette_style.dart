@@ -25,10 +25,9 @@ class RouletteStyle {
   );
 
   const RouletteStyle({
+    @Deprecated('Use UnitDecoration.border instead') this.dividerThickness = 5,
     @Deprecated('Use UnitDecoration.border instead')
-    this.dividerThickness = 5,
-    @Deprecated('Use UnitDecoration.border instead')
-    this.dividerColor = const Color(0xFFFFFFFF),
+        this.dividerColor = const Color(0xFFFFFFFF),
     this.textLayoutBias = 0.85,
     this.textStyle = defaultTextStyle,
   });

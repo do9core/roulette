@@ -59,7 +59,6 @@ void main() {
         },
       );
 
-
       testWidgets(
         'ensure roulette span weight',
         (WidgetTester tester) async {
