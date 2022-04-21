@@ -94,7 +94,7 @@ class _HomePageState extends State<HomePage>
                     height: 260,
                     child: Padding(
                       padding: const EdgeInsets.only(top: 30),
-                      child: Roulette(
+                      child: AnimatedRoulette(
                         // Provide controller to update its state
                         controller: _controller,
                         // Configure roulette's appearance

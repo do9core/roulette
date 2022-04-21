@@ -98,7 +98,7 @@ void main() {
               const UnitDecoration(color: Colors.pink),
         );
         final controller = RouletteController(group: group, vsync: tester);
-        await tester.pumpWidget(Roulette(controller: controller));
+        await tester.pumpWidget(AnimatedRoulette(controller: controller));
         expect(find.byType(RoulettePaint), findsOneWidget);
       },
     );

@@ -39,7 +39,7 @@ class RouletteWidgetTestState extends State<RouletteWidgetTest>
       child: SizedBox(
         width: 400,
         height: 400,
-        child: Roulette(controller: controller),
+        child: AnimatedRoulette(controller: controller),
       ),
     );
   }

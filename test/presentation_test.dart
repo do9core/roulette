@@ -2,26 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:roulette/roulette.dart';
-import 'package:roulette/src/roulette_paint.dart';
 
 import 'test_component.dart';
 
 void main() {
   group('widget display tests', () {
-    testWidgets(
-      'ensure roulette displayed',
-      (WidgetTester tester) async {
-        final group = RouletteGroup.builder(
-          5,
-          textBuilder: (index) => '$index',
-          decorationBuilder: (index) => const UnitDecoration(color: Colors.red),
-        );
-        final controller = RouletteController(group: group, vsync: tester);
-        await tester.pumpWidget(Roulette(controller: controller));
-        expect(find.byType(RoulettePaint), findsOneWidget);
-      },
-    );
-
     group('golden tests', () {
       testWidgets(
         'ensure roulette span uniform',
@@ -33,7 +18,7 @@ void main() {
             decorationBuilder: (index) =>
                 const UnitDecoration(color: Colors.pinkAccent),
           );
-          await tester.pumpWidget(RouletteWidgetTest(group: group));
+          await tester.pumpWidget(Roulette(group: group));
           await expectLater(
             find.byType(Roulette),
             matchesGoldenFile('golden_test/test.uniform.display.png'),
@@ -59,7 +44,7 @@ void main() {
               weight: 3,
             ),
           ]);
-          await tester.pumpWidget(RouletteWidgetTest(group: group));
+          await tester.pumpWidget(Roulette(group: group));
           await expectLater(
             find.byType(Roulette),
             matchesGoldenFile('golden_test/test.weight.based.display.png'),
@@ -91,7 +76,7 @@ void main() {
           await tester.pumpWidget(RouletteWidgetTest(group: group));
           // Ensure initial state
           await expectLater(
-            find.byType(Roulette),
+            find.byType(AnimatedRoulette),
             matchesGoldenFile('golden_test/test.uniform.rollTo.initial.png'),
           );
           final state = tester
@@ -99,7 +84,7 @@ void main() {
           state.controller.rollTo(3, minRotateCircles: 1);
           await tester.pumpAndSettle();
           await expectLater(
-            find.byType(Roulette),
+            find.byType(AnimatedRoulette),
             matchesGoldenFile('golden_test/test.uniform.rollTo.end.png'),
           );
         },

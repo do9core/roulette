@@ -20,31 +20,38 @@ import 'dart:ui' as ui;
 import 'roulette_style.dart';
 import 'roulette_group.dart';
 
-/// Animated roulette core by [AnimatedWidget]
-class RoulettePaint extends AnimatedWidget {
+/// Animated roulette core
+class RoulettePaint extends StatelessWidget {
   const RoulettePaint({
     Key? key,
-    required Animation<double> animation,
+    required this.rotation,
     required this.style,
     required this.group,
-  }) : super(key: key, listenable: animation);
+  }) : super(key: key);
 
   final RouletteStyle style;
   final RouletteGroup group;
-
-  Animation<double> get _rotation => listenable as Animation<double>;
+  final double rotation;
 
   @override
   Widget build(BuildContext context) {
-    return AspectRatio(
-      aspectRatio: 1.0,
-      child: CustomPaint(
-        painter: _RoulettePainter(
-          rotate: _rotation.value,
-          style: style,
-          group: group,
-        ),
-      ),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final side = min(constraints.maxWidth, constraints.maxHeight);
+        return SizedBox(
+          width: side,
+          height: side,
+          child: RepaintBoundary(
+            child: CustomPaint(
+              painter: _RoulettePainter(
+                rotate: rotation,
+                style: style,
+                group: group,
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }
