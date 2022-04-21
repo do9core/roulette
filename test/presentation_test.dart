@@ -27,6 +27,40 @@ void main() {
       );
 
       testWidgets(
+        'ensure gradient display properly',
+        (tester) async {
+          await tester.configScreenSize();
+          const colors = [
+            Colors.blue,
+            Colors.amber,
+            Colors.red,
+            Colors.cyan,
+            Colors.purple,
+            Colors.green,
+            Colors.pink,
+            Colors.teal,
+          ];
+          final group = RouletteGroup.builder(
+            8,
+            decorationBuilder: (index) => UnitDecoration(
+              border: const UnitBorder.none(),
+              gradient: LinearGradient(
+                begin: Alignment.centerLeft,
+                end: Alignment.bottomRight,
+                colors: [Colors.black, colors[index], Colors.white],
+              ),
+            ),
+          );
+          await tester.pumpWidget(Roulette(group: group));
+          await expectLater(
+            find.byType(Roulette),
+            matchesGoldenFile('golden_test/test.gradient.display.png'),
+          );
+        },
+      );
+
+
+      testWidgets(
         'ensure roulette span weight',
         (WidgetTester tester) async {
           await tester.configScreenSize();
@@ -71,6 +105,9 @@ void main() {
             ),
             RouletteUnit.noText(
               decoration: UnitDecoration(color: Colors.yellow),
+            ),
+            RouletteUnit.noText(
+              decoration: UnitDecoration(color: Colors.purple),
             ),
           ]);
           await tester.pumpWidget(RouletteWidgetTest(group: group));

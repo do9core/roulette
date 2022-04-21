@@ -80,16 +80,20 @@ class _RoulettePainter extends CustomPainter {
     canvas.rotate(-pi / 2 + rotate);
 
     _drawBackground(canvas, radius, rect);
-    _drawSections(canvas, radius);
+    _drawText(canvas, radius);
 
     canvas.restore();
   }
 
-  _drawBackground(Canvas canvas, double radius, Rect rect) {
+  void _drawBackground(Canvas canvas, double radius, Rect rect) {
     _paint.strokeWidth = 0;
     _paint.style = ui.PaintingStyle.fill;
 
     double drewSweep = 0;
+    final gradientRect = Rect.fromCircle(
+      center: Offset(radius / 2, 0),
+      radius: radius / 2,
+    );
 
     for (var i = 0; i < group.divide; i++) {
       final unit = group.units[i];
@@ -113,7 +117,7 @@ class _RoulettePainter extends CustomPainter {
       // Draw the background gradient
       final gradient = decoration.gradient;
       if (gradient != null) {
-        _paint.shader = gradient.createShader(rect);
+        _paint.shader = gradient.createShader(gradientRect);
       }
 
       _paint.strokeWidth = 0;
@@ -121,19 +125,6 @@ class _RoulettePainter extends CustomPainter {
       canvas.drawArc(rect, 0, sweep, true, _paint);
 
       // TODO: Draw other decorations
-
-      canvas.restore();
-      drewSweep += sweep;
-    }
-
-    drewSweep = 0.0; // Drew sweep angle
-    for (var i = 0; i < group.divide; i++) {
-      // Draw each section with unit
-      final unit = group.units[i];
-      final sweep = 2 * pi * unit.weight / group.totalWeights;
-
-      canvas.save();
-      canvas.rotate(drewSweep + pi / 2 + sweep / 2);
 
       canvas.restore();
       drewSweep += sweep;
@@ -151,7 +142,7 @@ class _RoulettePainter extends CustomPainter {
       }
 
       canvas.save();
-      canvas.rotate(drewSweep + pi + pi / 2);
+      canvas.rotate(drewSweep);
 
       // Draw the section border
       final arc = decoration.border.arc;
@@ -161,7 +152,7 @@ class _RoulettePainter extends CustomPainter {
 
       final edge = decoration.border.edge;
       if (edge != null) {
-        canvas.drawLine(Offset.zero, Offset(0, radius), edge.toPaint());
+        canvas.drawLine(Offset.zero, Offset(radius, 0), edge.toPaint());
       }
 
       canvas.restore();
@@ -169,7 +160,7 @@ class _RoulettePainter extends CustomPainter {
     }
   }
 
-  _drawSections(Canvas canvas, double radius) {
+  void _drawText(Canvas canvas, double radius) {
     double drewSweep = 0.0; // Drew sweep angle
     for (var i = 0; i < group.divide; i++) {
       // Draw each section with unit
