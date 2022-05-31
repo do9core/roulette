@@ -1,6 +1,8 @@
-## 0.1.0+1 - 2022/01/15
+## 0.1.1 - 2022/05/31
+  * Fix a bug which causes the full-width characters layout incorrectly. (Thanks for [@SeeLog](https://github.com/SeeLog)'s contribution!)
 
-* Readme document snapshot resource fix.
+## 0.1.0+1 - 2022/01/15
+  * Readme document snapshot resource fix.
 
 ## 0.1.0 - 2022/01/11
 
