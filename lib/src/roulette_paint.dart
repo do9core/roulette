@@ -127,15 +127,20 @@ class _RoulettePainter extends CustomPainter {
       }
 
       final textStyle = unit.textStyle ?? style.textStyle;
-      final pb = ui.ParagraphBuilder(ui.ParagraphStyle())
+      final pb = ui.ParagraphBuilder(ui.ParagraphStyle(
+        textAlign: TextAlign.center,
+      ))
         ..pushStyle(textStyle.asUiTextStyle())
         ..addText(text);
 
+      // Calculate chord of circle
+      final chord = 2 * (radius * style.textLayoutBias) * sin(sweep / 2);
+
       final p = pb.build();
-      p.layout(const ui.ParagraphConstraints(width: double.infinity));
+      p.layout(ui.ParagraphConstraints(width: chord));
 
       canvas.drawParagraph(
-          p, Offset(-p.minIntrinsicWidth / 2, -radius * style.textLayoutBias));
+          p, Offset(-chord / 2, -radius * style.textLayoutBias));
       canvas.restore();
 
       drewSweep += sweep;
