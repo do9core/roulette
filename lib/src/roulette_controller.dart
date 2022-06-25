@@ -71,8 +71,8 @@ class RouletteController with ChangeNotifier {
   /// The [duration] is the animation duration.
   /// The [clockwise] determin whether the animator should run in closewise didrection.
   /// Config [minRotateCircles] to determine the minimum rotate before settle.
-  /// Provide a [random] for randomization.
   /// Provide a [curve] to update the animation curve.
+  /// Provide a [offset] for roulette stop position, by default, 0 indicates the start of the part.
   Future<void> rollTo(
     int targetIndex, {
     Duration duration = defaultDuration,

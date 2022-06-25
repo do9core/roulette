@@ -51,8 +51,11 @@ double calculateEndRotate(
   double offset = 0,
 }) {
   final units = group.units;
-  assert(units.isNotEmpty);
-  assert(targetIndex >= 0 && targetIndex < group.divide);
+  assert(units.isNotEmpty, "You cannot roll an empty roulette.");
+  assert(
+    targetIndex >= 0 && targetIndex < group.divide,
+    "targetIndex is out of group range.",
+  );
   final passUnits = clockwise
       ? units.reversed.take(group.divide - targetIndex - 1)
       : units.take(targetIndex);

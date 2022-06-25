@@ -9,13 +9,15 @@ This is a library provide a simple roulette widget which usually used for lotter
 * Quickly build roulettes
 * Build roulettes with different parts depends on the weight
 * Easily control the roll animation and settle position
-* There are two types of roulette provided by this package:
+* There are two types of roulette provided by this package (text is optional):
 
-  * Uniform roulette:
-    ![Uniform with no text](README.assets/uniform_no_text.png)
+  * Uniformed roulette:
+
+    <img alt="Uniformed with no text" src="README.assets/uniform_no_text.png" width="400">
 
   * Weight-based roulette:
-    ![Weight based with text](README.assets/weight_based_with_text.png)
+
+    <img alt="Weight based with text" src="README.assets/weight_based_with_text.png" width="400">
 
 ## Getting started
 
@@ -34,6 +36,22 @@ RouletteController(
   ]),
   vsync: this // provide a TickerProvider here (usually by SingleTickerProviderStateMixin)
 );
+```
+
+If you want to map some list data into a uniformed `RouletteGroup`, try the builder:
+
+```dart
+final values = <int>[ /* Some value */ ];
+final group = RouletteGroup.uniform(
+  values.length,
+  colorBuilder: Colors.blue,
+  textBuilder: (index) => (index + 1).toString(),
+  textStyleBuilder: (index) {
+    // Set the text style here!
+  },
+);
+
+controller = RouletteController(group: group, vsync: this);
 ```
 
 Once you have a controller, you could add a `Roulette` widget into your widget tree:
@@ -63,6 +81,33 @@ ElevatedButton(
 
 You could await the `rollTo` method's finish and then make some other actions.
 
-The `rollTo` method provides many options for you to control the rolling behavior. Please check the document for more information.
+```dart
+ElevatedButton(
+  onPressed: () async {
+    await controller.rollTo(2);
+    // TODO: Do something when roulette stopped here.
+  },
+  child: const Text('Roll!'),
+);
+```
+
+The `rollTo` method provides many options for you to control the rolling behavior, such as randomize the stop position:
+
+```dart
+
+final random = Random();
+
+// ...
+
+ElevatedButton(
+  onPressed: () async {
+    await controller.rollTo(2, offset: random.nextDouble());
+    // TODO: Do something when roulette stopped here.
+  },
+  child: const Text('Roll!'),
+);
+```
+
+For other options, please check the document for more information.
 
 For detailed usage sample, please check the example.
