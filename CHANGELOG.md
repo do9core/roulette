@@ -1,3 +1,7 @@
+## 0.1.2 - 2022/06/25
+  * Update Flutter version to latest (3.0.3)
+  * Update lint to 2.0.1 and fix lint warnings
+
 ## 0.1.1 - 2022/05/31
   * Fix a bug which causes the full-width characters layout incorrectly. (Thanks for [@SeeLog](https://github.com/SeeLog)'s contribution!)
 
