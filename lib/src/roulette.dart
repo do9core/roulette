@@ -34,7 +34,7 @@ class Roulette extends StatefulWidget {
   final RouletteStyle style;
 
   @override
-  _RouletteState createState() => _RouletteState();
+  State<Roulette> createState() => _RouletteState();
 }
 
 class _RouletteState extends State<Roulette> {
