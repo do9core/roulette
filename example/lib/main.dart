@@ -24,6 +24,42 @@ class MyApp extends StatelessWidget {
   }
 }
 
+class MyRoulette extends StatelessWidget {
+  const MyRoulette({
+    Key? key,
+    required this.controller,
+  }) : super(key: key);
+
+  final RouletteController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      alignment: Alignment.topCenter,
+      children: [
+        SizedBox(
+          width: 260,
+          height: 260,
+          child: Padding(
+            padding: const EdgeInsets.only(top: 30),
+            child: Roulette(
+              // Provide controller to update its state
+              controller: controller,
+              // Configure roulette's appearance
+              style: const RouletteStyle(
+                dividerThickness: 4,
+                textLayoutBias: .8,
+                centerStickerColor: Color(0xFF45A3FA),
+              ),
+            ),
+          ),
+        ),
+        const Arrow(),
+      ],
+    );
+  }
+}
+
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
@@ -33,6 +69,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
+  static final _random = Random();
+
   late RouletteController _controller;
   bool _clockwise = true;
 
@@ -47,6 +85,7 @@ class _HomePageState extends State<HomePage>
 
   @override
   void initState() {
+    // Initialize the controller
     final group = RouletteGroup.uniform(
       colors.length,
       colorBuilder: colors.elementAt,
@@ -86,42 +125,20 @@ class _HomePageState extends State<HomePage>
                   ),
                 ],
               ),
-              Stack(
-                alignment: Alignment.topCenter,
-                children: [
-                  SizedBox(
-                    width: 260,
-                    height: 260,
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 30),
-                      child: Roulette(
-                        // Provide controller to update its state
-                        controller: _controller,
-                        // Configure roulette's appearance
-                        style: const RouletteStyle(
-                          dividerThickness: 4,
-                          textLayoutBias: .8,
-                          centerStickerColor: Color(0xFF45A3FA),
-                        ),
-                      ),
-                    ),
-                  ),
-                  const Arrow(),
-                ],
-              ),
+              MyRoulette(controller: _controller),
             ],
           ),
         ),
         decoration: BoxDecoration(
-          color: Colors.pink.withAlpha(50),
+          color: Colors.pink.withOpacity(0.1),
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        // Run the animation with rollTo method
+        // Use the controller to run the animation with rollTo method
         onPressed: () => _controller.rollTo(
           3,
           clockwise: _clockwise,
-          offset: Random().nextDouble(),
+          offset: _random.nextDouble(),
         ),
         child: const Icon(Icons.refresh_rounded),
       ),
