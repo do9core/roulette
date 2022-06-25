@@ -1,6 +1,10 @@
 ## 0.1.2 - 2022/06/25
   * Update Flutter version to latest (3.0.3)
   * Update lint to 2.0.1 and fix lint warnings
+  * Fix `rollTo` method's document, there's no `random` parameter but `offset`
+  * Clean up the example
+  * Add more detail usage to `README.md`
+  * ⚠ If this update break your build because of the SDK upgrade, please feel free to [raise a issue](https://github.com/do9core/roulette/issues).
 
 ## 0.1.1 - 2022/05/31
   * Fix a bug which causes the full-width characters layout incorrectly. (Thanks for [@SeeLog](https://github.com/SeeLog)'s contribution!)
