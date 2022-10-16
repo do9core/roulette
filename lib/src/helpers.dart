@@ -24,13 +24,15 @@ import 'roulette_unit.dart';
 Animation<double> makeAnimation(
   AnimationController controller,
   double targetValue,
-  Curve? curve,
-) {
+  Curve? curve, {
+  double initialValue = 0,
+}) {
+  final begin = initialValue % (2 * pi);
   if (curve != null) {
     final curved = CurvedAnimation(parent: controller, curve: curve);
-    return curved.drive(Tween(begin: 0.0, end: targetValue));
+    return curved.drive(Tween(begin: begin, end: targetValue));
   } else {
-    return controller.drive(Tween(begin: 0.0, end: targetValue));
+    return controller.drive(Tween(begin: begin, end: targetValue));
   }
 }
 
