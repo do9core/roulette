@@ -49,7 +49,7 @@ class RouletteController with ChangeNotifier {
 
   /// Set the [RouletteGroup] to refresh widget
   set group(RouletteGroup value) {
-    _animation = _controller.drive(Tween<double>(begin: 0, end: 0));
+    _animation = _controller.drive(ConstantTween<double>(0));
     _group = value;
     notifyListeners();
     _controller.reset();
@@ -57,7 +57,7 @@ class RouletteController with ChangeNotifier {
 
   /// Reset animation to initial state
   void resetAnimation() {
-    _animation = _controller.drive(Tween<double>(begin: 0, end: 0));
+    _animation = _controller.drive(ConstantTween<double>(0));
     notifyListeners();
     _controller.reset();
   }
@@ -89,7 +89,8 @@ class RouletteController with ChangeNotifier {
       offset: offset,
     );
     _controller.duration = duration;
-    _animation = makeAnimation(_controller, targetRotate, curve);
+    _animation = makeAnimation(_controller, targetRotate, curve,
+        initialValue: animation.value);
     notifyListeners();
     await _controller.forward(from: 0);
   }
