@@ -37,6 +37,21 @@ void main() {
       });
     });
 
+    testWidgets('continuos rotation test', (WidgetTester tester) async {
+      await tester
+          .pumpWidget(RouletteWidgetTest(group: RouletteGroup.uniform(5)));
+      final state = tester
+          .state<RouletteWidgetTestState>(find.byType(RouletteWidgetTest));
+      state.controller.rollTo(1, minRotateCircles: 0, offset: 1);
+      await tester.pumpAndSettle();
+      var animation = state.controller.animation;
+      expect(animation.value, 4 / 5 * pi * 2);
+
+      state.controller.rollTo(2, minRotateCircles: 0, offset: 1);
+      animation = state.controller.animation;
+      expect(animation.value, 4 / 5 * pi * 2);
+    });
+
     testWidgets(
       'ensure rollTo settle at target index with offset',
       (WidgetTester tester) async {

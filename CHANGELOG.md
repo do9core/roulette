@@ -1,3 +1,12 @@
+## 0.1.3 - 2022/10/21
+
+### Behavior changes:
+  * `rollTo` method now continue from the last stopped point, if you need the roulette roll from the "zero" position, call `RouletteController.resetAnimation` before `rollTo`.
+
+### SDK upgrade:
+  * Update Flutter version to latest (3.3.4)
+  * ⚠ If this update break your build because of the SDK upgrade, please feel free to [raise a issue](https://github.com/do9core/roulette/issues).
+
 ## 0.1.2 - 2022/06/25
   * Update Flutter version to latest (3.0.3)
   * Update lint to 2.0.1 and fix lint warnings
