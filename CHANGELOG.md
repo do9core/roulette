@@ -1,3 +1,7 @@
+## 0.1.3+1 - 2022/11/2
+  * Document image reference fix
+  * Make `Roulette` a `StatelessWidget`
+
 ## 0.1.3 - 2022/10/21
 
 ### Behavior changes:
