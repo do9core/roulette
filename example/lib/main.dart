@@ -42,15 +42,31 @@ class MyRoulette extends StatelessWidget {
           height: 260,
           child: Padding(
             padding: const EdgeInsets.only(top: 30),
-            child: Roulette(
-              // Provide controller to update its state
+            child: RouletteTapWrapper(
               controller: controller,
-              // Configure roulette's appearance
-              style: const RouletteStyle(
-                dividerThickness: 4,
-                textLayoutBias: .8,
-                centerStickerColor: Color(0xFF45A3FA),
-              ),
+              onTap: (index) {
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      title: const Text('Tap gesture detector'),
+                      content: Text('You have tapped part at $index'),
+                    );
+                  },
+                );
+              },
+              builder: (context, controller) {
+                return Roulette(
+                  // Provide controller to update its state
+                  controller: controller,
+                  // Configure roulette's appearance
+                  style: const RouletteStyle(
+                    dividerThickness: 4,
+                    textLayoutBias: .8,
+                    centerStickerColor: Color(0xFF45A3FA),
+                  ),
+                );
+              },
             ),
           ),
         ),
