@@ -22,3 +22,4 @@ export './src/roulette_group.dart' show RouletteGroup;
 export './src/roulette_unit.dart' show RouletteUnit;
 export './src/roulette_style.dart' show RouletteStyle;
 export './src/tap_wrapper.dart' show RouletteTapWrapper;
+export './src/roulette_scope.dart' show RouletteScope;

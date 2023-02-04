@@ -15,7 +15,9 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
-import 'package:roulette/roulette.dart';
+
+import 'roulette_controller.dart';
+import 'roulette_scope.dart';
 
 typedef RouletteBuilder = Widget Function(
   BuildContext context,
@@ -27,13 +29,15 @@ typedef RouletteTapCallback = void Function(int index);
 class RouletteTapWrapper extends StatefulWidget {
   const RouletteTapWrapper({
     Key? key,
-    required this.controller,
+    this.controller,
     required this.builder,
+    required this.rouletteKey,
     this.onTap,
   }) : super(key: key);
 
-  final RouletteController controller;
+  final RouletteController? controller;
   final RouletteTapCallback? onTap;
+  final GlobalKey rouletteKey;
   final RouletteBuilder builder;
 
   @override
@@ -41,32 +45,32 @@ class RouletteTapWrapper extends StatefulWidget {
 }
 
 class _RouletteTapWrapperState extends State<RouletteTapWrapper> {
-  final GlobalKey _rouletteKey = GlobalKey();
   TapDownDetails? _lastTapDown;
 
   @override
   Widget build(BuildContext context) {
-    return Builder(
-      builder: (context) {
-        return GestureDetector(
-          onTapDown: widget.onTap == null ? null : (d) => _lastTapDown = d,
-          onTapUp: widget.onTap == null ? null : _handleTapUp,
-          onTapCancel: widget.onTap == null ? null : () => _lastTapDown = null,
-          child: SizedBox(
-            key: _rouletteKey,
-            child: widget.builder(context, widget.controller),
-          ),
-        );
-      },
+    final c = widget.controller ?? RouletteScope.of(context);
+    assert(
+      c != null,
+      'no controller or scope controller of Roulette provided. '
+      'you should provide controller directly on Roulette widget or '
+      'specify it using RouletteScope',
+    );
+    final controller = c!;
+    return GestureDetector(
+      onTapDown: widget.onTap == null ? null : (d) => _lastTapDown = d,
+      onTapUp: widget.onTap == null ? null : (d) => _handleTapUp(controller, d),
+      onTapCancel: widget.onTap == null ? null : () => _lastTapDown = null,
+      child: Builder(builder: (context) => widget.builder(context, controller)),
     );
   }
 
-  void _handleTapUp(TapUpDetails details) {
+  void _handleTapUp(RouletteController c, TapUpDetails details) {
     final d = _lastTapDown;
     if (d == null) return;
     _lastTapDown = null;
 
-    final contentContext = _rouletteKey.currentContext;
+    final contentContext = widget.rouletteKey.currentContext;
     if (contentContext == null) return;
 
     final contentSize = (contentContext as Element).size;
@@ -87,9 +91,9 @@ class _RouletteTapWrapperState extends State<RouletteTapWrapper> {
 
     // debugPrint('angle: $angle');
 
-    final divides = widget.controller.group.divide;
+    final divides = c.group.divide;
     final single = 2 * math.pi / divides;
-    final rotation = widget.controller.animation.value;
+    final rotation = c.animation.value;
     final ranges = List.generate(
       divides,
       (index) {

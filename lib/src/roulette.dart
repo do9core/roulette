@@ -14,6 +14,7 @@
 
 import 'package:flutter/material.dart';
 
+import 'roulette_scope.dart';
 import 'roulette_style.dart';
 import 'roulette_controller.dart';
 import 'roulette_paint.dart';
@@ -23,18 +24,26 @@ import 'roulette_paint.dart';
 class Roulette extends StatelessWidget {
   const Roulette({
     Key? key,
-    required this.controller,
+    this.controller,
     this.style = const RouletteStyle(),
   }) : super(key: key);
 
   /// Controls the roulette.
-  final RouletteController controller;
+  final RouletteController? controller;
 
   /// The display style of the roulette.
   final RouletteStyle style;
 
   @override
   Widget build(BuildContext context) {
+    final c = this.controller ?? RouletteScope.of(context);
+    assert(
+      c != null,
+      'no controller or scope controller of Roulette provided. '
+      'you should provide controller directly on Roulette widget or '
+      'specify it using RouletteScope',
+    );
+    final controller = c!;
     return AnimatedBuilder(
       animation: controller,
       builder: (context, child) {
