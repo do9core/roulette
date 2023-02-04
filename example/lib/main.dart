@@ -24,13 +24,20 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MyRoulette extends StatelessWidget {
+class MyRoulette extends StatefulWidget {
   const MyRoulette({
     Key? key,
-    required this.controller,
+    this.controller,
   }) : super(key: key);
 
-  final RouletteController controller;
+  final RouletteController? controller;
+
+  @override
+  State<MyRoulette> createState() => _MyRouletteState();
+}
+
+class _MyRouletteState extends State<MyRoulette> {
+  final _roulette = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
@@ -42,15 +49,33 @@ class MyRoulette extends StatelessWidget {
           height: 260,
           child: Padding(
             padding: const EdgeInsets.only(top: 30),
-            child: Roulette(
-              // Provide controller to update its state
-              controller: controller,
-              // Configure roulette's appearance
-              style: const RouletteStyle(
-                dividerThickness: 4,
-                textLayoutBias: .8,
-                centerStickerColor: Color(0xFF45A3FA),
-              ),
+            child: RouletteTapWrapper(
+              controller: widget.controller,
+              rouletteKey: _roulette,
+              onTap: (index) {
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      title: const Text('Tap gesture detector'),
+                      content: Text('You have tapped part at $index'),
+                    );
+                  },
+                );
+              },
+              builder: (context, controller) {
+                return Roulette(
+                  key: _roulette,
+                  // Provide controller to update its state
+                  controller: controller,
+                  // Configure roulette's appearance
+                  style: const RouletteStyle(
+                    dividerThickness: 4,
+                    textLayoutBias: .8,
+                    centerStickerColor: Color(0xFF45A3FA),
+                  ),
+                );
+              },
             ),
           ),
         ),
@@ -95,59 +120,81 @@ class _HomePageState extends State<HomePage>
   }
 
   @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Roulette'),
-      ),
-      body: Container(
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Text(
-                    "Clockwise: ",
-                    style: TextStyle(fontSize: 18),
-                  ),
-                  Switch(
-                    value: _clockwise,
-                    onChanged: (onChanged) {
-                      setState(() {
-                        _controller.resetAnimation();
-                        _clockwise = !_clockwise;
-                      });
-                    },
-                  ),
-                ],
-              ),
-              MyRoulette(controller: _controller),
-            ],
-          ),
-        ),
-        decoration: BoxDecoration(
-          color: Colors.pink.withOpacity(0.1),
+      backgroundColor: Colors.pink.withOpacity(0.1),
+      appBar: AppBar(title: const Text('Roulette')),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _DirectionSwitch(
+              clockwise: _clockwise,
+              onChanged: _updateDirection,
+            ),
+            RouletteScope(
+              controller: _controller,
+              child: const MyRoulette(),
+            ),
+          ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        // Use the controller to run the animation with rollTo method
-        onPressed: () => _controller.rollTo(
-          3,
-          clockwise: _clockwise,
-          offset: _random.nextDouble(),
-        ),
+        onPressed: _roll,
         child: const Icon(Icons.refresh_rounded),
       ),
     );
   }
 
+  void _updateDirection(bool clockwise) {
+    setState(() {
+      _controller.resetAnimation();
+      _clockwise = clockwise;
+    });
+  }
+
+  void _roll() {
+    // Use the controller to run the animation with rollTo method
+    _controller.rollTo(
+      3,
+      clockwise: _clockwise,
+      offset: _random.nextDouble(),
+    );
+  }
+}
+
+class _DirectionSwitch extends StatelessWidget {
+  const _DirectionSwitch({
+    Key? key,
+    required this.clockwise,
+    required this.onChanged,
+  }) : super(key: key);
+
+  final bool clockwise;
+  final void Function(bool)? onChanged;
+
   @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const Text(
+          "Clockwise: ",
+          style: TextStyle(fontSize: 18),
+        ),
+        Switch(
+          value: clockwise,
+          onChanged: onChanged,
+        ),
+      ],
+    );
   }
 }

@@ -13,11 +13,11 @@ This is a library provide a simple roulette widget which usually used for lotter
 
   * Uniformed roulette:
 
-    <img alt="Uniformed with no text" src="README.assets/uniform_no_text.png" width="400">
+    <img alt="Uniformed with no text" src="https://raw.githubusercontent.com/do9core/roulette/main/README.assets/uniform_no_text.png" width="400">
 
   * Weight-based roulette:
 
-    <img alt="Weight based with text" src="README.assets/weight_based_with_text.png" width="400">
+    <img alt="Weight based with text" src="https://raw.githubusercontent.com/do9core/roulette/main/README.assets/weight_based_with_text.png" width="400">
 
 ## Getting started
 
@@ -44,7 +44,7 @@ If you want to map some list data into a uniformed `RouletteGroup`, try the buil
 final values = <int>[ /* Some value */ ];
 final group = RouletteGroup.uniform(
   values.length,
-  colorBuilder: Colors.blue,
+  colorBuilder: (_) => Colors.blue,
   textBuilder: (index) => (index + 1).toString(),
   textStyleBuilder: (index) {
     // Set the text style here!
@@ -56,6 +56,8 @@ controller = RouletteController(group: group, vsync: this);
 
 Once you have a controller, you could add a `Roulette` widget into your widget tree:
 
+#### Provide the controller directly
+
 ```dart
 @override
 Widget build(BuildContext context) {
@@ -64,6 +66,33 @@ Widget build(BuildContext context) {
     style: RouletteStyle(
       // config the roulette's appearance here
     ),
+  );
+}
+```
+
+#### Provide the controller under the tree with RouletteScope
+
+```dart
+@override
+Widget build(BuildContext context) {
+  return RouletteScope(
+    controller: controller, // provide your controller here
+    child: const WidgetThatContainsRouletteDeeply(),
+  );
+}
+```
+
+and use the controller
+
+```dart
+@override
+Widget build(BuildContext context) {
+  final controller = RouletteScope.of(context)!;
+  return Roulette(
+    // Set this manually from the tree, 
+    // or just leave this empty to automatically 
+    // keep track to the nearest controller on the tree.
+    controller: controller,
   );
 }
 ```
