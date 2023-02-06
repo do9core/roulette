@@ -44,7 +44,7 @@ If you want to map some list data into a uniformed `RouletteGroup`, try the buil
 final values = <int>[ /* Some value */ ];
 final group = RouletteGroup.uniform(
   values.length,
-  colorBuilder: Colors.blue,
+  colorBuilder: (index) => Colors.blue,
   textBuilder: (index) => (index + 1).toString(),
   textStyleBuilder: (index) {
     // Set the text style here!
