@@ -120,25 +120,26 @@ class _RoulettePainter extends CustomPainter {
       canvas.save();
       canvas.rotate(drewSweep + pi / 2 + sweep / 2);
 
-      // Draw the unit's icon when exists
       final IconData? icon = unit.icon;
 
+      String? text = unit.text;
+
       if (icon != null) {
-        TextPainter textPainter = TextPainter(textDirection: TextDirection.rtl);
-        textPainter.text = TextSpan(
-            text: String.fromCharCode(icon.codePoint), style: TextStyle(fontSize: 40.0, fontFamily: icon.fontFamily));
-        textPainter.layout();
-        textPainter.paint(canvas, const Offset(50.0, 50.0));
+        text = String.fromCharCode(icon.codePoint);
       }
 
-      // Draw the unit's text when exists
-      final text = unit.text;
       if (text == null) {
         canvas.restore();
         continue;
       }
 
-      final textStyle = unit.textStyle ?? style.textStyle;
+      final textStyle = icon != null
+          ? TextStyle(
+              fontSize: 40.0,
+              fontFamily: icon.fontFamily,
+            )
+          : unit.textStyle ?? style.textStyle;
+
       final pb = ui.ParagraphBuilder(ui.ParagraphStyle(
         textAlign: TextAlign.center,
       ))
