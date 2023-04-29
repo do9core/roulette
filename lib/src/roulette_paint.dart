@@ -121,11 +121,9 @@ class _RoulettePainter extends CustomPainter {
       canvas.rotate(drewSweep + pi / 2 + sweep / 2);
 
       // Draw the unit's icon when exists
-      final Icon? iconWidget = unit.icon;
+      final IconData? icon = unit.icon;
 
-      if (iconWidget != null && iconWidget.icon != null) {
-        final IconData icon = iconWidget.icon!;
-
+      if (icon != null) {
         TextPainter textPainter = TextPainter(textDirection: TextDirection.rtl);
         textPainter.text = TextSpan(
             text: String.fromCharCode(icon.codePoint), style: TextStyle(fontSize: 40.0, fontFamily: icon.fontFamily));

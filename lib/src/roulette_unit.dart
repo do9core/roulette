@@ -41,9 +41,9 @@ class RouletteUnit {
   }) : this(color: color, weight: weight);
 
   /// Create a sector with an icon
-  const RouletteUnit.icon({
+  const RouletteUnit.icon(
+    IconData icon, {
     Color color = Colors.blue,
-    Icon icon = const Icon(Icons.abc),
     double weight = 1.0,
   }) : this(color: color, icon: icon, weight: weight);
 
@@ -54,7 +54,7 @@ class RouletteUnit {
   final TextStyle? textStyle;
 
   /// Icon of this sector
-  final Icon? icon;
+  final IconData? icon;
 
   /// Backgroud color of the sector
   final Color color;
