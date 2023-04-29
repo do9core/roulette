@@ -120,6 +120,20 @@ class _RoulettePainter extends CustomPainter {
       canvas.save();
       canvas.rotate(drewSweep + pi / 2 + sweep / 2);
 
+      // Draw the unit's icon when exists
+      final Icon? iconWidget = unit.icon;
+
+      if (iconWidget != null && iconWidget.icon != null) {
+        final IconData icon = iconWidget.icon!;
+
+        TextPainter textPainter = TextPainter(textDirection: TextDirection.rtl);
+        textPainter.text = TextSpan(
+            text: String.fromCharCode(icon.codePoint), style: TextStyle(fontSize: 40.0, fontFamily: icon.fontFamily));
+        textPainter.layout();
+        textPainter.paint(canvas, const Offset(50.0, 50.0));
+      }
+
+      // Draw the unit's text when exists
       final text = unit.text;
       if (text == null) {
         canvas.restore();
@@ -139,8 +153,7 @@ class _RoulettePainter extends CustomPainter {
       final p = pb.build();
       p.layout(ui.ParagraphConstraints(width: chord));
 
-      canvas.drawParagraph(
-          p, Offset(-chord / 2, -radius * style.textLayoutBias));
+      canvas.drawParagraph(p, Offset(-chord / 2, -radius * style.textLayoutBias));
       canvas.restore();
 
       drewSweep += sweep;
@@ -151,15 +164,12 @@ class _RoulettePainter extends CustomPainter {
     _paint.color = style.centerStickerColor;
     _paint.strokeWidth = 0;
     _paint.style = ui.PaintingStyle.fill;
-    canvas.drawCircle(
-        Offset.zero, radius * style.centerStickSizePercent, _paint);
+    canvas.drawCircle(Offset.zero, radius * style.centerStickSizePercent, _paint);
   }
 
   @override
   bool shouldRepaint(covariant _RoulettePainter oldDelegate) =>
-      oldDelegate.rotate != rotate ||
-      oldDelegate.group != group ||
-      oldDelegate.style != style;
+      oldDelegate.rotate != rotate || oldDelegate.group != group || oldDelegate.style != style;
 }
 
 extension _Cast on TextStyle {

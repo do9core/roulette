@@ -31,6 +31,7 @@ class RouletteGroup {
     int itemCount, {
     IndexBuilder<String?>? textBuilder,
     IndexBuilder<Color>? colorBuilder,
+    IndexBuilder<Icon>? iconBuilder,
     IndexBuilder<TextStyle?>? textStyleBuilder,
   }) {
     final units = List.generate(
@@ -39,6 +40,7 @@ class RouletteGroup {
         text: textBuilder?.call(index),
         textStyle: textStyleBuilder?.call(index),
         color: colorBuilder?.call(index) ?? Colors.blue,
+        icon: iconBuilder?.call(index) ?? const Icon(Icons.abc),
         weight: 1,
       ),
     );
