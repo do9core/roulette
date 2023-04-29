@@ -31,7 +31,6 @@ class RouletteGroup {
     int itemCount, {
     IndexBuilder<String?>? textBuilder,
     IndexBuilder<Color>? colorBuilder,
-    IndexBuilder<IconData>? iconBuilder,
     IndexBuilder<TextStyle?>? textStyleBuilder,
   }) {
     final units = List.generate(
@@ -40,7 +39,26 @@ class RouletteGroup {
         text: textBuilder?.call(index),
         textStyle: textStyleBuilder?.call(index),
         color: colorBuilder?.call(index) ?? Colors.blue,
+        weight: 1,
+      ),
+    );
+    return RouletteGroup(units);
+  }
+
+  /// Helper function to create a even [RouletteGroup].
+  /// [itemCount] is the number of items in the group.
+  /// [iconBuilder] is a function that return the icon of the unit.
+  /// [colorBuilder] is a function that return the color of the unit.
+  factory RouletteGroup.uniformIcons(
+    int itemCount, {
+    IndexBuilder<IconData>? iconBuilder,
+    IndexBuilder<Color>? colorBuilder,
+  }) {
+    final units = List.generate(
+      itemCount,
+      (index) => RouletteUnit(
         icon: iconBuilder?.call(index) ?? Icons.abc,
+        color: colorBuilder?.call(index) ?? Colors.blue,
         weight: 1,
       ),
     );
