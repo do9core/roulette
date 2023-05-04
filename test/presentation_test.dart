@@ -57,6 +57,20 @@ void main() {
         },
       );
 
+      testWidgets('ensure roulette with icons displayed', (tester) async {
+        final group = RouletteGroup.uniformIcons(
+          5,
+          iconBuilder: (index) => Icons.message,
+          colorBuilder: (index) => Colors.teal,
+          // TODO: iconColorBuilder: (index) => Colors.black,
+        );
+        await tester.pumpWidget(RouletteWidgetTest(group: group));
+        await expectLater(
+          find.byType(Roulette),
+          matchesGoldenFile('golden_test/test.uniform.icons.display.png'),
+        );
+      });
+
       testWidgets(
         'ensure roulette settle at expected position',
         (WidgetTester tester) async {
