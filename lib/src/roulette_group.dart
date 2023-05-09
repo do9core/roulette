@@ -53,12 +53,14 @@ class RouletteGroup {
     int itemCount, {
     IndexBuilder<IconData>? iconBuilder,
     IndexBuilder<Color>? colorBuilder,
+    IndexBuilder<TextStyle>? styleBuilder,
   }) {
     final units = List.generate(
       itemCount,
       (index) => RouletteUnit(
         icon: iconBuilder?.call(index) ?? Icons.abc,
         color: colorBuilder?.call(index) ?? Colors.blue,
+        textStyle: styleBuilder?.call(index),
         weight: 1,
       ),
     );

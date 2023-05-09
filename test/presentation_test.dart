@@ -62,7 +62,7 @@ void main() {
           5,
           iconBuilder: (index) => Icons.message,
           colorBuilder: (index) => Colors.teal,
-          // TODO: iconColorBuilder: (index) => Colors.black,
+          styleBuilder: (index) => const TextStyle(color: Colors.black),
         );
         await tester.pumpWidget(RouletteWidgetTest(group: group));
         await expectLater(

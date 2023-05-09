@@ -105,7 +105,7 @@ void main() {
   group('other unit tests', () {
     test('conflict when set text and icon simultaneously', () {
       expect(
-        () => const RouletteUnit(
+        () => RouletteUnit(
           text: 'TEST',
           icon: Icons.message,
           weight: 1,
