@@ -102,6 +102,20 @@ void main() {
     );
   });
 
+  group('other unit tests', () {
+    test('conflict when set text and icon simultaneously', () {
+      expect(
+        () => RouletteUnit(
+          text: 'TEST',
+          icon: Icons.message,
+          weight: 1,
+          color: Colors.red,
+        ),
+        throwsAssertionError,
+      );
+    });
+  });
+
   group('widget display tests', () {
     testWidgets(
       'ensure roulette displayed',

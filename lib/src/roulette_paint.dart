@@ -80,7 +80,7 @@ class _RoulettePainter extends CustomPainter {
     _drawCenterSticker(canvas, radius);
   }
 
-  _drawBackground(Canvas canvas, double radius, Rect rect) {
+  void _drawBackground(Canvas canvas, double radius, Rect rect) {
     _paint.strokeWidth = 0;
     _paint.style = ui.PaintingStyle.fill;
 
@@ -110,7 +110,7 @@ class _RoulettePainter extends CustomPainter {
     }
   }
 
-  _drawSections(Canvas canvas, double radius) {
+  void _drawSections(Canvas canvas, double radius) {
     double drewSweep = 0.0; // Drew sweep angle
     for (var i = 0; i < group.divide; i++) {
       // Draw each section with unit
@@ -120,13 +120,26 @@ class _RoulettePainter extends CustomPainter {
       canvas.save();
       canvas.rotate(drewSweep + pi / 2 + sweep / 2);
 
-      final text = unit.text;
+      final IconData? icon = unit.icon;
+
+      String? text = unit.text;
+
+      if (icon != null) {
+        text = String.fromCharCode(icon.codePoint);
+      }
+
       if (text == null) {
         canvas.restore();
         continue;
       }
 
-      final textStyle = unit.textStyle ?? style.textStyle;
+      final textStyle = icon != null
+          ? TextStyle(
+              fontSize: 40.0,
+              fontFamily: icon.fontFamily,
+            )
+          : unit.textStyle ?? style.textStyle;
+
       final pb = ui.ParagraphBuilder(ui.ParagraphStyle(
         textAlign: TextAlign.center,
       ))
@@ -140,26 +153,32 @@ class _RoulettePainter extends CustomPainter {
       p.layout(ui.ParagraphConstraints(width: chord));
 
       canvas.drawParagraph(
-          p, Offset(-chord / 2, -radius * style.textLayoutBias));
+        p,
+        Offset(-chord / 2, -radius * style.textLayoutBias),
+      );
       canvas.restore();
 
       drewSweep += sweep;
     }
   }
 
-  _drawCenterSticker(Canvas canvas, double radius) {
+  void _drawCenterSticker(Canvas canvas, double radius) {
     _paint.color = style.centerStickerColor;
     _paint.strokeWidth = 0;
     _paint.style = ui.PaintingStyle.fill;
     canvas.drawCircle(
-        Offset.zero, radius * style.centerStickSizePercent, _paint);
+      Offset.zero,
+      radius * style.centerStickSizePercent,
+      _paint,
+    );
   }
 
   @override
-  bool shouldRepaint(covariant _RoulettePainter oldDelegate) =>
-      oldDelegate.rotate != rotate ||
-      oldDelegate.group != group ||
-      oldDelegate.style != style;
+  bool shouldRepaint(covariant _RoulettePainter oldDelegate) {
+    return oldDelegate.rotate != rotate ||
+        oldDelegate.group != group ||
+        oldDelegate.style != style;
+  }
 }
 
 extension _Cast on TextStyle {

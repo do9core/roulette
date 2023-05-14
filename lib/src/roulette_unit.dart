@@ -21,9 +21,13 @@ class RouletteUnit {
   const RouletteUnit({
     this.text,
     this.textStyle,
+    this.icon,
     required this.color,
     required this.weight,
-  });
+  }) : assert(
+          text == null || icon == null,
+          'RouletteUnit cannot have both text and icon',
+        );
 
   /// Create a sector with text
   const RouletteUnit.text(
@@ -39,11 +43,21 @@ class RouletteUnit {
     double weight = 1.0,
   }) : this(color: color, weight: weight);
 
+  /// Create a sector with an icon
+  const RouletteUnit.icon(
+    IconData icon, {
+    Color color = Colors.blue,
+    double weight = 1.0,
+  }) : this(color: color, icon: icon, weight: weight);
+
   /// Text content of this sector
   final String? text;
 
   /// Text style of this sector
   final TextStyle? textStyle;
+
+  /// Icon of this sector
+  final IconData? icon;
 
   /// Backgroud color of the sector
   final Color color;
