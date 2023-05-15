@@ -48,7 +48,8 @@ class RouletteUnit {
     IconData icon, {
     Color color = Colors.blue,
     double weight = 1.0,
-  }) : this(color: color, icon: icon, weight: weight);
+    TextStyle style = RouletteStyle.defaultIconStyle,
+  }) : this(color: color, icon: icon, weight: weight, textStyle: style);
 
   /// Text content of this sector
   final String? text;
