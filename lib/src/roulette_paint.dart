@@ -133,12 +133,10 @@ class _RoulettePainter extends CustomPainter {
         continue;
       }
 
+      final unitTextStyle = unit.textStyle ?? style.textStyle;
       final textStyle = icon != null
-          ? TextStyle(
-              fontSize: 40.0,
-              fontFamily: icon.fontFamily,
-            )
-          : unit.textStyle ?? style.textStyle;
+          ? unitTextStyle.copyWith(fontFamily: icon.fontFamily)
+          : unitTextStyle;
 
       final pb = ui.ParagraphBuilder(ui.ParagraphStyle(
         textAlign: TextAlign.center,

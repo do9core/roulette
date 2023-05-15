@@ -13,8 +13,8 @@
 /// limitations under the License.
 
 import 'package:flutter/material.dart';
+import 'package:roulette/roulette.dart';
 
-import 'roulette_unit.dart';
 import 'helpers.dart' show DoubleSum, IndexBuilder;
 
 /// Describe a total roulette
@@ -60,7 +60,8 @@ class RouletteGroup {
       (index) => RouletteUnit(
         icon: iconBuilder?.call(index) ?? Icons.abc,
         color: colorBuilder?.call(index) ?? Colors.blue,
-        textStyle: styleBuilder?.call(index),
+        textStyle:
+            RouletteStyle.defaultIconStyle.merge(styleBuilder?.call(index)),
         weight: 1,
       ),
     );

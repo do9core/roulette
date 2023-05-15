@@ -23,6 +23,12 @@ class RouletteStyle {
     fontFamily: "Sans",
   );
 
+  /// Default section icon style
+  static const defaultIconStyle = TextStyle(
+    fontSize: 40,
+    color: Colors.white,
+  );
+
   const RouletteStyle({
     this.dividerThickness = 5,
     this.dividerColor = Colors.white,
