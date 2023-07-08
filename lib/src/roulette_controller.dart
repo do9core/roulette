@@ -12,6 +12,8 @@
 /// See the License for the specific language governing permissions and
 /// limitations under the License.
 
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 import 'roulette_group.dart';
@@ -89,10 +91,32 @@ class RouletteController with ChangeNotifier {
       offset: offset,
     );
     _controller.duration = duration;
-    _animation = makeAnimation(_controller, targetRotate, curve,
-        initialValue: animation.value);
+    _animation = makeAnimation(_controller, targetRotate, curve, initialValue: animation.value);
     notifyListeners();
     await _controller.forward(from: 0);
+  }
+
+  /// Start an animation to [targetIndex], [targetIndex] item must be in [group].
+  /// The [duration] is the animation duration.
+  /// The [clockwise] determin whether the animator should run in closewise didrection.
+  /// Config [minRotateCircles] to determine the minimum rotate before settle.
+  /// Provide a [curve] to update the animation curve.
+  /// Unlike [rollTo], the offset is already defined to rotate to the center of the target.
+  Future<void> rollToCenter(
+    int targetIndex, {
+    Duration duration = defaultDuration,
+    int minRotateCircles = defaultMinRotateCircles,
+    bool clockwise = true,
+    Curve? curve = Curves.fastOutSlowIn,
+  }) async {
+    rollTo(
+      targetIndex,
+      duration: duration,
+      minRotateCircles: minRotateCircles,
+      clockwise: clockwise,
+      curve: curve,
+      offset: 0.16 * pi,
+    );
   }
 
   @override
