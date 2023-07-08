@@ -24,7 +24,10 @@ class RouletteUnit {
     this.icon,
     required this.color,
     required this.weight,
-  });
+  }) : assert(
+          text == null || icon == null,
+          'RouletteUnit cannot have both text and icon',
+        );
 
   /// Create a sector with text
   const RouletteUnit.text(
