@@ -1,3 +1,12 @@
+## 0.1.4 - 2023/5/15
+
+### New feature
+  * `IconData` support in `Roulette` by [@antoninhrlt](https://github.com/antoninhrlt)
+
+### SDK upgrade:
+  * Update Flutter version to latest stable (3.10.0), and enable the dart3 support.
+  * ⚠ If this update break your build because of the SDK upgrade, please feel free to [raise a issue](https://github.com/do9core/roulette/issues).
+
 ## 0.1.3+1 - 2022/11/2
   * Document image reference fix
   * Usage `colorBuilder` syntax fix

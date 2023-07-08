@@ -19,6 +19,10 @@ This is a library provide a simple roulette widget which usually used for lotter
 
     <img alt="Weight based with text" src="https://raw.githubusercontent.com/do9core/roulette/main/README.assets/weight_based_with_text.png" width="400">
 
+  * IconData roulette (available in 0.1.4):
+
+    <img alt="Icon roulette" src="https://raw.githubusercontent.com/do9core/roulette/main/README.assets/uniform_icons.png" width="400">
+
 ## Getting started
 
 ## Usage

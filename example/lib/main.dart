@@ -83,12 +83,23 @@ class _HomePageState extends State<HomePage>
     Colors.indigo.withAlpha(70),
   ];
 
+  final icons = <IconData>[
+    Icons.ac_unit,
+    Icons.access_alarm,
+    Icons.access_time,
+    Icons.accessibility,
+    Icons.account_balance,
+    Icons.account_balance_wallet,
+  ];
+
   @override
   void initState() {
     // Initialize the controller
-    final group = RouletteGroup.uniform(
+    final group = RouletteGroup.uniformIcons(
       colors.length,
+      iconBuilder: icons.elementAt,
       colorBuilder: colors.elementAt,
+      styleBuilder: (index) => const TextStyle(color: Colors.black),
     );
     _controller = RouletteController(vsync: this, group: group);
     super.initState();
