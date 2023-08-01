@@ -13,6 +13,7 @@
 /// limitations under the License.
 
 import 'package:flutter/material.dart';
+import 'dart:ui' as ui;
 
 import 'roulette_style.dart';
 
@@ -22,6 +23,7 @@ class RouletteUnit {
     this.text,
     this.textStyle,
     this.icon,
+    this.image,
     required this.color,
     required this.weight,
   }) : assert(
@@ -51,6 +53,14 @@ class RouletteUnit {
     TextStyle style = RouletteStyle.defaultIconStyle,
   }) : this(color: color, icon: icon, weight: weight, textStyle: style);
 
+  /// Create a sector with an image
+  const RouletteUnit.image(
+    ui.Image image, {
+    Color color = Colors.blue,
+    double weight = 1.0,
+    TextStyle style = RouletteStyle.defaultIconStyle,
+  }) : this(color: color, image: image, weight: weight, textStyle: style);
+
   /// Text content of this sector
   final String? text;
 
@@ -59,6 +69,9 @@ class RouletteUnit {
 
   /// Icon of this sector
   final IconData? icon;
+
+  /// Image of this sector
+  final ui.Image? image;
 
   /// Backgroud color of the sector
   final Color color;

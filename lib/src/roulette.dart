@@ -42,7 +42,7 @@ class Roulette extends StatelessWidget {
           key: key,
           animation: controller.animation,
           style: style,
-          group: controller.group,
+          group: controller.group!,
         );
       },
     );

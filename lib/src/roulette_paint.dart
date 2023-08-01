@@ -13,6 +13,7 @@
 /// limitations under the License.
 
 import 'package:flutter/material.dart';
+import 'package:roulette/utils/transform_entry.dart';
 
 import 'dart:math';
 import 'dart:ui' as ui;
@@ -98,6 +99,55 @@ class _RoulettePainter extends CustomPainter {
       _paint.style = ui.PaintingStyle.fill;
       canvas.drawArc(rect, 0.0 * i, sweep, true, _paint);
 
+      if (unit.image != null) {
+        // Image to draw in the section.
+        final image = unit.image!;
+
+        // Draws the section background image
+
+        // Path for this section.
+        Path path = Path();
+        path.addArc(rect, 0.0 * i, sweep);
+        path.lineTo(0, 0);
+
+        // Rectangle in which the section is.
+        var rect2 = path.getBounds();
+
+        // Transforms into a square (biggest)
+        if (rect2.height > rect2.width) {
+          rect2 = Rect.fromLTWH(rect2.left, rect2.top, rect2.height, rect2.height);
+        } else {
+          rect2 = Rect.fromLTWH(rect2.left, rect2.top, rect2.width, rect2.width);
+        }
+
+        // Calculates size of image in the square.
+        double scaleX = (rect2.width / image.width);
+        double scaleY = (rect2.height / image.height);
+
+        // Transformation matrix to scale and rotate image in the section.
+        Matrix4 matrix = composeMatrixFromOffsets(
+          translate: Offset(0, rect2.top + rect2.height * 4),
+          scale: (max(scaleX, scaleY)),
+          rotation: 30 / 180 * pi,
+          anchor: Offset.zero,
+        );
+
+        // Draws the section with the image.
+        canvas.drawPath(
+          path,
+          Paint()
+            ..shader = ImageShader(
+              image,
+              TileMode.repeated,
+              TileMode.repeated,
+              matrix.storage,
+              filterQuality: FilterQuality.medium,
+            )
+            ..style = PaintingStyle.fill
+            ..strokeWidth = 0,
+        );
+      }
+
       // Draw the section border
       _paint.color = style.dividerColor;
       _paint.strokeWidth = style.dividerThickness;
@@ -134,9 +184,7 @@ class _RoulettePainter extends CustomPainter {
       }
 
       final unitTextStyle = unit.textStyle ?? style.textStyle;
-      final textStyle = icon != null
-          ? unitTextStyle.copyWith(fontFamily: icon.fontFamily)
-          : unitTextStyle;
+      final textStyle = icon != null ? unitTextStyle.copyWith(fontFamily: icon.fontFamily) : unitTextStyle;
 
       final pb = ui.ParagraphBuilder(ui.ParagraphStyle(
         textAlign: TextAlign.center,
@@ -173,9 +221,7 @@ class _RoulettePainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant _RoulettePainter oldDelegate) {
-    return oldDelegate.rotate != rotate ||
-        oldDelegate.group != group ||
-        oldDelegate.style != style;
+    return oldDelegate.rotate != rotate || oldDelegate.group != group || oldDelegate.style != style;
   }
 }
 
