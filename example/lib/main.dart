@@ -1,8 +1,10 @@
 import 'dart:math';
+import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 
 import 'package:roulette/roulette.dart';
+import 'package:roulette/utils/image.dart';
 import 'arrow.dart';
 
 void main() {
@@ -67,8 +69,7 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage>
-    with SingleTickerProviderStateMixin {
+class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
   static final _random = Random();
 
   late RouletteController _controller;
@@ -94,19 +95,28 @@ class _HomePageState extends State<HomePage>
 
   @override
   void initState() {
-    // Initialize the controller
-    final group = RouletteGroup.uniformIcons(
-      colors.length,
-      iconBuilder: icons.elementAt,
-      colorBuilder: colors.elementAt,
-      styleBuilder: (index) => const TextStyle(color: Colors.black),
-    );
-    _controller = RouletteController(vsync: this, group: group);
     super.initState();
+
+    assert(colors.length == icons.length);
+
+    _controller = RouletteController(vsync: this);
+  }
+
+  Future<List<ui.Image>> getImages() async {
+    return Future.wait([
+      Image.network("https://picsum.photos/400?${DateTime.now().millisecondsSinceEpoch.toString()}").toDartImage(),
+      Image.network("https://picsum.photos/400?${DateTime.now().millisecondsSinceEpoch.toString()}").toDartImage(),
+      Image.network("https://picsum.photos/400?${DateTime.now().millisecondsSinceEpoch.toString()}").toDartImage(),
+      Image.network("https://picsum.photos/400?${DateTime.now().millisecondsSinceEpoch.toString()}").toDartImage(),
+      Image.network("https://picsum.photos/400?${DateTime.now().millisecondsSinceEpoch.toString()}").toDartImage(),
+      Image.network("https://picsum.photos/400?${DateTime.now().millisecondsSinceEpoch.toString()}").toDartImage(),
+    ]);
   }
 
   @override
   Widget build(BuildContext context) {
+    // Initialize the controller
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Roulette'),
@@ -136,7 +146,23 @@ class _HomePageState extends State<HomePage>
                   ),
                 ],
               ),
-              MyRoulette(controller: _controller),
+              FutureBuilder<List<ui.Image>>(
+                future: getImages(),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return const CircularProgressIndicator.adaptive();
+                  }
+
+                  final group = RouletteGroup.uniformImages(
+                    colors.length,
+                    colorBuilder: colors.elementAt,
+                    imageBuilder: (index) => snapshot.data![index],
+                    styleBuilder: (index) => const TextStyle(color: Colors.black),
+                  );
+                  _controller.group = group;
+                  return MyRoulette(controller: _controller);
+                },
+              ),
             ],
           ),
         ),
