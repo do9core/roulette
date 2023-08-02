@@ -126,7 +126,8 @@ class _RoulettePainter extends CustomPainter {
 
         // Transformation matrix to scale and rotate image in the section.
         Matrix4 matrix = composeMatrixFromOffsets(
-          translate: Offset(0, rect2.top + rect2.height * 4 + style.dividerThickness),
+          translate:
+              Offset(style.dividerThickness / 2 - 1, rect2.top + rect2.height * 4 + style.dividerThickness / 2 + 1),
           scale: (max(scaleX, scaleY)),
           rotation: sweep / 2,
           anchor: Offset.zero,
