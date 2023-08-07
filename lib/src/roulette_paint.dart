@@ -128,7 +128,7 @@ class _RoulettePainter extends CustomPainter {
         Matrix4 matrix = composeMatrixFromOffsets(
           translate:
               Offset(style.dividerThickness / 2 - 1, rect2.top + rect2.height * 4 + style.dividerThickness / 2 + 1),
-          scale: (max(scaleX, scaleY)),
+          scale: (max(scaleX, scaleY)) - 0.002,
           rotation: sweep / 2 + pi / 2,
           anchor: Offset.zero,
         );
