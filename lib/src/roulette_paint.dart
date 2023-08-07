@@ -129,7 +129,7 @@ class _RoulettePainter extends CustomPainter {
           translate:
               Offset(style.dividerThickness / 2 - 1, rect2.top + rect2.height * 4 + style.dividerThickness / 2 + 1),
           scale: (max(scaleX, scaleY)),
-          rotation: sweep / 2,
+          rotation: sweep / 2 + pi / 2,
           anchor: Offset.zero,
         );
 
