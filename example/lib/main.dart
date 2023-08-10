@@ -49,8 +49,8 @@ class MyRoulette extends StatelessWidget {
               controller: controller,
               // Configure roulette's appearance
               style: const RouletteStyle(
-                dividerThickness: 4,
-                textLayoutBias: .8,
+                dividerThickness: 0.0,
+                dividerColor: Colors.black,
                 centerStickerColor: Color(0xFF45A3FA),
               ),
             ),
@@ -104,19 +104,17 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
 
   Future<List<ui.Image>> getImages() async {
     return Future.wait([
-      Image.network("https://picsum.photos/400?${DateTime.now().millisecondsSinceEpoch.toString()}").toDartImage(),
-      Image.network("https://picsum.photos/400?${DateTime.now().millisecondsSinceEpoch.toString()}").toDartImage(),
-      Image.network("https://picsum.photos/400?${DateTime.now().millisecondsSinceEpoch.toString()}").toDartImage(),
-      Image.network("https://picsum.photos/400?${DateTime.now().millisecondsSinceEpoch.toString()}").toDartImage(),
-      Image.network("https://picsum.photos/400?${DateTime.now().millisecondsSinceEpoch.toString()}").toDartImage(),
-      Image.network("https://picsum.photos/400?${DateTime.now().millisecondsSinceEpoch.toString()}").toDartImage(),
+      Image.network("https://picsum.photos/400?${DateTime.now().microsecondsSinceEpoch.toString()}").toDartImage(),
+      Image.network("https://picsum.photos/400?${DateTime.now().microsecondsSinceEpoch.toString()}").toDartImage(),
+      Image.network("https://picsum.photos/400?${DateTime.now().microsecondsSinceEpoch.toString()}").toDartImage(),
+      Image.network("https://picsum.photos/400?${DateTime.now().microsecondsSinceEpoch.toString()}").toDartImage(),
+      Image.network("https://picsum.photos/400?${DateTime.now().microsecondsSinceEpoch.toString()}").toDartImage(),
+      Image.network("https://picsum.photos/400?${DateTime.now().microsecondsSinceEpoch.toString()}").toDartImage(),
     ]);
   }
 
   @override
   Widget build(BuildContext context) {
-    // Initialize the controller
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Roulette'),
@@ -153,13 +151,12 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                     return const CircularProgressIndicator.adaptive();
                   }
 
-                  final group = RouletteGroup.uniformImages(
+                  _controller.group = RouletteGroup.uniformImages(
                     colors.length,
                     colorBuilder: colors.elementAt,
                     imageBuilder: (index) => snapshot.data![index],
-                    styleBuilder: (index) => const TextStyle(color: Colors.black),
                   );
-                  _controller.group = group;
+
                   return MyRoulette(controller: _controller);
                 },
               ),
