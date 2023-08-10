@@ -15,7 +15,6 @@
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:roulette/roulette.dart';
-import 'package:roulette/utils/image.dart';
 
 import '../utils/helpers.dart' show DoubleSum, IndexBuilder;
 

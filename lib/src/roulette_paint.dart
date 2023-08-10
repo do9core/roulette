@@ -13,13 +13,12 @@
 /// limitations under the License.
 
 import 'package:flutter/material.dart';
+import 'package:roulette/roulette.dart';
 import 'package:roulette/utils/transform_entry.dart';
+import 'package:roulette/utils/text.dart';
 
 import 'dart:math';
 import 'dart:ui' as ui;
-
-import 'roulette_style.dart';
-import 'roulette_group.dart';
 
 /// Animated roulette core by [AnimatedWidget]
 class RoulettePaint extends AnimatedWidget {
@@ -64,6 +63,11 @@ class _RoulettePainter extends CustomPainter {
   final Paint _paint = Paint();
 
   @override
+  bool shouldRepaint(covariant _RoulettePainter oldDelegate) {
+    return oldDelegate.rotate != rotate || oldDelegate.group != group || oldDelegate.style != style;
+  }
+
+  @override
   void paint(Canvas canvas, Size size) {
     final radius = size.width / 2;
     final rect = Rect.fromCircle(center: Offset.zero, radius: radius);
@@ -73,7 +77,9 @@ class _RoulettePainter extends CustomPainter {
     canvas.save();
     canvas.rotate(-pi / 2 + rotate);
 
+    // Draws the backgrounds of the sections.
     _drawBackground(canvas, radius, rect);
+    // Draws the content of the sections.
     _drawSections(canvas, radius);
 
     canvas.restore();
@@ -81,170 +87,162 @@ class _RoulettePainter extends CustomPainter {
     _drawCenterSticker(canvas, radius);
   }
 
+  /// Draws the background of the sections.
+  ///
+  /// If an image is set, also draws a background image.
   void _drawBackground(Canvas canvas, double radius, Rect rect) {
     _paint.strokeWidth = 0;
     _paint.style = ui.PaintingStyle.fill;
 
     double drewSweep = 0;
+
     for (var i = 0; i < group.divide; i++) {
-      final unit = group.units[i];
-      final sweep = 2 * pi * unit.weight / group.totalWeights;
+      final RouletteUnit unit = group.units[i];
+      final double sweep = 2 * pi * unit.weight / group.totalWeights;
 
       canvas.save();
       canvas.rotate(drewSweep);
 
-      // Draw the section background
+      // Draws the section background color.
       _paint.color = unit.color;
       _paint.strokeWidth = 0;
       _paint.style = ui.PaintingStyle.fill;
       canvas.drawArc(rect, 0.0 * i, sweep, true, _paint);
 
       if (unit.image != null) {
-        // Image to draw in the section.
-        final image = unit.image!;
-
         // Draws the section background image
-
-        // Path for this section.
-        Path path = Path();
-        path.addArc(rect, 0.0 * i, sweep);
-        path.lineTo(0, 0);
-
-        // Rectangle in which the section is.
-        var rect2 = path.getBounds();
-
-        // Transforms into a square (biggest)
-        if (rect2.height > rect2.width) {
-          rect2 = Rect.fromLTWH(rect2.left, rect2.top, rect2.height, rect2.height);
-        } else {
-          rect2 = Rect.fromLTWH(rect2.left, rect2.top, rect2.width, rect2.width);
-        }
-
-        // Calculates size of image in the square.
-        double scaleX = (rect2.width / image.width);
-        double scaleY = (rect2.height / image.height);
-
-        // Transformation matrix to scale and rotate image in the section.
-        Matrix4 matrix = composeMatrixFromOffsets(
-          translate:
-              Offset(style.dividerThickness / 2 - 1, rect2.top + rect2.height * 4 + style.dividerThickness / 2 + 1),
-          scale: (max(scaleX, scaleY)) - 0.002,
-          rotation: sweep / 2 + pi / 2,
-          anchor: Offset.zero,
-        );
-
-        // Draws the section with the image.
-        canvas.drawPath(
-          path,
-          Paint()
-            ..shader = ImageShader(
-              image,
-              TileMode.repeated,
-              TileMode.repeated,
-              matrix.storage,
-              filterQuality: FilterQuality.medium,
-            )
-            ..style = PaintingStyle.fill
-            ..strokeWidth = 0,
-        );
+        _drawBackgroundImage(canvas, radius, rect, unit, sweep);
       }
 
-      // Draw the section border
+      // Draws the section border
       _paint.color = style.dividerColor;
       _paint.strokeWidth = style.dividerThickness;
       _paint.style = ui.PaintingStyle.stroke;
       canvas.drawArc(rect, 0.0 * i, sweep, true, _paint);
 
       canvas.restore();
-
       drewSweep += sweep;
     }
   }
 
+  /// Draws the image to the background of the current section.
+  void _drawBackgroundImage(Canvas canvas, double radius, Rect rect, RouletteUnit unit, double sweep) {
+    // Image to draw in the section.
+    final image = unit.image!;
+
+    // Draws the section background image
+
+    // Path for this section.
+    Path path = Path();
+    path.addArc(rect, 0, sweep);
+    path.lineTo(0, 0);
+
+    // Rectangle in which the section is.
+    var rect2 = path.getBounds();
+
+    // Transforms into a square (biggest)
+    if (rect2.height > rect2.width) {
+      rect2 = Rect.fromLTWH(rect2.left, rect2.top, rect2.height, rect2.height);
+    } else {
+      rect2 = Rect.fromLTWH(rect2.left, rect2.top, rect2.width, rect2.width);
+    }
+
+    // Calculates size of image in the square.
+    double scaleX = (rect2.width / image.width);
+    double scaleY = (rect2.height / image.height);
+
+    // Transformation matrix to scale and rotate image in the section.
+    Matrix4 matrix = composeMatrixFromOffsets(
+      translate: Offset(style.dividerThickness / 2 - 1, rect2.top + rect2.height * 4 + style.dividerThickness / 2 + 1),
+      scale: (max(scaleX, scaleY)) - 0.002,
+      rotation: sweep / 2 + pi / 2,
+      anchor: Offset.zero,
+    );
+
+    // Draws the section with the image.
+    canvas.drawPath(
+      path,
+      Paint()
+        ..shader = ImageShader(
+          image,
+          TileMode.repeated,
+          TileMode.repeated,
+          matrix.storage,
+          filterQuality: FilterQuality.medium,
+        )
+        ..style = PaintingStyle.fill
+        ..strokeWidth = 0,
+    );
+  }
+
+  /// Draws every section of the roulette with its text or icon.
+  ///
+  /// The text or the icon is transformed into a drawable paragraphe.
   void _drawSections(Canvas canvas, double radius) {
     double drewSweep = 0.0; // Drew sweep angle
+
     for (var i = 0; i < group.divide; i++) {
-      // Draw each section with unit
+      // Draws each section with unit
       final unit = group.units[i];
       final sweep = 2 * pi * unit.weight / group.totalWeights;
 
       canvas.save();
       canvas.rotate(drewSweep + pi / 2 + sweep / 2);
 
+      // The section might have an icon instead of a text.
       final IconData? icon = unit.icon;
 
-      String? text = unit.text;
+      // If there is an icon, it is converted into a string text.
+      // Otherwise, the given text is rerieved.
+      final String? text = icon == null ? unit.text : String.fromCharCode(icon.codePoint);
 
-      if (icon != null) {
-        text = String.fromCharCode(icon.codePoint);
-      }
-
+      // No string text to draw.
       if (text == null) {
         canvas.restore();
         continue;
       }
 
       final unitTextStyle = unit.textStyle ?? style.textStyle;
-      final textStyle = icon != null ? unitTextStyle.copyWith(fontFamily: icon.fontFamily) : unitTextStyle;
 
+      // Gets the text style of the text or the icon.
+      final textStyle = icon == null ? unitTextStyle : unitTextStyle.copyWith(fontFamily: icon.fontFamily);
+
+      // Calculates chord of circle.
+      final chord = 2 * (radius * style.textLayoutBias) * sin(sweep / 2);
+
+      // Creates a builder for the paragraph that will be drawn on the canvas.
       final pb = ui.ParagraphBuilder(ui.ParagraphStyle(
         textAlign: TextAlign.center,
       ))
         ..pushStyle(textStyle.asUiTextStyle())
         ..addText(text);
 
-      // Calculate chord of circle
-      final chord = 2 * (radius * style.textLayoutBias) * sin(sweep / 2);
+      // Creates the paragraph.
+      final paragraph = pb.build();
+      paragraph.layout(ui.ParagraphConstraints(width: chord));
 
-      final p = pb.build();
-      p.layout(ui.ParagraphConstraints(width: chord));
-
+      // Draws the paragraph.
       canvas.drawParagraph(
-        p,
+        paragraph,
         Offset(-chord / 2, -radius * style.textLayoutBias),
       );
-      canvas.restore();
 
+      canvas.restore();
       drewSweep += sweep;
     }
   }
 
+  /// Draws a circle in the center of the roulette of the given size in the
+  /// roulette's style.
   void _drawCenterSticker(Canvas canvas, double radius) {
     _paint.color = style.centerStickerColor;
     _paint.strokeWidth = 0;
     _paint.style = ui.PaintingStyle.fill;
+
     canvas.drawCircle(
       Offset.zero,
       radius * style.centerStickSizePercent,
       _paint,
     );
   }
-
-  @override
-  bool shouldRepaint(covariant _RoulettePainter oldDelegate) {
-    return oldDelegate.rotate != rotate || oldDelegate.group != group || oldDelegate.style != style;
-  }
-}
-
-extension _Cast on TextStyle {
-  ui.TextStyle asUiTextStyle() => ui.TextStyle(
-        color: color,
-        decoration: decoration,
-        decorationColor: decorationColor,
-        fontWeight: fontWeight,
-        fontStyle: fontStyle,
-        textBaseline: textBaseline,
-        fontFamily: fontFamily,
-        fontFamilyFallback: fontFamilyFallback,
-        fontSize: fontSize,
-        letterSpacing: letterSpacing,
-        wordSpacing: wordSpacing,
-        height: height,
-        leadingDistribution: leadingDistribution,
-        locale: locale,
-        background: background,
-        foreground: foreground,
-        shadows: shadows,
-        fontFeatures: fontFeatures,
-      );
 }
