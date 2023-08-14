@@ -1,10 +1,8 @@
 import 'dart:math';
-import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 
 import 'package:roulette/roulette.dart';
-import 'package:roulette/utils/image.dart';
 import 'arrow.dart';
 
 void main() {
@@ -69,7 +67,8 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
+class _HomePageState extends State<HomePage>
+    with SingleTickerProviderStateMixin {
   static final _random = Random();
 
   late RouletteController _controller;
@@ -93,24 +92,35 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     Icons.account_balance_wallet,
   ];
 
+  final images = <ImageProvider>[
+    // Use [AssetImage] if you have 2.0x, 3.0x images,
+    // We only have 1 exact image here
+    const ExactAssetImage("asset/tree.jpg"),
+    const NetworkImage("https://picsum.photos/seed/example/400"),
+    const ExactAssetImage("asset/tree.jpg"),
+    const NetworkImage("https://picsum.photos/seed/example/400"),
+    const ExactAssetImage("asset/tree.jpg"),
+    const NetworkImage("https://picsum.photos/seed/example/400"),
+    // MemoryImage(...)
+    // FileImage(...)
+    // ResizeImage(...)
+  ];
+
   @override
   void initState() {
     super.initState();
 
     assert(colors.length == icons.length);
+    assert(colors.length == images.length);
 
-    _controller = RouletteController(vsync: this);
-  }
-
-  Future<List<ui.Image>> getImages() async {
-    return Future.wait([
-      Image.network("https://picsum.photos/400?${DateTime.now().microsecondsSinceEpoch.toString()}").toDartImage(),
-      Image.network("https://picsum.photos/400?${DateTime.now().microsecondsSinceEpoch.toString()}").toDartImage(),
-      Image.network("https://picsum.photos/400?${DateTime.now().microsecondsSinceEpoch.toString()}").toDartImage(),
-      Image.network("https://picsum.photos/400?${DateTime.now().microsecondsSinceEpoch.toString()}").toDartImage(),
-      Image.network("https://picsum.photos/400?${DateTime.now().microsecondsSinceEpoch.toString()}").toDartImage(),
-      Image.network("https://picsum.photos/400?${DateTime.now().microsecondsSinceEpoch.toString()}").toDartImage(),
-    ]);
+    _controller = RouletteController(
+      vsync: this,
+      group: RouletteGroup.uniformImages(
+        colors.length,
+        colorBuilder: (index) => colors[index],
+        imageBuilder: (index) => images[index],
+      ),
+    );
   }
 
   @override
@@ -144,22 +154,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                   ),
                 ],
               ),
-              FutureBuilder<List<ui.Image>>(
-                future: getImages(),
-                builder: (context, snapshot) {
-                  if (!snapshot.hasData) {
-                    return const CircularProgressIndicator.adaptive();
-                  }
-
-                  _controller.group = RouletteGroup.uniformImages(
-                    colors.length,
-                    colorBuilder: colors.elementAt,
-                    imageBuilder: (index) => snapshot.data![index],
-                  );
-
-                  return MyRoulette(controller: _controller);
-                },
-              ),
+              MyRoulette(controller: _controller),
             ],
           ),
         ),

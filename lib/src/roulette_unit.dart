@@ -13,7 +13,6 @@
 /// limitations under the License.
 
 import 'package:flutter/material.dart';
-import 'dart:ui' as ui;
 
 import 'roulette_style.dart';
 
@@ -55,7 +54,7 @@ class RouletteUnit {
 
   /// Create a sector with an image
   const RouletteUnit.image(
-    ui.Image image, {
+    ImageProvider image, {
     Color color = Colors.blue,
     double weight = 1.0,
     TextStyle style = RouletteStyle.defaultIconStyle,
@@ -71,7 +70,7 @@ class RouletteUnit {
   final IconData? icon;
 
   /// Image of this sector
-  final ui.Image? image;
+  final ImageProvider? image;
 
   /// Backgroud color of the sector
   final Color color;

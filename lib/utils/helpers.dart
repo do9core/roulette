@@ -58,11 +58,15 @@ double calculateEndRotate(
     targetIndex >= 0 && targetIndex < group.divide,
     "targetIndex is out of group range.",
   );
-  final passUnits = clockwise ? units.reversed.take(group.divide - targetIndex - 1) : units.take(targetIndex);
+  final passUnits = clockwise
+      ? units.reversed.take(group.divide - targetIndex - 1)
+      : units.take(targetIndex);
   final preRotation = minRotateCircles * 2 * pi;
-  final totalRotateWeight = passUnits.sum((unit) => unit.weight); // Weights should rotate
+  final totalRotateWeight =
+      passUnits.sum((unit) => unit.weight); // Weights should rotate
   final targetRotate = 2 * pi * totalRotateWeight / group.totalWeights;
-  final targetCoverRotate = 2 * pi * units[targetIndex].weight / group.totalWeights;
+  final targetCoverRotate =
+      2 * pi * units[targetIndex].weight / group.totalWeights;
   var offsetValue = offset * targetCoverRotate; // Random rotate out
   final totalRotate = preRotation + targetRotate + offsetValue;
   return clockwise ? totalRotate : -totalRotate;
@@ -71,7 +75,8 @@ double calculateEndRotate(
 typedef DoubleSelector<T> = double Function(T source);
 
 extension DoubleSum<T> on Iterable<T> {
-  double sum(DoubleSelector selector) => fold(0.0, (previousValue, element) => previousValue + selector(element));
+  double sum(DoubleSelector selector) =>
+      fold(0.0, (previousValue, element) => previousValue + selector(element));
 }
 
 typedef IndexBuilder<T> = T Function(int index);

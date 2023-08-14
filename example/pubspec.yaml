@@ -10,7 +10,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-    
+
   roulette:
     path: ../
 
@@ -19,3 +19,6 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
+  assets:
+    - asset/tree.jpg

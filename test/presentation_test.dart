@@ -1,9 +1,12 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:roulette/roulette.dart';
 import 'package:roulette/src/roulette_paint.dart';
 
+import 'asset/image_data.dart';
 import 'test_component.dart';
 
 void main() {
@@ -68,6 +71,27 @@ void main() {
         await expectLater(
           find.byType(Roulette),
           matchesGoldenFile('golden_test/test.uniform.icons.display.png'),
+        );
+      });
+
+      testWidgets('ensure roulette with image displayed', (tester) async {
+        final image = MemoryImage(Uint8List.fromList(kBluePortraitPng));
+        final group = RouletteGroup.uniformImages(
+          5,
+          imageBuilder: (index) => image,
+          styleBuilder: (index) => const TextStyle(color: Colors.black),
+          colorBuilder: (index) => Colors.black,
+        );
+
+        await tester.pumpWidget(RouletteWidgetTest(group: group));
+        final Element element = tester.element(find.byType(Roulette));
+        await tester.runAsync(() async {
+          await precacheImage(image, element);
+        });
+        await tester.pumpAndSettle();
+        await expectLater(
+          find.byType(Roulette),
+          matchesGoldenFile('golden_test/test.uniform.images.display.png'),
         );
       });
 

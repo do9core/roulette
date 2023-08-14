@@ -89,7 +89,8 @@ class RouletteController with ChangeNotifier {
       offset: offset,
     );
     _controller.duration = duration;
-    _animation = makeAnimation(_controller, targetRotate, curve, initialValue: animation.value);
+    _animation = makeAnimation(_controller, targetRotate, curve,
+        initialValue: animation.value);
     notifyListeners();
     await _controller.forward(from: 0);
   }

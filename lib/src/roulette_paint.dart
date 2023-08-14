@@ -12,6 +12,7 @@
 /// See the License for the specific language governing permissions and
 /// limitations under the License.
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:roulette/roulette.dart';
 import 'package:roulette/utils/transform_entry.dart';
@@ -27,10 +28,12 @@ class RoulettePaint extends AnimatedWidget {
     required Animation<double> animation,
     required this.style,
     required this.group,
+    required this.imageInfos,
   }) : super(key: key, listenable: animation);
 
   final RouletteStyle style;
   final RouletteGroup group;
+  final Map<int, ImageInfo> imageInfos;
 
   Animation<double> get _rotation => listenable as Animation<double>;
 
@@ -43,6 +46,7 @@ class RoulettePaint extends AnimatedWidget {
           rotate: _rotation.value,
           style: style,
           group: group,
+          imageInfos: imageInfos,
         ),
       ),
     );
@@ -54,17 +58,22 @@ class _RoulettePainter extends CustomPainter {
     required this.style,
     required this.rotate,
     required this.group,
+    required this.imageInfos,
   });
 
   final double rotate;
   final RouletteStyle style;
   final RouletteGroup group;
+  final Map<int, ImageInfo> imageInfos;
 
   final Paint _paint = Paint();
 
   @override
   bool shouldRepaint(covariant _RoulettePainter oldDelegate) {
-    return oldDelegate.rotate != rotate || oldDelegate.group != group || oldDelegate.style != style;
+    return oldDelegate.rotate != rotate ||
+        oldDelegate.group != group ||
+        oldDelegate.style != style ||
+        !mapEquals(oldDelegate.imageInfos, imageInfos);
   }
 
   @override
@@ -109,9 +118,10 @@ class _RoulettePainter extends CustomPainter {
       _paint.style = ui.PaintingStyle.fill;
       canvas.drawArc(rect, 0.0 * i, sweep, true, _paint);
 
-      if (unit.image != null) {
+      final resolvedImage = imageInfos[i]?.image;
+      if (unit.image != null && resolvedImage != null) {
         // Draws the section background image
-        _drawBackgroundImage(canvas, radius, rect, unit, sweep);
+        _drawBackgroundImage(canvas, radius, rect, unit, sweep, resolvedImage);
       }
 
       // Draws the section border
@@ -126,10 +136,8 @@ class _RoulettePainter extends CustomPainter {
   }
 
   /// Draws the image to the background of the current section.
-  void _drawBackgroundImage(Canvas canvas, double radius, Rect rect, RouletteUnit unit, double sweep) {
-    // Image to draw in the section.
-    final image = unit.image!;
-
+  void _drawBackgroundImage(Canvas canvas, double radius, Rect rect,
+      RouletteUnit unit, double sweep, ui.Image image) {
     // Draws the section background image
 
     // Path for this section.
@@ -153,7 +161,8 @@ class _RoulettePainter extends CustomPainter {
 
     // Transformation matrix to scale and rotate image in the section.
     Matrix4 matrix = composeMatrixFromOffsets(
-      translate: Offset(style.dividerThickness / 2 - 1, rect2.top + rect2.height * 4 + style.dividerThickness / 2 + 1),
+      translate: Offset(style.dividerThickness / 2 - 1,
+          rect2.top + rect2.height * 4 + style.dividerThickness / 2 + 1),
       scale: (max(scaleX, scaleY)) - 0.002,
       rotation: sweep / 2 + pi / 2,
       anchor: Offset.zero,
@@ -194,7 +203,8 @@ class _RoulettePainter extends CustomPainter {
 
       // If there is an icon, it is converted into a string text.
       // Otherwise, the given text is rerieved.
-      final String? text = icon == null ? unit.text : String.fromCharCode(icon.codePoint);
+      final String? text =
+          icon == null ? unit.text : String.fromCharCode(icon.codePoint);
 
       // No string text to draw.
       if (text == null) {
@@ -205,7 +215,9 @@ class _RoulettePainter extends CustomPainter {
       final unitTextStyle = unit.textStyle ?? style.textStyle;
 
       // Gets the text style of the text or the icon.
-      final textStyle = icon == null ? unitTextStyle : unitTextStyle.copyWith(fontFamily: icon.fontFamily);
+      final textStyle = icon == null
+          ? unitTextStyle
+          : unitTextStyle.copyWith(fontFamily: icon.fontFamily);
 
       // Calculates chord of circle.
       final chord = 2 * (radius * style.textLayoutBias) * sin(sweep / 2);

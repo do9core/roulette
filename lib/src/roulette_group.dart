@@ -12,7 +12,6 @@
 /// See the License for the specific language governing permissions and
 /// limitations under the License.
 
-import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:roulette/roulette.dart';
 
@@ -61,7 +60,8 @@ class RouletteGroup {
       (index) => RouletteUnit(
         icon: iconBuilder?.call(index) ?? Icons.abc,
         color: colorBuilder?.call(index) ?? Colors.blue,
-        textStyle: RouletteStyle.defaultIconStyle.merge(styleBuilder?.call(index)),
+        textStyle:
+            RouletteStyle.defaultIconStyle.merge(styleBuilder?.call(index)),
         weight: 1,
       ),
     );
@@ -74,7 +74,7 @@ class RouletteGroup {
   /// [colorBuilder] is a function that return the color of the unit.
   factory RouletteGroup.uniformImages(
     int itemCount, {
-    required IndexBuilder<ui.Image> imageBuilder,
+    required IndexBuilder<ImageProvider> imageBuilder,
     IndexBuilder<Color>? colorBuilder,
     IndexBuilder<TextStyle>? styleBuilder,
   }) {
@@ -85,7 +85,8 @@ class RouletteGroup {
         RouletteUnit(
           image: imageBuilder.call(i),
           color: colorBuilder?.call(i) ?? Colors.blue,
-          textStyle: RouletteStyle.defaultIconStyle.merge(styleBuilder?.call(i)),
+          textStyle:
+              RouletteStyle.defaultIconStyle.merge(styleBuilder?.call(i)),
           weight: 1,
         ),
       );

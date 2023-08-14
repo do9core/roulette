@@ -23,7 +23,8 @@ void main() {
         expect(actual, pi * 2);
       });
 
-      test('ensure end rotate on target unit with no offset, not clockwise', () {
+      test('ensure end rotate on target unit with no offset, not clockwise',
+          () {
         final group = RouletteGroup.uniform(5);
         final actual = calculateEndRotate(group, 0, false, 0);
         expect(actual, 0.0);
@@ -37,8 +38,10 @@ void main() {
     });
 
     testWidgets('continuos rotation test', (WidgetTester tester) async {
-      await tester.pumpWidget(RouletteWidgetTest(group: RouletteGroup.uniform(5)));
-      final state = tester.state<RouletteWidgetTestState>(find.byType(RouletteWidgetTest));
+      await tester
+          .pumpWidget(RouletteWidgetTest(group: RouletteGroup.uniform(5)));
+      final state = tester
+          .state<RouletteWidgetTestState>(find.byType(RouletteWidgetTest));
       state.controller.rollTo(1, minRotateCircles: 0, offset: 1);
       await tester.pumpAndSettle();
       var animation = state.controller.animation;
@@ -55,7 +58,8 @@ void main() {
         await tester.pumpWidget(
           RouletteWidgetTest(group: RouletteGroup.uniform(5)),
         );
-        final state = tester.state<RouletteWidgetTestState>(find.byType(RouletteWidgetTest));
+        final state = tester
+            .state<RouletteWidgetTestState>(find.byType(RouletteWidgetTest));
         const minCircles = 1;
         state.controller.rollTo(1, minRotateCircles: minCircles, offset: 1);
         await tester.pumpAndSettle();
@@ -70,7 +74,8 @@ void main() {
         await tester.pumpWidget(
           RouletteWidgetTest(group: RouletteGroup.uniform(5)),
         );
-        final state = tester.state<RouletteWidgetTestState>(find.byType(RouletteWidgetTest));
+        final state = tester
+            .state<RouletteWidgetTestState>(find.byType(RouletteWidgetTest));
         state.controller.rollTo(1);
         await tester.pumpAndSettle();
         state.controller.group = RouletteGroup.uniform(6);
@@ -86,7 +91,8 @@ void main() {
         await tester.pumpWidget(
           RouletteWidgetTest(group: RouletteGroup.uniform(5)),
         );
-        final state = tester.state<RouletteWidgetTestState>(find.byType(RouletteWidgetTest));
+        final state = tester
+            .state<RouletteWidgetTestState>(find.byType(RouletteWidgetTest));
         const minCircles = 3;
         state.controller.rollTo(1, minRotateCircles: minCircles);
         await tester.pumpAndSettle();

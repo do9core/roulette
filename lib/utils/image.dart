@@ -9,7 +9,9 @@ extension ToDartImage on Image {
     var completer = Completer<ImageInfo>();
 
     try {
-      image.resolve(const ImageConfiguration()).addListener(ImageStreamListener((info, _) {
+      image
+          .resolve(const ImageConfiguration())
+          .addListener(ImageStreamListener((info, _) {
         completer.complete(info);
       }));
     } catch (e) {
