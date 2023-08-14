@@ -87,12 +87,10 @@ class _RouletteState extends State<Roulette> {
     final imageInfoLookup = _imageInfoNotifier.value;
     imageInfoLookup[i]?.dispose();
     if (mounted) {
-      setState(() {
-        _imageInfoNotifier.value = {
-          ...imageInfoLookup,
-          i: imageInfo,
-        };
-      });
+      _imageInfoNotifier.value = {
+        ...imageInfoLookup,
+        i: imageInfo,
+      };
     }
   }
 
