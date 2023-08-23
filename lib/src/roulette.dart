@@ -57,8 +57,8 @@ class _RouletteState extends State<Roulette> {
   }
 
   void _updateImageInfo() {
-    final units = widget.controller.group?.units;
-    if (units == null || units.isEmpty) {
+    final units = widget.controller.group.units;
+    if (units.isEmpty) {
       _imageInfoNotifier.value.forEach((_, value) => value.dispose());
       _imageInfoNotifier.value = {};
       return;
@@ -122,7 +122,7 @@ class _RouletteState extends State<Roulette> {
           key: widget.key,
           animation: widget.controller.animation,
           style: widget.style,
-          group: widget.controller.group!,
+          group: widget.controller.group,
           imageInfos: _imageInfoNotifier.value,
         );
       },

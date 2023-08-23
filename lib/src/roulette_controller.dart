@@ -29,7 +29,7 @@ class RouletteController with ChangeNotifier {
   /// [group] is the [RouletteGroup] to display.
   /// [vsync] is the [TickerProvider] to use for the animation.
   factory RouletteController({
-    RouletteGroup? group,
+    required RouletteGroup group,
     required TickerProvider vsync,
   }) {
     final controller = AnimationController(vsync: vsync);
@@ -37,7 +37,7 @@ class RouletteController with ChangeNotifier {
     return RouletteController._(group, animation, controller);
   }
 
-  RouletteGroup? _group;
+  RouletteGroup _group;
   Animation<double> _animation;
   final AnimationController _controller;
 
@@ -45,10 +45,10 @@ class RouletteController with ChangeNotifier {
   Animation<double> get animation => _animation;
 
   /// Retrieve current displaying [RouletteGroup]
-  RouletteGroup? get group => _group;
+  RouletteGroup get group => _group;
 
   /// Set the [RouletteGroup] to refresh widget
-  set group(RouletteGroup? value) {
+  set group(RouletteGroup value) {
     _animation = _controller.drive(ConstantTween<double>(0));
     _group = value;
     notifyListeners();
@@ -82,7 +82,7 @@ class RouletteController with ChangeNotifier {
     double offset = 0,
   }) async {
     final targetRotate = calculateEndRotate(
-      group!,
+      group,
       targetIndex,
       clockwise,
       minRotateCircles,
