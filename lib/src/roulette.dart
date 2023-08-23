@@ -13,6 +13,8 @@
 /// limitations under the License.
 
 import 'dart:developer';
+import 'dart:math' as math;
+import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 
@@ -75,7 +77,14 @@ class _RouletteState extends State<Roulette> {
               });
             },
             onError: (exception, stackTrace) {
-              log('image load error', error: exception, stackTrace: stackTrace);
+              assert(() {
+                log('image load error',
+                    error: exception, stackTrace: stackTrace);
+                WidgetsBinding.instance.endOfFrame.then((_) {
+                  _replaceImage(i, _createErrorImage(const Size(400, 400)));
+                });
+                return true;
+              }());
             },
           ),
         );
@@ -119,4 +128,43 @@ class _RouletteState extends State<Roulette> {
       },
     );
   }
+}
+
+ImageInfo _createErrorImage(Size size) {
+  final recorder = ui.PictureRecorder();
+  final canvas = Canvas(recorder);
+  final paint = Paint();
+
+  paint.color = Colors.red[900]!;
+  paint.style = PaintingStyle.fill;
+  canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), paint);
+
+  final textPainter = TextPainter(
+    textDirection: TextDirection.ltr,
+  );
+
+  textPainter.text = TextSpan(
+    text: '!ERROR!',
+    style: TextStyle(
+      fontWeight: FontWeight.w900,
+      fontSize: math.min(size.width, size.height) * 0.15,
+      color: Colors.white,
+    ),
+  );
+  textPainter.layout(maxWidth: size.width);
+  textPainter.paint(
+    canvas,
+    Offset(
+      (size.width - textPainter.width) / 2,
+      (size.height - textPainter.height) / 5,
+    ),
+  );
+
+  final picture = recorder.endRecording();
+  return ImageInfo(
+    image: picture.toImageSync(
+      size.width.toInt(),
+      size.height.toInt(),
+    ),
+  );
 }

@@ -96,11 +96,11 @@ class _HomePageState extends State<HomePage>
     // Use [AssetImage] if you have 2.0x, 3.0x images,
     // We only have 1 exact image here
     const ExactAssetImage("asset/tree.jpg"),
-    const NetworkImage("https://picsum.photos/seed/example/400"),
+    const NetworkImage("https://picsum.photos/seed/example1/400"),
     const ExactAssetImage("asset/tree.jpg"),
-    const NetworkImage("https://picsum.photos/seed/example/400"),
+    const NetworkImage("https://bad.link.to.image"),
     const ExactAssetImage("asset/tree.jpg"),
-    const NetworkImage("https://picsum.photos/seed/example/400"),
+    const NetworkImage("https://picsum.photos/seed/example5/400"),
     // MemoryImage(...)
     // FileImage(...)
     // ResizeImage(...)
