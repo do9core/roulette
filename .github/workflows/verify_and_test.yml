@@ -11,7 +11,7 @@ jobs:
     name: "Static analyze and Logic tests"
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       
       - name: Install Flutter
         uses: britannio/action-install-flutter@v1.1
@@ -31,12 +31,21 @@ jobs:
   presentation-test:
     name: "Presentation tests"
     # Should run on same os with golden files
-    runs-on: macos-11
+    runs-on: macos-13
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+      
+      - name: Read flutter version from fvm config
+        uses: Muchaszewski/read-json-action@1.0.0
+        id: fvm
+        with:
+          path: ".fvm/fvm_config.json"
+          properties: "flutterSdkVersion"
       
       - name: Install Flutter
         uses: britannio/action-install-flutter@v1.1
-          
+        with: 
+          version: ${{ steps.fvm.outputs.flutterSdkVersion }}
+
       - name: Run presentation tests
         run: flutter test test/presentation_test.dart
