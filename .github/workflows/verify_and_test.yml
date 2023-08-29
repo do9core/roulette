@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Install Flutter
         uses: britannio/action-install-flutter@v1.1
 
@@ -24,7 +24,7 @@ jobs:
 
       - name: Analyze project source
         run: dart analyze --fatal-infos
-        
+
       - name: Run logic tests
         run: flutter test test/logic_test.dart
 
@@ -34,17 +34,16 @@ jobs:
     runs-on: macos-13
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Read flutter version from fvm config
-        uses: Muchaszewski/read-json-action@1.0.0
         id: fvm
+        uses: zoexx/github-action-json-file-properties@release
         with:
-          path: ".fvm/fvm_config.json"
-          properties: "flutterSdkVersion"
-      
+          file_path: ".fvm/fvm_config.json"
+
       - name: Install Flutter
         uses: britannio/action-install-flutter@v1.1
-        with: 
+        with:
           version: ${{ steps.fvm.outputs.flutterSdkVersion }}
 
       - name: Run presentation tests
