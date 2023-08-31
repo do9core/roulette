@@ -49,7 +49,8 @@ class MyRoulette extends StatelessWidget {
               style: const RouletteStyle(
                 dividerThickness: 0.0,
                 dividerColor: Colors.black,
-                centerStickerColor: Color(0xFF45A3FA),
+                centerStickSizePercent: 0.05,
+                centerStickerColor: Colors.black,
               ),
             ),
           ),
@@ -95,11 +96,11 @@ class _HomePageState extends State<HomePage>
   final images = <ImageProvider>[
     // Use [AssetImage] if you have 2.0x, 3.0x images,
     // We only have 1 exact image here
-    const ExactAssetImage("asset/tree.jpg"),
+    const ExactAssetImage("asset/gradient.jpg"),
     const NetworkImage("https://picsum.photos/seed/example1/400"),
-    const ExactAssetImage("asset/tree.jpg"),
+    const ExactAssetImage("asset/gradient.jpg"),
     const NetworkImage("https://bad.link.to.image"),
-    const ExactAssetImage("asset/tree.jpg"),
+    const ExactAssetImage("asset/gradient.jpg"),
     const NetworkImage("https://picsum.photos/seed/example5/400"),
     // MemoryImage(...)
     // FileImage(...)
@@ -119,6 +120,13 @@ class _HomePageState extends State<HomePage>
         colors.length,
         colorBuilder: (index) => colors[index],
         imageBuilder: (index) => images[index],
+        textBuilder: (index) {
+          if (index == 0) return 'Hi';
+          return '';
+        },
+        styleBuilder: (index) {
+          return const TextStyle(color: Colors.black);
+        },
       ),
     );
   }

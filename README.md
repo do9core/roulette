@@ -2,116 +2,129 @@
 [![Verify & Test](https://github.com/do9core/roulette/actions/workflows/verify_and_test.yml/badge.svg)](https://github.com/do9core/roulette/actions/workflows/verify_and_test.yml)
 [![License](https://img.shields.io/github/license/do9core/roulette)](https://www.apache.org/licenses/LICENSE-2.0)
 
-This is a library provide a simple roulette widget which usually used for lottery.
+This is a Flutter library that provides a simple wheel widget for lottery usage.
 
 ## Features
 
-* Quickly build roulettes
-* Build roulettes with different parts depends on the weight
+* Quickly build customizable roulettes
+* Support roulettes with different sized parts based on specified weight
 * Easily control the roll animation and settle position
-* There are two types of roulette provided by this package (text is optional):
+* Support text, icons and images for roulette parts
 
-  * Uniformed roulette:
+There are various types of roulette provided by this package (text is optional):
 
-    <img alt="Uniformed with no text" src="https://raw.githubusercontent.com/do9core/roulette/main/README.assets/uniform_no_text.png" width="400">
+* Uniformed roulette:
 
-  * Weight-based roulette:
+  <img alt="Uniformed with no text" src="https://raw.githubusercontent.com/do9core/roulette/main/README.assets/uniform_no_text.png" width="300">
 
-    <img alt="Weight based with text" src="https://raw.githubusercontent.com/do9core/roulette/main/README.assets/weight_based_with_text.png" width="400">
+* Weight-based roulette:
 
-  * IconData roulette (available in 0.1.4):
+  <img alt="Weight based with text" src="https://raw.githubusercontent.com/do9core/roulette/main/README.assets/weight_based_with_text.png" width="300">
 
-    <img alt="Icon roulette" src="https://raw.githubusercontent.com/do9core/roulette/main/README.assets/uniform_icons.png" width="400">
+* IconData roulette (available in 0.1.4):
+
+  <img alt="Icon roulette" src="https://raw.githubusercontent.com/do9core/roulette/main/README.assets/uniform_icons.png" width="300">
+
+* Image roulette (available in 0.1.5):
+
+  <img alt="Icon roulette" src="https://raw.githubusercontent.com/do9core/roulette/main/README.assets/image_some_text.png" width="300">
 
 ## Getting started
 
+Add this to your `pubspec.yaml` file:
+
+```yaml
+dependencies:
+  roulette: ^0.1.5
+```
+
 ## Usage
 
-### Build a Roulette widget
+### Create a RouletteController
 
-First, you need to create a `RouletteController` instance.
+First, create a `RouletteController` instance:
 
 ```dart
-RouletteController(
-  group: RouletteGroup([
-    RouletteUnit.noText(color: Colors.red),
-    RouletteUnit.noText(color: Colors.green),
-    // ...other units
-  ]),
-  vsync: this // provide a TickerProvider here (usually by SingleTickerProviderStateMixin)
+// Create roulette units
+final units = [
+  RouletteUnit.noText(color: Colors.red),
+  RouletteUnit.noText(color: Colors.green),
+  // ...other units
+];
+
+// Initialize controller
+final controller = RouletteController(
+  group: RouletteGroup(units),
+  vsync: this, // TickerProvider, usually from SingleTickerProviderStateMixin
 );
 ```
 
-If you want to map some list data into a uniformed `RouletteGroup`, try the builder:
+For uniformed roulette from a list, use the builder:
 
 ```dart
-final values = <int>[ /* Some value */ ];
+// Source data
+final values = <int>[1, 2, 3, 4];
+
+// Build uniformed group
 final group = RouletteGroup.uniform(
   values.length,
   colorBuilder: (index) => Colors.blue,
-  textBuilder: (index) => (index + 1).toString(),
+  textBuilder: (index) => values[index].toString(),
   textStyleBuilder: (index) {
-    // Set the text style here!
+    // Customize text style, don't forget to return it
   },
 );
 
+// Create controller
 controller = RouletteController(group: group, vsync: this);
 ```
 
-Once you have a controller, you could add a `Roulette` widget into your widget tree:
+### Add Roulette Widget
+
+With the controller, add a `Roulette` widget:
 
 ```dart
 @override
 Widget build(BuildContext context) {
   return Roulette(
-    controller: controller, // provide your controller here
+    controller: controller,
     style: RouletteStyle(
-      // config the roulette's appearance here
+      // Customize appearance
     ),
   );
 }
 ```
 
-### Run the Roulette
+### Control the Animation
 
-Use roll method to run the roulette where you need to.
-
-```dart
-ElevatedButton(
-  onPressed: () => controller.rollTo(2), // provide the index you want to settle
-  child: const Text('Roll!'),
-);
-```
-
-You could await the `rollTo` method's finish and then make some other actions.
+Use `rollTo` method to spin the roulette:
 
 ```dart
 ElevatedButton(
   onPressed: () async {
+    // Spin to index 2
     await controller.rollTo(2);
-    // TODO: Do something when roulette stopped here.
+    // Do something after settled
   },
-  child: const Text('Roll!'),
+  child: Text('Roll!'),
 );
 ```
 
-The `rollTo` method provides many options for you to control the rolling behavior, such as randomize the stop position:
+`rollTo` allows options like randomizing stop position:
 
 ```dart
-
+// Generate random offset
 final random = Random();
+final offset = random.nextDouble();
 
-// ...
-
-ElevatedButton(
-  onPressed: () async {
-    await controller.rollTo(2, offset: random.nextDouble());
-    // TODO: Do something when roulette stopped here.
-  },
-  child: const Text('Roll!'),
-);
+// Spin with offset
+await controller.rollTo(2, offset: offset);
 ```
 
-For other options, please check the document for more information.
+Please refer to API documentation for more details.
 
-For detailed usage sample, please check the example.
+For more complete examples, please check the example app.
+
+## Legal Statement
+
+The creators of this library do not endorse or encourage any illegal gambling activities. Please use this library responsibly and comply with all applicable laws in your local jurisdiction. The authors assume no liability for any misuse of this software.
