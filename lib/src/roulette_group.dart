@@ -76,6 +76,7 @@ class RouletteGroup {
     int itemCount, {
     required IndexBuilder<ImageProvider> imageBuilder,
     IndexBuilder<Color>? colorBuilder,
+    IndexBuilder<String?>? textBuilder,
     IndexBuilder<TextStyle>? styleBuilder,
   }) {
     final units = <RouletteUnit>[];
@@ -83,6 +84,7 @@ class RouletteGroup {
     for (int i = 0; i < itemCount; i += 1) {
       units.add(
         RouletteUnit(
+          text: textBuilder?.call(i),
           image: imageBuilder.call(i),
           color: colorBuilder?.call(i) ?? Colors.blue,
           textStyle:
