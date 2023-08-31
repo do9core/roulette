@@ -15,7 +15,7 @@
 import 'package:flutter/material.dart';
 import 'package:roulette/roulette.dart';
 
-import 'helpers.dart' show DoubleSum, IndexBuilder;
+import '../utils/helpers.dart' show DoubleSum, IndexBuilder;
 
 /// Describe a total roulette
 class RouletteGroup {
@@ -65,6 +65,33 @@ class RouletteGroup {
         weight: 1,
       ),
     );
+    return RouletteGroup(units);
+  }
+
+  /// Helper function to create a even [RouletteGroup].
+  /// [itemCount] is the number of items in the group.
+  /// [imageBuilder] is a function that return the image of the unit.
+  /// [colorBuilder] is a function that return the color of the unit.
+  factory RouletteGroup.uniformImages(
+    int itemCount, {
+    required IndexBuilder<ImageProvider> imageBuilder,
+    IndexBuilder<Color>? colorBuilder,
+    IndexBuilder<TextStyle>? styleBuilder,
+  }) {
+    final units = <RouletteUnit>[];
+
+    for (int i = 0; i < itemCount; i += 1) {
+      units.add(
+        RouletteUnit(
+          image: imageBuilder.call(i),
+          color: colorBuilder?.call(i) ?? Colors.blue,
+          textStyle:
+              RouletteStyle.defaultIconStyle.merge(styleBuilder?.call(i)),
+          weight: 1,
+        ),
+      );
+    }
+
     return RouletteGroup(units);
   }
 

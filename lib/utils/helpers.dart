@@ -16,8 +16,8 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
-import 'roulette_group.dart';
-import 'roulette_unit.dart';
+import '../src/roulette_group.dart';
+import '../src/roulette_unit.dart';
 
 /// Make [Animation] from [controller] to begin rotate effect.
 /// Rotate final position is [targetValue].

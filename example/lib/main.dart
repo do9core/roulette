@@ -47,8 +47,8 @@ class MyRoulette extends StatelessWidget {
               controller: controller,
               // Configure roulette's appearance
               style: const RouletteStyle(
-                dividerThickness: 4,
-                textLayoutBias: .8,
+                dividerThickness: 0.0,
+                dividerColor: Colors.black,
                 centerStickerColor: Color(0xFF45A3FA),
               ),
             ),
@@ -92,17 +92,35 @@ class _HomePageState extends State<HomePage>
     Icons.account_balance_wallet,
   ];
 
+  final images = <ImageProvider>[
+    // Use [AssetImage] if you have 2.0x, 3.0x images,
+    // We only have 1 exact image here
+    const ExactAssetImage("asset/tree.jpg"),
+    const NetworkImage("https://picsum.photos/seed/example1/400"),
+    const ExactAssetImage("asset/tree.jpg"),
+    const NetworkImage("https://bad.link.to.image"),
+    const ExactAssetImage("asset/tree.jpg"),
+    const NetworkImage("https://picsum.photos/seed/example5/400"),
+    // MemoryImage(...)
+    // FileImage(...)
+    // ResizeImage(...)
+  ];
+
   @override
   void initState() {
-    // Initialize the controller
-    final group = RouletteGroup.uniformIcons(
-      colors.length,
-      iconBuilder: icons.elementAt,
-      colorBuilder: colors.elementAt,
-      styleBuilder: (index) => const TextStyle(color: Colors.black),
-    );
-    _controller = RouletteController(vsync: this, group: group);
     super.initState();
+
+    assert(colors.length == icons.length);
+    assert(colors.length == images.length);
+
+    _controller = RouletteController(
+      vsync: this,
+      group: RouletteGroup.uniformImages(
+        colors.length,
+        colorBuilder: (index) => colors[index],
+        imageBuilder: (index) => images[index],
+      ),
+    );
   }
 
   @override

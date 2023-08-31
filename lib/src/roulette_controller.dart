@@ -15,8 +15,8 @@
 import 'package:flutter/material.dart';
 
 import 'roulette_group.dart';
-import 'constants.dart';
-import 'helpers.dart' hide DoubleSum;
+import '../utils/constants.dart';
+import '../utils/helpers.dart' hide DoubleSum;
 
 /// Controller for [Roulette] widget.
 ///

@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:roulette/roulette.dart';
-import 'package:roulette/src/helpers.dart';
+import 'package:roulette/utils/helpers.dart';
 import 'package:roulette/src/roulette_paint.dart';
 
 import 'test_component.dart';
