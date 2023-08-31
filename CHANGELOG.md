@@ -1,3 +1,8 @@
+## 0.1.5 - 2023/8/31
+
+### New feature
+  * Image support in `Roulette` by [@antoninhrlt](https://github.com/antoninhrlt): You can now use `ImageProvider`s as roulette sector background!
+
 ## 0.1.4 - 2023/5/15
 
 ### New feature
