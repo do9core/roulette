@@ -5,7 +5,7 @@ repository: https://github.com/do9core/roulette
 
 environment:
   sdk: ">=2.12.0 <4.0.0"
-  flutter: ">=1.17.0"
+  flutter: ">=3.7.0"
 
 dependencies:
   flutter:
@@ -14,7 +14,4 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^2.0.1
-
-flutter:
-
+  flutter_lints: ^5.0.0
