@@ -39,12 +39,12 @@ jobs:
         id: fvm
         uses: zoexx/github-action-json-file-properties@release
         with:
-          file_path: ".fvm/fvm_config.json"
+          file_path: ".fvmrc"
 
       - name: Install Flutter
         uses: britannio/action-install-flutter@v1.1
         with:
-          version: ${{ steps.fvm.outputs.flutterSdkVersion }}
+          version: ${{ steps.fvm.outputs.flutter }}
 
       - name: Run presentation tests
         run: flutter test test/presentation_test.dart
