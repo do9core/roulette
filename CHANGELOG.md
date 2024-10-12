@@ -1,3 +1,10 @@
+## 0.2.0 - 2024/10/12
+  * Update flutter lint version and fix lint issue.
+
+### ⚠ Breaking changes:
+  * Minimum required Flutter version has been upgraded to 3.7.0.
+  * The `Roulette` and `RouletteController` has been reworked, check the [Migration Guide](https://github.com/do9core/roulette/pull/28#issue-2582726375) here.
+
 ## 0.1.5 - 2023/8/31
 
 ### New feature

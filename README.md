@@ -53,10 +53,7 @@ final units = [
 ];
 
 // Initialize controller
-final controller = RouletteController(
-  group: RouletteGroup(units),
-  vsync: this, // TickerProvider, usually from SingleTickerProviderStateMixin
-);
+final controller = RouletteController();
 ```
 
 For uniformed roulette from a list, use the builder:
@@ -76,7 +73,7 @@ final group = RouletteGroup.uniform(
 );
 
 // Create controller
-controller = RouletteController(group: group, vsync: this);
+controller = RouletteController();
 ```
 
 ### Add Roulette Widget
@@ -87,6 +84,7 @@ With the controller, add a `Roulette` widget:
 @override
 Widget build(BuildContext context) {
   return Roulette(
+    group: group,
     controller: controller,
     style: RouletteStyle(
       // Customize appearance

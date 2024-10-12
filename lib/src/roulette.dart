@@ -1,23 +1,12 @@
-/// Copyright 2021 do9core
-///
-/// Licensed under the Apache License, Version 2.0 (the "License");
-/// you may not use this file except in compliance with the License.
-/// You may obtain a copy of the License at
-///
-///    http://www.apache.org/licenses/LICENSE-2.0
-///
-/// Unless required by applicable law or agreed to in writing, software
-/// distributed under the License is distributed on an "AS IS" BASIS,
-/// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-/// See the License for the specific language governing permissions and
-/// limitations under the License.
-
+import 'dart:async';
 import 'dart:developer';
 import 'dart:math' as math;
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
+import 'package:roulette/utils/helpers.dart';
 
+import 'roulette_group.dart';
 import 'roulette_style.dart';
 import 'roulette_controller.dart';
 import 'roulette_paint.dart';
@@ -27,6 +16,7 @@ import 'roulette_paint.dart';
 class Roulette extends StatefulWidget {
   const Roulette({
     Key? key,
+    required this.group,
     required this.controller,
     this.style = const RouletteStyle(),
   }) : super(key: key);
@@ -37,27 +27,79 @@ class Roulette extends StatefulWidget {
   /// The display style of the roulette.
   final RouletteStyle style;
 
+  /// The [RouletteGroup] to display.
+  final RouletteGroup group;
+
   @override
-  State<Roulette> createState() => _RouletteState();
+  State<Roulette> createState() => RouletteState();
 }
 
-class _RouletteState extends State<Roulette> {
+@visibleForTesting
+class RouletteState extends State<Roulette>
+    with SingleTickerProviderStateMixin {
   final _imageInfoNotifier = ValueNotifier(<int, ImageInfo>{});
+
+  @visibleForTesting
+  final rotateAnimation =
+      ValueNotifier<Animation<double>>(AlwaysStoppedAnimation(0));
+
+  late final AnimationController _animationController;
+  StreamSubscription? _subscription;
 
   @override
   void initState() {
-    widget.controller.addListener(_updateImageInfo);
+    _animationController = AnimationController(vsync: this);
+    _subscription = widget.controller.onEvent.listen(_onAnimationEvent);
     super.initState();
   }
 
   @override
-  void didChangeDependencies() {
-    _updateImageInfo();
-    super.didChangeDependencies();
+  void didUpdateWidget(covariant Roulette oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.group != widget.group) {
+      _updateImageInfo();
+    }
+
+    if (oldWidget.controller != widget.controller) {
+      _subscription?.cancel();
+      _subscription = widget.controller.onEvent.listen(_onAnimationEvent);
+    }
+  }
+
+  void _onAnimationEvent(RouletteEvent event) {
+    if (event is RouletteRollEvent) {
+      _handleRoll(event);
+    } else if (event is RouletteStopEvent) {
+      _handleStop();
+    } else if (event is RouletteResetEvent) {
+      _handleReset();
+    }
+  }
+
+  void _handleRoll(RouletteRollEvent event) {
+    final rotate = calculateEndRotate(
+      widget.group,
+      event.targetIndex,
+      event.clockwise,
+      event.minRotateCircles,
+      offset: event.offset,
+    );
+    _animationController.duration = event.duration;
+    final animation = makeAnimation(_animationController, rotate, event.curve);
+    rotateAnimation.value = animation;
+    _animationController.forward();
+  }
+
+  void _handleStop() {
+    _animationController.stop();
+  }
+
+  void _handleReset() {
+    _animationController.reset();
   }
 
   void _updateImageInfo() {
-    final units = widget.controller.group.units;
+    final units = widget.group.units;
     if (units.isEmpty) {
       _imageInfoNotifier.value.forEach((_, value) => value.dispose());
       _imageInfoNotifier.value = {};
@@ -105,25 +147,31 @@ class _RouletteState extends State<Roulette> {
 
   @override
   void dispose() {
-    widget.controller.removeListener(_updateImageInfo);
     final imageInfoLookup = _imageInfoNotifier.value;
     imageInfoLookup.forEach((_, value) => value.dispose());
     imageInfoLookup.clear();
     _imageInfoNotifier.dispose();
+    _subscription?.cancel();
+    _animationController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: Listenable.merge([widget.controller, _imageInfoNotifier]),
-      builder: (context, child) {
-        return RoulettePaint(
-          key: widget.key,
-          animation: widget.controller.animation,
-          style: widget.style,
-          group: widget.controller.group,
-          imageInfos: _imageInfoNotifier.value,
+    return ValueListenableBuilder(
+      valueListenable: _imageInfoNotifier,
+      builder: (context, Map<int, ImageInfo> images, _) {
+        return ValueListenableBuilder(
+          valueListenable: rotateAnimation,
+          builder: (context, Animation<double> animation, _) {
+            return RoulettePaint(
+              key: widget.key,
+              animation: animation,
+              style: widget.style,
+              group: widget.group,
+              imageInfos: images,
+            );
+          },
         );
       },
     );
