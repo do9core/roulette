@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:roulette/roulette.dart';
+import 'package:roulette/src/roulette.dart';
 import 'package:roulette/utils/helpers.dart';
 import 'package:roulette/src/roulette_paint.dart';
 
@@ -38,48 +39,38 @@ void main() {
     });
 
     testWidgets('continuos rotation test', (WidgetTester tester) async {
-      await tester
-          .pumpWidget(RouletteWidgetTest(group: RouletteGroup.uniform(5)));
-      final state = tester
-          .state<RouletteWidgetTestState>(find.byType(RouletteWidgetTest));
-      state.controller.rollTo(1, minRotateCircles: 0, offset: 1);
+      final controller = RouletteController();
+      await tester.pumpWidget(RouletteWidgetTest(
+        group: RouletteGroup.uniform(5),
+        controller: controller,
+      ));
+      final widgetState = tester.state<RouletteState>(find.byType(Roulette));
+      controller.rollTo(1, minRotateCircles: 0, offset: 1);
       await tester.pumpAndSettle();
-      var animation = state.controller.animation;
+      var animation = widgetState.rotateAnimation.value;
       expect(animation.value, 4 / 5 * pi * 2);
 
-      state.controller.rollTo(2, minRotateCircles: 0, offset: 1);
-      animation = state.controller.animation;
+      controller.rollTo(2, minRotateCircles: 0, offset: 1);
+      animation = widgetState.rotateAnimation.value;
       expect(animation.value, 4 / 5 * pi * 2);
     });
 
     testWidgets(
       'ensure rollTo settle at target index with offset',
       (WidgetTester tester) async {
+        final controller = RouletteController();
         await tester.pumpWidget(
-          RouletteWidgetTest(group: RouletteGroup.uniform(5)),
+          RouletteWidgetTest(
+            group: RouletteGroup.uniform(5),
+            controller: controller,
+          ),
         );
-        final state = tester
-            .state<RouletteWidgetTestState>(find.byType(RouletteWidgetTest));
+        final widgetState = tester.state<RouletteState>(find.byType(Roulette));
         const minCircles = 1;
-        state.controller.rollTo(1, minRotateCircles: minCircles, offset: 1);
+        controller.rollTo(1, minRotateCircles: minCircles, offset: 1);
         await tester.pumpAndSettle();
-        final animation = state.controller.animation;
+        final animation = widgetState.rotateAnimation.value;
         expect(animation.value, (minCircles + 4 / 5) * pi * 2);
-      },
-    );
-
-    testWidgets(
-      'ensure reset to initial state when update group',
-      (WidgetTester tester) async {
-        await tester.pumpWidget(
-          RouletteWidgetTest(group: RouletteGroup.uniform(5)),
-        );
-        final state = tester
-            .state<RouletteWidgetTestState>(find.byType(RouletteWidgetTest));
-        state.controller.rollTo(1);
-        await tester.pumpAndSettle();
-        state.controller.group = RouletteGroup.uniform(6);
-        expect(state.controller.animation.value, 0);
       },
     );
   });
@@ -88,15 +79,18 @@ void main() {
     testWidgets(
       'ensure rollTo settle at target index',
       (WidgetTester tester) async {
+        final controller = RouletteController();
         await tester.pumpWidget(
-          RouletteWidgetTest(group: RouletteGroup.uniform(5)),
+          RouletteWidgetTest(
+            group: RouletteGroup.uniform(5),
+            controller: controller,
+          ),
         );
-        final state = tester
-            .state<RouletteWidgetTestState>(find.byType(RouletteWidgetTest));
+        final widgetState = tester.state<RouletteState>(find.byType(Roulette));
         const minCircles = 3;
-        state.controller.rollTo(1, minRotateCircles: minCircles);
+        controller.rollTo(1, minRotateCircles: minCircles);
         await tester.pumpAndSettle();
-        final animation = state.controller.animation;
+        final animation = widgetState.rotateAnimation.value;
         expect(animation.value, (minCircles + 3 / 5) * pi * 2);
       },
     );
@@ -125,8 +119,8 @@ void main() {
           textBuilder: (index) => '$index',
           colorBuilder: (index) => Colors.pink,
         );
-        final controller = RouletteController(group: group, vsync: tester);
-        await tester.pumpWidget(Roulette(controller: controller));
+        final controller = RouletteController();
+        await tester.pumpWidget(Roulette(group: group, controller: controller));
         expect(find.byType(RoulettePaint), findsOneWidget);
       },
     );

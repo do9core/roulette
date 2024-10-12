@@ -1,56 +1,62 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import 'roulette_group.dart';
 import '../utils/constants.dart';
-import '../utils/helpers.dart' hide DoubleSum;
+
+abstract class RouletteEvent {}
+
+class RouletteRollEvent implements RouletteEvent {
+  RouletteRollEvent(
+    this.targetIndex, {
+    this.duration = defaultDuration,
+    this.minRotateCircles = defaultMinRotateCircles,
+    this.clockwise = true,
+    this.curve = Curves.fastOutSlowIn,
+    this.offset = 0,
+  });
+
+  final int targetIndex;
+  final Duration duration;
+  final int minRotateCircles;
+  final bool clockwise;
+  final Curve? curve;
+  final double offset;
+}
+
+class RouletteStopEvent implements RouletteEvent {
+  const RouletteStopEvent();
+}
+
+class RouletteResetEvent implements RouletteEvent {
+  const RouletteResetEvent();
+}
 
 /// Controller for [Roulette] widget.
 ///
 /// [Roulette] widget use [RouletteController] to control the rotate animation
 /// and [Roulette]'s display [RouletteGroup].
-class RouletteController with ChangeNotifier {
-  RouletteController._(this._group, this._animation, this._controller);
-
+class RouletteController {
   /// Create a new RouletteController instance.
   /// [group] is the [RouletteGroup] to display.
-  /// [vsync] is the [TickerProvider] to use for the animation.
-  factory RouletteController({
-    required RouletteGroup group,
-    required TickerProvider vsync,
-  }) {
-    final controller = AnimationController(vsync: vsync);
-    final animation = controller.drive(Tween<double>(begin: 0, end: 0));
-    return RouletteController._(group, animation, controller);
-  }
+  RouletteController();
 
-  RouletteGroup _group;
-  Animation<double> _animation;
-  final AnimationController _controller;
+  final _controller = StreamController<RouletteEvent>.broadcast();
 
-  /// Current rotate animation
-  Animation<double> get animation => _animation;
-
-  /// Retrieve current displaying [RouletteGroup]
-  RouletteGroup get group => _group;
-
-  /// Set the [RouletteGroup] to refresh widget
-  set group(RouletteGroup value) {
-    _animation = _controller.drive(ConstantTween<double>(0));
-    _group = value;
-    notifyListeners();
-    _controller.reset();
-  }
+  /// Stream of [RouletteEvent] for controlling widget animations.
+  ///
+  /// As a user of this package, you don't need to listen to this stream.
+  Stream<RouletteEvent> get onEvent => _controller.stream;
 
   /// Reset animation to initial state
   void resetAnimation() {
-    _animation = _controller.drive(ConstantTween<double>(0));
-    notifyListeners();
-    _controller.reset();
+    _controller.add(RouletteResetEvent());
   }
 
   /// Stop current running animation
   void stop({bool canceled = true}) {
-    _controller.stop(canceled: canceled);
+    _controller.add(RouletteStopEvent());
   }
 
   /// Start an animation to [targetIndex], [targetIndex] item must be in [group].
@@ -67,23 +73,17 @@ class RouletteController with ChangeNotifier {
     Curve? curve = Curves.fastOutSlowIn,
     double offset = 0,
   }) async {
-    final targetRotate = calculateEndRotate(
-      group,
+    _controller.add(RouletteRollEvent(
       targetIndex,
-      clockwise,
-      minRotateCircles,
+      duration: duration,
+      minRotateCircles: minRotateCircles,
+      clockwise: clockwise,
+      curve: curve,
       offset: offset,
-    );
-    _controller.duration = duration;
-    _animation = makeAnimation(_controller, targetRotate, curve,
-        initialValue: animation.value);
-    notifyListeners();
-    await _controller.forward(from: 0);
+    ));
   }
 
-  @override
   void dispose() {
-    _controller.dispose();
-    super.dispose();
+    _controller.close();
   }
 }

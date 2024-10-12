@@ -2,36 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:roulette/roulette.dart';
 
-class RouletteWidgetTest extends StatefulWidget {
+class RouletteWidgetTest extends StatelessWidget {
   const RouletteWidgetTest({
     Key? key,
     required this.group,
+    required this.controller,
   }) : super(key: key);
 
+  final RouletteController controller;
   final RouletteGroup group;
-
-  @override
-  RouletteWidgetTestState createState() => RouletteWidgetTestState();
-}
-
-class RouletteWidgetTestState extends State<RouletteWidgetTest>
-    with SingleTickerProviderStateMixin {
-  late RouletteController controller;
-
-  @override
-  void initState() {
-    controller = RouletteController(
-      group: widget.group,
-      vsync: this,
-    );
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +18,10 @@ class RouletteWidgetTestState extends State<RouletteWidgetTest>
       child: SizedBox(
         width: 400,
         height: 400,
-        child: Roulette(controller: controller),
+        child: Roulette(
+          group: group,
+          controller: controller,
+        ),
       ),
     );
   }

@@ -28,8 +28,10 @@ class MyRoulette extends StatelessWidget {
   const MyRoulette({
     Key? key,
     required this.controller,
+    required this.group,
   }) : super(key: key);
 
+  final RouletteGroup group;
   final RouletteController controller;
 
   @override
@@ -43,6 +45,7 @@ class MyRoulette extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.only(top: 30),
             child: Roulette(
+              group: group,
               // Provide controller to update its state
               controller: controller,
               // Configure roulette's appearance
@@ -68,11 +71,10 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage>
-    with SingleTickerProviderStateMixin {
+class _HomePageState extends State<HomePage> {
   static final _random = Random();
 
-  late RouletteController _controller;
+  final _controller = RouletteController();
   bool _clockwise = true;
 
   final colors = <Color>[
@@ -107,29 +109,18 @@ class _HomePageState extends State<HomePage>
     // ResizeImage(...)
   ];
 
-  @override
-  void initState() {
-    super.initState();
-
-    assert(colors.length == icons.length);
-    assert(colors.length == images.length);
-
-    _controller = RouletteController(
-      vsync: this,
-      group: RouletteGroup.uniformImages(
-        colors.length,
-        colorBuilder: (index) => colors[index],
-        imageBuilder: (index) => images[index],
-        textBuilder: (index) {
-          if (index == 0) return 'Hi';
-          return '';
-        },
-        styleBuilder: (index) {
-          return const TextStyle(color: Colors.black);
-        },
-      ),
-    );
-  }
+  late final group = RouletteGroup.uniformImages(
+    colors.length,
+    colorBuilder: (index) => colors[index],
+    imageBuilder: (index) => images[index],
+    textBuilder: (index) {
+      if (index == 0) return 'Hi';
+      return '';
+    },
+    styleBuilder: (index) {
+      return const TextStyle(color: Colors.black);
+    },
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -162,7 +153,10 @@ class _HomePageState extends State<HomePage>
                   ),
                 ],
               ),
-              MyRoulette(controller: _controller),
+              MyRoulette(
+                group: group,
+                controller: _controller,
+              ),
             ],
           ),
         ),
