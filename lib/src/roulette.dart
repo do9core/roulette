@@ -76,7 +76,15 @@ class RouletteState extends State<Roulette>
     }
   }
 
+  void _reportEvent(RouletteCallbackEvent e) {
+    widget.controller.invokeCallback(e);
+  }
+
   void _handleRoll(RouletteRollEvent event) {
+    if (_animationController.isAnimating) {
+      _animationController.stop();
+    }
+
     final rotate = calculateEndRotate(
       widget.group,
       event.targetIndex,
@@ -84,10 +92,18 @@ class RouletteState extends State<Roulette>
       event.minRotateCircles,
       offset: event.offset,
     );
+    rotateAnimation.value = makeAnimation(
+      _animationController,
+      rotate,
+      event.curve,
+      initialValue: rotateAnimation.value.value,
+    );
     _animationController.duration = event.duration;
-    final animation = makeAnimation(_animationController, rotate, event.curve);
-    rotateAnimation.value = animation;
-    _animationController.forward();
+    _animationController
+        .forward(from: 0)
+        .orCancel
+        .then((_) => _reportEvent(OnRollEndEvent(event)))
+        .catchError((_) => _reportEvent(OnRollCancelledEvent(event)));
   }
 
   void _handleStop() {

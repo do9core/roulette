@@ -1,12 +1,15 @@
 import 'dart:async';
 
+import 'package:meta/meta.dart';
 import 'package:flutter/material.dart';
 
 import 'roulette_group.dart';
 import '../utils/constants.dart';
 
+@internal
 abstract class RouletteEvent {}
 
+@internal
 class RouletteRollEvent implements RouletteEvent {
   RouletteRollEvent(
     this.targetIndex, {
@@ -25,12 +28,31 @@ class RouletteRollEvent implements RouletteEvent {
   final double offset;
 }
 
+@internal
 class RouletteStopEvent implements RouletteEvent {
   const RouletteStopEvent();
 }
 
+@internal
 class RouletteResetEvent implements RouletteEvent {
   const RouletteResetEvent();
+}
+
+@internal
+abstract class RouletteCallbackEvent {}
+
+@internal
+class OnRollEndEvent implements RouletteCallbackEvent {
+  OnRollEndEvent(this.event);
+
+  final RouletteEvent event;
+}
+
+@internal
+class OnRollCancelledEvent implements RouletteCallbackEvent {
+  OnRollCancelledEvent(this.event);
+
+  final RouletteEvent event;
 }
 
 /// Controller for [Roulette] widget.
@@ -38,25 +60,26 @@ class RouletteResetEvent implements RouletteEvent {
 /// [Roulette] widget use [RouletteController] to control the rotate animation
 /// and [Roulette]'s display [RouletteGroup].
 class RouletteController {
-  /// Create a new RouletteController instance.
-  /// [group] is the [RouletteGroup] to display.
-  RouletteController();
+  final _eventStreamController = StreamController<RouletteEvent>.broadcast();
+  final _callbackStreamController =
+      StreamController<RouletteCallbackEvent>.broadcast();
 
-  final _controller = StreamController<RouletteEvent>.broadcast();
+  @internal
+  Stream<RouletteEvent> get onEvent => _eventStreamController.stream;
 
-  /// Stream of [RouletteEvent] for controlling widget animations.
-  ///
-  /// As a user of this package, you don't need to listen to this stream.
-  Stream<RouletteEvent> get onEvent => _controller.stream;
+  @internal
+  void invokeCallback(RouletteCallbackEvent event) {
+    _callbackStreamController.add(event);
+  }
 
   /// Reset animation to initial state
   void resetAnimation() {
-    _controller.add(RouletteResetEvent());
+    _eventStreamController.add(RouletteResetEvent());
   }
 
   /// Stop current running animation
   void stop({bool canceled = true}) {
-    _controller.add(RouletteStopEvent());
+    _eventStreamController.add(RouletteStopEvent());
   }
 
   /// Start an animation to [targetIndex], [targetIndex] item must be in [group].
@@ -65,25 +88,46 @@ class RouletteController {
   /// Config [minRotateCircles] to determine the minimum rotate before settle.
   /// Provide a [curve] to update the animation curve.
   /// Provide a [offset] for roulette stop position, by default, 0 indicates the start of the part.
-  Future<void> rollTo(
+  ///
+  /// Returning a [Future] which indicates whether the animation is completed or cancelled.
+  /// Return value true indicates the animation is completed.
+  Future<bool> rollTo(
     int targetIndex, {
     Duration duration = defaultDuration,
     int minRotateCircles = defaultMinRotateCircles,
     bool clockwise = true,
     Curve? curve = Curves.fastOutSlowIn,
     double offset = 0,
-  }) async {
-    _controller.add(RouletteRollEvent(
+  }) {
+    final completer = Completer<bool>();
+    final event = RouletteRollEvent(
       targetIndex,
       duration: duration,
       minRotateCircles: minRotateCircles,
       clockwise: clockwise,
       curve: curve,
       offset: offset,
-    ));
+    );
+    _eventStreamController.add(event);
+
+    StreamSubscription? subscription;
+    subscription = _callbackStreamController.stream.listen((e) {
+      if (e is OnRollEndEvent && e.event == event) {
+        completer.complete(true);
+        subscription?.cancel();
+      }
+
+      if (e is OnRollCancelledEvent && e.event == event) {
+        completer.complete(false);
+        subscription?.cancel();
+      }
+    });
+
+    return completer.future;
   }
 
   void dispose() {
-    _controller.close();
+    _eventStreamController.close();
+    _callbackStreamController.close();
   }
 }
