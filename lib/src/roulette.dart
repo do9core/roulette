@@ -54,6 +54,12 @@ class RouletteState extends State<Roulette>
   }
 
   @override
+  void didChangeDependencies() {
+    _updateImageInfo();
+    super.didChangeDependencies();
+  }
+
+  @override
   void didUpdateWidget(covariant Roulette oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.group != widget.group) {
