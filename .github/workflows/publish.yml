@@ -1,20 +1,12 @@
 name: Publish package
 
 on:
-  release:
-    types: [published]
+  push:
+    tags:
+      - '[0-9]+.[0-9]+.[0-9]+'
 
 jobs:
   publish:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: Dart and Flutter Package Publisher
-        uses: k-paxian/dart-package-publisher@master
-        with:
-          credentialJson: ${{ secrets.PUB_CREDENTIALS }}
-          suppressBuildRunner: true
-          skipTests: true # Test run by another workflow
-          flutter: true
+    permissions:
+      id-token: write
+    uses: dart-lang/ecosystem/.github/workflows/publish.yaml@main
