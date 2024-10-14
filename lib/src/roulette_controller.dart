@@ -78,7 +78,7 @@ class RouletteController {
   }
 
   /// Stop current running animation
-  void stop({bool canceled = true}) {
+  void stop() {
     _eventStreamController.add(RouletteStopEvent());
   }
 
