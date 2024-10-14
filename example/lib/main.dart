@@ -129,12 +129,18 @@ class _HomePageState extends State<HomePage> {
         title: const Text('Roulette'),
       ),
       body: Container(
+        padding: const EdgeInsets.all(16),
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             mainAxisSize: MainAxisSize.min,
             children: [
+              MyRoulette(
+                group: group,
+                controller: _controller,
+              ),
+              const SizedBox(height: 40),
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -142,7 +148,7 @@ class _HomePageState extends State<HomePage> {
                     "Clockwise: ",
                     style: TextStyle(fontSize: 18),
                   ),
-                  Switch(
+                  Checkbox(
                     value: _clockwise,
                     onChanged: (onChanged) {
                       setState(() {
@@ -153,9 +159,31 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ],
               ),
-              MyRoulette(
-                group: group,
-                controller: _controller,
+              FilledButton(
+                onPressed: () async {
+                  final completed = await _controller.rollTo(
+                    3,
+                    clockwise: _clockwise,
+                    offset: _random.nextDouble(),
+                  );
+
+                  if (completed) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Animation completed')),
+                    );
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Animation cancelled')),
+                    );
+                  }
+                },
+                child: const Text('ROLL'),
+              ),
+              FilledButton(
+                onPressed: () {
+                  _controller.stop();
+                },
+                child: const Text('CANCEL'),
               ),
             ],
           ),
@@ -163,15 +191,6 @@ class _HomePageState extends State<HomePage> {
         decoration: BoxDecoration(
           color: Colors.pink.withOpacity(0.1),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        // Use the controller to run the animation with rollTo method
-        onPressed: () => _controller.rollTo(
-          3,
-          clockwise: _clockwise,
-          offset: _random.nextDouble(),
-        ),
-        child: const Icon(Icons.refresh_rounded),
       ),
     );
   }
