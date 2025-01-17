@@ -181,6 +181,26 @@ class _HomePageState extends State<HomePage> {
               ),
               FilledButton(
                 onPressed: () {
+                  _controller.rollInfinitely(
+                    clockwise: _clockwise,
+                    period: const Duration(milliseconds: 200),
+                  );
+                },
+                child: const Text('ROLL INFINITE'),
+              ),
+              FilledButton(
+                onPressed: () async {
+                  await _controller.rollTo(
+                    3,
+                    clockwise: _clockwise,
+                    offset: _random.nextDouble(),
+                    curve: Curves.decelerate,
+                  );
+                },
+                child: const Text('STOP ROLL INFINITE'),
+              ),
+              FilledButton(
+                onPressed: () {
                   _controller.stop();
                 },
                 child: const Text('CANCEL'),
