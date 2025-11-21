@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class Arrow extends StatelessWidget {
-  const Arrow({Key? key}) : super(key: key);
+  const Arrow({super.key});
 
   @override
   Widget build(BuildContext context) {

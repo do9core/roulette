@@ -10,7 +10,7 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -26,10 +26,10 @@ class MyApp extends StatelessWidget {
 
 class MyRoulette extends StatelessWidget {
   const MyRoulette({
-    Key? key,
+    super.key,
     required this.controller,
     required this.group,
-  }) : super(key: key);
+  });
 
   final RouletteGroup group;
   final RouletteController controller;
@@ -65,7 +65,7 @@ class MyRoulette extends StatelessWidget {
 }
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+  const HomePage({super.key});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -130,6 +130,9 @@ class _HomePageState extends State<HomePage> {
       ),
       body: Container(
         padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.pink.withValues(alpha: 0.1),
+        ),
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -167,6 +170,7 @@ class _HomePageState extends State<HomePage> {
                     offset: _random.nextDouble(),
                   );
 
+                  if (!context.mounted) return;
                   if (completed) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text('Animation completed')),
@@ -207,9 +211,6 @@ class _HomePageState extends State<HomePage> {
               ),
             ],
           ),
-        ),
-        decoration: BoxDecoration(
-          color: Colors.pink.withOpacity(0.1),
         ),
       ),
     );
