@@ -29,13 +29,16 @@ There are various types of roulette provided by this package (text is optional):
 
   <img alt="Icon roulette" src="https://raw.githubusercontent.com/do9core/roulette/main/README.assets/image_some_text.png" width="300">
 
+* Infinite rolling (available in 0.3.0):
+  * Roll infinitely until you call `rollTo` or `stop` method, this is useful for creating a roulette that rolling until some condition is met or user manually stops it.
+
 ## Getting started
 
 Add this to your `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  roulette: ^0.1.5
+  roulette: ^0.3.0
 ```
 
 ## Usage
@@ -117,6 +120,19 @@ final offset = random.nextDouble();
 
 // Spin with offset
 await controller.rollTo(2, offset: offset);
+```
+
+You can also use `rollInfinite` to roll infinitely until you call `stop` method:
+
+```dart
+// Roll infinitely
+controller.rollInfinite();
+
+// Stop rolling and settle to index 2
+controller.rollTo(2, offset: random.nextDouble());
+
+// Or stop rolling immediately, stop with this method has no animation
+// controller.stop();
 ```
 
 Please refer to API documentation for more details.

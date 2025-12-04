@@ -34,6 +34,19 @@ class RouletteStopEvent implements RouletteEvent {
 }
 
 @internal
+class InfiniteRollEvent implements RouletteEvent {
+  const InfiniteRollEvent({
+    required this.clockwise,
+    this.period = defaultPeriod,
+    this.curve,
+  });
+
+  final bool clockwise;
+  final Duration period;
+  final Curve? curve;
+}
+
+@internal
 class RouletteResetEvent implements RouletteEvent {
   const RouletteResetEvent();
 }
@@ -77,7 +90,12 @@ class RouletteController {
     _eventStreamController.add(RouletteResetEvent());
   }
 
-  /// Stop current running animation
+  /// Stop current running animation.
+  /// No animation will be performed, the roulette will
+  /// stop at current position directly.
+  ///
+  /// If you want your roulette to stop with an animation,
+  /// use [rollTo] instead.
   void stop() {
     _eventStreamController.add(RouletteStopEvent());
   }
@@ -119,6 +137,35 @@ class RouletteController {
 
       if (e is OnRollCancelledEvent && e.event == event) {
         completer.complete(false);
+        subscription?.cancel();
+      }
+    });
+
+    return completer.future;
+  }
+
+  /// Start rolling the roulette indefinitely until a
+  /// [rollTo], [rollInfinitely] or [stop] is called.
+  /// The [clockwise] determine whether the animator should run in clockwise direction.
+  /// Config [period] to update the roll period for one circle.
+  /// If you want to change the cycle animation behavior, try [curve],
+  /// but it may make the animation look wired.
+  ///
+  /// Returning a [Future], when the animation is completed(cancelled actually)
+  /// the future resolved.
+  Future<void> rollInfinitely({
+    bool clockwise = true,
+    Duration period = defaultPeriod,
+    Curve? curve,
+  }) {
+    final completer = Completer<void>();
+    final event = InfiniteRollEvent(clockwise: clockwise, period: period);
+    _eventStreamController.add(event);
+
+    StreamSubscription? subscription;
+    subscription = _callbackStreamController.stream.listen((e) {
+      if (e is OnRollCancelledEvent && e.event == event) {
+        completer.complete();
         subscription?.cancel();
       }
     });

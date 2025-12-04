@@ -22,6 +22,24 @@ Animation<double> makeAnimation(
   }
 }
 
+/// Make [Animation] from [controller] to begin infinite roll effect.
+Animation<double> makeInfiniteRollAnimation(
+  AnimationController controller, {
+  required bool clockwise,
+  double initialValue = 0,
+  Curve? curve,
+}) {
+  final begin = initialValue % (2 * pi);
+  final end = begin + 2 * pi * (clockwise ? 1 : -1);
+  final tween = Tween(begin: begin, end: end);
+  if (curve != null) {
+    final curved = CurvedAnimation(parent: controller, curve: curve);
+    return curved.drive(tween);
+  } else {
+    return controller.drive(tween);
+  }
+}
+
 /// Calculate the end rotate value by [targetIndex].
 /// The returned value contains the circles to roll.
 /// Make sure when you run this method the [group] has at least one [RouletteUnit].
