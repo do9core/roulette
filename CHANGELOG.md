@@ -1,3 +1,7 @@
+## 0.2.1 - 2025/12/4
+  * Build with latest Flutter SDK, update lint version and fix lint issue.
+  * No breaking changes and new features.
+
 ## 0.2.0 - 2024/10/12
   * Update flutter lint version and fix lint issue.
 
