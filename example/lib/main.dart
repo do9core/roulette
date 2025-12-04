@@ -187,7 +187,9 @@ class _HomePageState extends State<HomePage> {
                 onPressed: () {
                   _controller.rollInfinitely(
                     clockwise: _clockwise,
-                    period: const Duration(milliseconds: 200),
+                    // This defines the speed of roll in infinite mode.
+                    // The smaller the value, the faster the roll.
+                    period: Durations.short4,
                   );
                 },
                 child: const Text('ROLL INFINITE'),
