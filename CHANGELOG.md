@@ -1,3 +1,8 @@
+## 0.3.0 - 2025/12/4
+
+### New feature
+  * You can now roll the Roulette infinitely with `rollInfinite` method, until you call `rollTo` or `stop` method. The example is also updated to show how to use it.
+
 ## 0.2.1 - 2025/12/4
   * Build with latest Flutter SDK, update lint version and fix lint issue.
   * No breaking changes and new features.
