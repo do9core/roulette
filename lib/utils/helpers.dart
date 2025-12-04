@@ -22,6 +22,7 @@ Animation<double> makeAnimation(
   }
 }
 
+/// Make [Animation] from [controller] to begin infinite roll effect.
 Animation<double> makeInfiniteRollAnimation(
   AnimationController controller, {
   required bool clockwise,
