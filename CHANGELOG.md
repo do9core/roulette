@@ -1,3 +1,11 @@
+## 0.2.2 - 2026/3/3
+
+### New feature
+  * Add an enum `SectionImageLayout` to control how a background image is laid out within each roulette section. See API documentation for details. Thanks to [@TheMrAleX](https://github.com/TheMrAleX) for the contribution.
+
+### Others
+  * Build with Flutter SDK 3.41, update lint version
+
 ## 0.2.1 - 2025/12/4
   * Build with latest Flutter SDK, update lint version and fix lint issue.
   * No breaking changes and new features.

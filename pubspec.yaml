@@ -1,6 +1,6 @@
 name: roulette
 description: This is a library provide a simple roulette widget which usually used for lottery.
-version: 0.2.1
+version: 0.2.2
 repository: https://github.com/do9core/roulette
 
 environment:
@@ -10,7 +10,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  meta: ^1.15.0
+  meta: ^1.17.0
 
 dev_dependencies:
   flutter_test:

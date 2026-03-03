@@ -35,7 +35,7 @@ Add this to your `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  roulette: ^0.1.5
+  roulette: ^0.2.2
 ```
 
 ## Usage
@@ -87,7 +87,7 @@ Widget build(BuildContext context) {
     group: group,
     controller: controller,
     style: RouletteStyle(
-      // Customize appearance
+      // Customize appearance (e.g. sectionImageLayout for image sections)
     ),
   );
 }
