@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:roulette/roulette.dart';
+import 'package:roulette/src/roulette_style.dart';
 import 'package:roulette/utils/transform_entry.dart';
 import 'package:roulette/utils/text.dart';
 
@@ -133,37 +134,56 @@ class _RoulettePainter extends CustomPainter {
 
     // Rectangle in which the section is.
     var rect2 = path.getBounds();
+    final Matrix4 matrix;
 
-    // Transforms into a square (biggest)
-    if (rect2.height > rect2.width) {
-      rect2 = Rect.fromLTWH(rect2.left, rect2.top, rect2.height, rect2.height);
-    } else {
-      rect2 = Rect.fromLTWH(rect2.left, rect2.top, rect2.width, rect2.width);
+    switch (style.sectionImageLayout) {
+      case SectionImageLayout.rotatedFit:
+        if (rect2.height > rect2.width) {
+          rect2 =
+              Rect.fromLTWH(rect2.left, rect2.top, rect2.height, rect2.height);
+        } else {
+          rect2 =
+              Rect.fromLTWH(rect2.left, rect2.top, rect2.width, rect2.width);
+        }
+        // Calculates size of image in the square.
+        double scaleX = (rect2.width / image.width);
+        double scaleY = (rect2.height / image.height);
+
+        // Transformation matrix to scale and rotate image in the section.
+        matrix = composeMatrixFromOffsets(
+          translate: Offset(style.dividerThickness / 2 - 1,
+              rect2.top + rect2.height * 4 + style.dividerThickness / 2 + 1),
+          scale: (max(scaleX, scaleY)) - 0.002,
+          rotation: sweep / 2 + pi / 2,
+          anchor: Offset.zero,
+        );
+        break;
+
+      case SectionImageLayout.boundingBoxFit:
+        // Prevent images from being rendered with repeating patterns.
+        // The image now occupies the intended area without being repeated.
+
+        // For use in the clean Matrix
+        double scaleX = rect2.width / image.width;
+        double scaleY = rect2.height / image.height;
+        double scale = max(scaleX, scaleY);
+
+        matrix = Matrix4.identity()
+          ..translateByDouble(rect2.left, rect2.top, 0.0, 1.0)
+          ..scaleByDouble(scale, scale, scale, 1);
+        break;
     }
 
-    // Calculates size of image in the square.
-    double scaleX = (rect2.width / image.width);
-    double scaleY = (rect2.height / image.height);
-
-    // Transformation matrix to scale and rotate image in the section.
-    Matrix4 matrix = composeMatrixFromOffsets(
-      translate: Offset(style.dividerThickness / 2 - 1,
-          rect2.top + rect2.height * 4 + style.dividerThickness / 2 + 1),
-      scale: (max(scaleX, scaleY)) - 0.002,
-      rotation: sweep / 2 + pi / 2,
-      anchor: Offset.zero,
-    );
-
-    // Draws the section with the image.
+    // Drawing the TileMap
     canvas.drawPath(
       path,
       Paint()
         ..shader = ImageShader(
           image,
-          TileMode.repeated,
-          TileMode.repeated,
+          TileMode.clamp,
+          TileMode.clamp,
           matrix.storage,
-          filterQuality: FilterQuality.medium,
+          filterQuality: FilterQuality.high,
         )
         ..style = PaintingStyle.fill
         ..strokeWidth = 0,
