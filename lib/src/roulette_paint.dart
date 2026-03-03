@@ -1,12 +1,14 @@
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:roulette/roulette.dart';
-import 'package:roulette/src/roulette_style.dart';
-import 'package:roulette/utils/transform_entry.dart';
-import 'package:roulette/utils/text.dart';
-
 import 'dart:math';
 import 'dart:ui' as ui;
+
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+
+import 'roulette_style.dart';
+import 'roulette_group.dart';
+import 'roulette_unit.dart';
+import '../utils/transform_entry.dart';
+import '../utils/text.dart';
 
 /// Animated roulette core by [AnimatedWidget]
 class RoulettePaint extends AnimatedWidget {
@@ -192,7 +194,7 @@ class _RoulettePainter extends CustomPainter {
 
   /// Draws every section of the roulette with its text or icon.
   ///
-  /// The text or the icon is transformed into a drawable paragraphe.
+  /// The text or the icon is transformed into a drawable paragraph.
   void _drawSections(Canvas canvas, double radius) {
     double drewSweep = 0.0; // Drew sweep angle
 
@@ -208,7 +210,7 @@ class _RoulettePainter extends CustomPainter {
       final IconData? icon = unit.icon;
 
       // If there is an icon, it is converted into a string text.
-      // Otherwise, the given text is rerieved.
+      // Otherwise, the given text is retrieved.
       final String? text =
           icon == null ? unit.text : String.fromCharCode(icon.codePoint);
 
