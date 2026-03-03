@@ -136,10 +136,12 @@ class _RoulettePainter extends CustomPainter {
 
     // Rectangle in which the section is.
     var rect2 = path.getBounds();
+    final TileMode tileMode;
     final Matrix4 matrix;
 
     switch (style.sectionImageLayout) {
       case SectionImageLayout.rotatedFit:
+        tileMode = TileMode.repeated;
         if (rect2.height > rect2.width) {
           rect2 =
               Rect.fromLTWH(rect2.left, rect2.top, rect2.height, rect2.height);
@@ -162,6 +164,7 @@ class _RoulettePainter extends CustomPainter {
         break;
 
       case SectionImageLayout.boundingBoxFit:
+        tileMode = TileMode.clamp;
         // Prevent images from being rendered with repeating patterns.
         // The image now occupies the intended area without being repeated.
 
@@ -182,8 +185,8 @@ class _RoulettePainter extends CustomPainter {
       Paint()
         ..shader = ImageShader(
           image,
-          TileMode.clamp,
-          TileMode.clamp,
+          tileMode,
+          tileMode,
           matrix.storage,
           filterQuality: FilterQuality.high,
         )

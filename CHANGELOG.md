@@ -1,3 +1,8 @@
+## 0.2.2+1 - 2026/3/3
+
+### Bugfix
+  * Fix `SectionImageLayout.rotatedFit` incorrectly using `TileMode.clamp` instead of `TileMode.repeated`, which caused section background images to render incorrectly under this layout mode.
+
 ## 0.2.2 - 2026/3/3
 
 ### New feature
