@@ -12,7 +12,7 @@ import 'roulette_controller.dart';
 import 'roulette_paint.dart';
 
 /// This is an animatable roulette widget.
-/// You need to present a [RouletteController] to controll this widget.
+/// You need to present a [RouletteController] to control this widget.
 class Roulette extends StatefulWidget {
   const Roulette({
     Key? key,
@@ -98,16 +98,37 @@ class RouletteState extends State<Roulette>
       event.minRotateCircles,
       offset: event.offset,
     );
-    rotateAnimation.value = makeAnimation(
-      _animationController,
-      rotate,
-      event.curve,
-      initialValue: rotateAnimation.value.value,
-    );
-    _animationController.duration = event.duration;
-    _animationController
-        .forward(from: 0)
-        .orCancel
+
+    final initialValue = rotateAnimation.value.value;
+    final animationConfig = event.animationConfig;
+
+    TickerFuture tickerFuture;
+
+    if (animationConfig is PhysicsAnimationConfig) {
+      rotateAnimation.value = makeAnimation(
+        _animationController,
+        rotate,
+        null,
+        initialValue: initialValue,
+      );
+      final simulation =
+          NormalizedFrictionSimulation(drag: animationConfig.drag);
+      tickerFuture = _animationController.animateWith(simulation);
+    } else {
+      final curveConfig = animationConfig is CurveAnimationConfig
+          ? animationConfig
+          : const CurveAnimationConfig();
+      rotateAnimation.value = makeAnimation(
+        _animationController,
+        rotate,
+        curveConfig.curve,
+        initialValue: initialValue,
+      );
+      _animationController.duration = curveConfig.duration;
+      tickerFuture = _animationController.forward(from: 0);
+    }
+
+    tickerFuture.orCancel
         .then((_) => _reportEvent(OnRollEndEvent(event)))
         .catchError((_) => _reportEvent(OnRollCancelledEvent(event)));
   }

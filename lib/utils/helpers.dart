@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/physics.dart';
 
 import '../src/roulette_group.dart';
 import '../src/roulette_unit.dart';
@@ -56,6 +57,28 @@ double calculateEndRotate(
   var offsetValue = offset * targetCoverRotate; // Random rotate out
   final totalRotate = preRotation + targetRotate + offsetValue;
   return clockwise ? totalRotate : -totalRotate;
+}
+
+/// A [Simulation] that wraps [FrictionSimulation] and normalizes its output
+/// to the 0.0 -> 1.0 range.
+///
+/// The initial velocity is calculated from [drag] so that the simulation
+/// converges exactly to 1.0 as time approaches infinity.
+class NormalizedFrictionSimulation extends Simulation {
+  NormalizedFrictionSimulation({required double drag})
+      : assert(drag > 0 && drag < 1),
+        _inner = FrictionSimulation(drag, 0.0, -log(drag));
+
+  final FrictionSimulation _inner;
+
+  @override
+  double x(double time) => _inner.x(time).clamp(0.0, 1.0);
+
+  @override
+  double dx(double time) => _inner.dx(time);
+
+  @override
+  bool isDone(double time) => _inner.isDone(time);
 }
 
 typedef DoubleSelector<T> = double Function(T source);
