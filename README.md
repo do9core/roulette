@@ -35,7 +35,7 @@ Add this to your `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  roulette: ^0.2.2
+  roulette: ^0.3.0
 ```
 
 ## Usage
@@ -117,6 +117,33 @@ final offset = random.nextDouble();
 
 // Spin with offset
 await controller.rollTo(2, offset: offset);
+```
+
+### Animation Configurations
+
+You can customize the roll animation by passing an `AnimationConfig` to `rollTo`:
+
+**Curve-based animation** (default):
+
+```dart
+await controller.rollTo(
+  2,
+  animationConfig: CurveAnimationConfig(
+    curve: Curves.easeInOut,
+    duration: Duration(seconds: 3),
+  ),
+);
+```
+
+**Physics-based animation** (available in 0.3.0):
+
+```dart
+await controller.rollTo(
+  2,
+  animationConfig: PhysicsAnimationConfig(
+    drag: 0.3, // Lower = stronger friction, shorter spin
+  ),
+);
 ```
 
 Please refer to API documentation for more details.
