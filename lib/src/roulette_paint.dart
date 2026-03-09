@@ -201,6 +201,10 @@ class _RoulettePainter extends CustomPainter {
   void _drawSections(Canvas canvas, double radius) {
     double drewSweep = 0.0; // Drew sweep angle
 
+    final paragraphStyle = ui.ParagraphStyle(
+      textAlign: TextAlign.center,
+    );
+
     for (var i = 0; i < group.divide; i++) {
       // Draws each section with unit
       final unit = group.units[i];
@@ -234,9 +238,7 @@ class _RoulettePainter extends CustomPainter {
       final chord = 2 * (radius * style.textLayoutBias) * sin(sweep / 2);
 
       // Creates a builder for the paragraph that will be drawn on the canvas.
-      final pb = ui.ParagraphBuilder(ui.ParagraphStyle(
-        textAlign: TextAlign.center,
-      ))
+      final pb = ui.ParagraphBuilder(paragraphStyle)
         ..pushStyle(textStyle.asUiTextStyle())
         ..addText(text);
 
