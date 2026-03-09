@@ -230,13 +230,18 @@ class RouletteState extends State<Roulette>
         return ValueListenableBuilder(
           valueListenable: rotateAnimation,
           builder: (context, Animation<double> animation, _) {
-            widget.onRotationChanged?.call(animation.value);
-            return RoulettePaint(
-              key: widget.key,
+            return AnimatedBuilder(
               animation: animation,
-              style: widget.style,
-              group: widget.group,
-              imageInfos: images,
+              builder: (context, child) {
+                widget.onRotationChanged?.call(animation.value);
+                return RoulettePaint(
+                  key: widget.key,
+                  rotation: animation.value,
+                  style: widget.style,
+                  group: widget.group,
+                  imageInfos: images,
+                );
+              },
             );
           },
         );
