@@ -94,6 +94,262 @@ void main() {
         expect(animation.value, (minCircles + 3 / 5) * pi * 2);
       },
     );
+
+    testWidgets(
+      'ensure rollTo completes and returns true',
+      (WidgetTester tester) async {
+        final controller = RouletteController();
+        await tester.pumpWidget(
+          RouletteWidgetTest(
+            group: RouletteGroup.uniform(5),
+            controller: controller,
+          ),
+        );
+        final future = controller.rollTo(2, minRotateCircles: 1);
+        await tester.pumpAndSettle();
+        expect(await future, isTrue);
+      },
+    );
+
+    testWidgets(
+      'ensure stop cancels rollTo and returns false',
+      (WidgetTester tester) async {
+        final controller = RouletteController();
+        await tester.pumpWidget(
+          RouletteWidgetTest(
+            group: RouletteGroup.uniform(5),
+            controller: controller,
+          ),
+        );
+        final future = controller.rollTo(2, minRotateCircles: 3);
+        await tester.pump(const Duration(milliseconds: 500));
+        controller.stop();
+        await tester.pumpAndSettle();
+        expect(await future, isFalse);
+      },
+    );
+  });
+
+  group('CurveAnimationConfig tests', () {
+    testWidgets(
+      'ensure rollTo with CurveAnimationConfig settles at target',
+      (WidgetTester tester) async {
+        final controller = RouletteController();
+        await tester.pumpWidget(
+          RouletteWidgetTest(
+            group: RouletteGroup.uniform(5),
+            controller: controller,
+          ),
+        );
+        final widgetState = tester.state<RouletteState>(find.byType(Roulette));
+        const minCircles = 2;
+        controller.rollTo(
+          3,
+          minRotateCircles: minCircles,
+          animationConfig: const CurveAnimationConfig(
+            curve: Curves.easeInOut,
+            duration: Duration(seconds: 3),
+          ),
+        );
+        await tester.pumpAndSettle();
+        final animation = widgetState.rotateAnimation.value;
+        expect(animation.value, closeTo((minCircles + 1 / 5) * pi * 2, 1e-10));
+      },
+    );
+
+    testWidgets(
+      'ensure rollTo with CurveAnimationConfig completes and returns true',
+      (WidgetTester tester) async {
+        final controller = RouletteController();
+        await tester.pumpWidget(
+          RouletteWidgetTest(
+            group: RouletteGroup.uniform(5),
+            controller: controller,
+          ),
+        );
+        final future = controller.rollTo(
+          1,
+          minRotateCircles: 1,
+          animationConfig: const CurveAnimationConfig(
+            curve: Curves.linear,
+            duration: Duration(seconds: 2),
+          ),
+        );
+        await tester.pumpAndSettle();
+        expect(await future, isTrue);
+      },
+    );
+
+    testWidgets(
+      'continuous rotation with CurveAnimationConfig preserves position',
+      (WidgetTester tester) async {
+        final controller = RouletteController();
+        await tester.pumpWidget(
+          RouletteWidgetTest(
+            group: RouletteGroup.uniform(5),
+            controller: controller,
+          ),
+        );
+        final widgetState = tester.state<RouletteState>(find.byType(Roulette));
+        controller.rollTo(
+          1,
+          minRotateCircles: 0,
+          offset: 1,
+          animationConfig: const CurveAnimationConfig(),
+        );
+        await tester.pumpAndSettle();
+        final first = widgetState.rotateAnimation.value.value;
+        expect(first, 4 / 5 * pi * 2);
+
+        controller.rollTo(
+          2,
+          minRotateCircles: 0,
+          offset: 1,
+          animationConfig: const CurveAnimationConfig(),
+        );
+        final second = widgetState.rotateAnimation.value.value;
+        expect(second, first);
+      },
+    );
+  });
+
+  group('PhysicsAnimationConfig tests', () {
+    testWidgets(
+      'ensure rollTo with PhysicsAnimationConfig settles at target',
+      (WidgetTester tester) async {
+        final controller = RouletteController();
+        await tester.pumpWidget(
+          RouletteWidgetTest(
+            group: RouletteGroup.uniform(5),
+            controller: controller,
+          ),
+        );
+        final widgetState = tester.state<RouletteState>(find.byType(Roulette));
+        const minCircles = 2;
+        controller.rollTo(
+          3,
+          minRotateCircles: minCircles,
+          animationConfig: const PhysicsAnimationConfig(drag: 0.3),
+        );
+        await tester.pumpAndSettle();
+        final animation = widgetState.rotateAnimation.value;
+        expect(animation.value, closeTo((minCircles + 1 / 5) * pi * 2, 0.05));
+      },
+    );
+
+    testWidgets(
+      'ensure rollTo with PhysicsAnimationConfig completes and returns true',
+      (WidgetTester tester) async {
+        final controller = RouletteController();
+        await tester.pumpWidget(
+          RouletteWidgetTest(
+            group: RouletteGroup.uniform(5),
+            controller: controller,
+          ),
+        );
+        final future = controller.rollTo(
+          2,
+          minRotateCircles: 1,
+          animationConfig: const PhysicsAnimationConfig(drag: 0.5),
+        );
+        await tester.pumpAndSettle();
+        expect(await future, isTrue);
+      },
+    );
+
+    testWidgets(
+      'ensure stop cancels PhysicsAnimationConfig rollTo',
+      (WidgetTester tester) async {
+        final controller = RouletteController();
+        await tester.pumpWidget(
+          RouletteWidgetTest(
+            group: RouletteGroup.uniform(5),
+            controller: controller,
+          ),
+        );
+        final future = controller.rollTo(
+          2,
+          minRotateCircles: 3,
+          animationConfig: const PhysicsAnimationConfig(drag: 0.5),
+        );
+        await tester.pump(const Duration(seconds: 1));
+        controller.stop();
+        await tester.pumpAndSettle();
+        expect(await future, isFalse);
+      },
+    );
+
+    testWidgets(
+      'continuous rotation with PhysicsAnimationConfig preserves position',
+      (WidgetTester tester) async {
+        final controller = RouletteController();
+        await tester.pumpWidget(
+          RouletteWidgetTest(
+            group: RouletteGroup.uniform(5),
+            controller: controller,
+          ),
+        );
+        final widgetState = tester.state<RouletteState>(find.byType(Roulette));
+        controller.rollTo(
+          1,
+          minRotateCircles: 0,
+          offset: 1,
+          animationConfig: const PhysicsAnimationConfig(drag: 0.3),
+        );
+        await tester.pumpAndSettle();
+        final first = widgetState.rotateAnimation.value.value;
+        expect(first, closeTo(4 / 5 * pi * 2, 0.05));
+
+        controller.rollTo(
+          2,
+          minRotateCircles: 0,
+          offset: 1,
+          animationConfig: const PhysicsAnimationConfig(drag: 0.3),
+        );
+        final second = widgetState.rotateAnimation.value.value;
+        expect(second, closeTo(first, 0.05));
+      },
+    );
+
+    testWidgets(
+      'different drag values both settle at correct target',
+      (WidgetTester tester) async {
+        final controller = RouletteController();
+        await tester.pumpWidget(
+          RouletteWidgetTest(
+            group: RouletteGroup.uniform(5),
+            controller: controller,
+          ),
+        );
+        final widgetState = tester.state<RouletteState>(find.byType(Roulette));
+        const expected = 1 * 2 * pi + 3 / 5 * 2 * pi;
+
+        controller.rollTo(
+          1,
+          minRotateCircles: 1,
+          animationConfig: const PhysicsAnimationConfig(drag: 0.2),
+        );
+        await tester.pumpAndSettle();
+        expect(
+          widgetState.rotateAnimation.value.value,
+          closeTo(expected, 0.05),
+        );
+
+        controller.resetAnimation();
+        await tester.pump();
+
+        controller.rollTo(
+          1,
+          minRotateCircles: 1,
+          animationConfig: const PhysicsAnimationConfig(drag: 0.8),
+        );
+        await tester.pumpAndSettle();
+        expect(
+          widgetState.rotateAnimation.value.value,
+          closeTo(expected, 0.05),
+        );
+      },
+    );
   });
 
   group('other unit tests', () {

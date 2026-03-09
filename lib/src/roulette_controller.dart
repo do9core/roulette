@@ -7,25 +7,71 @@ import 'roulette_group.dart';
 import '../utils/constants.dart';
 
 @internal
+@sealed
 abstract class RouletteEvent {}
+
+/// Configuration for roulette roll animation behavior.
+///
+/// See also:
+/// - [CurveAnimationConfig], which drives the animation with a [Curve] over
+///   a fixed [Duration].
+/// - [PhysicsAnimationConfig], which drives the animation with a
+///   friction-based physics simulation whose duration is determined by drag.
+@sealed
+abstract class AnimationConfig {}
+
+/// An [AnimationConfig] that uses a [Curve] to ease the rotation over a
+/// fixed [duration].
+///
+/// When no [AnimationConfig] is provided to [RouletteController.rollTo],
+/// a default [CurveAnimationConfig] is used.
+class CurveAnimationConfig implements AnimationConfig {
+  const CurveAnimationConfig({
+    this.curve = Curves.fastOutSlowIn,
+    this.duration = defaultDuration,
+  });
+
+  /// The easing curve applied to the animation. Defaults to
+  /// [Curves.fastOutSlowIn].
+  final Curve curve;
+
+  /// Total time the animation takes to complete.
+  final Duration duration;
+}
+
+/// An [AnimationConfig] that simulates physical friction to decelerate the
+/// roulette wheel naturally.
+///
+/// The animation duration is not fixed — it is determined by [drag].
+/// A lower [drag] value produces stronger friction and a shorter spin,
+/// while a higher value produces weaker friction and a longer spin.
+class PhysicsAnimationConfig implements AnimationConfig {
+  const PhysicsAnimationConfig({
+    this.drag = 0.3,
+  }) : assert(drag > 0 && drag < 1);
+
+  /// Friction coefficient in the range (0, 1) exclusive.
+  ///
+  /// Values closer to 0 decelerate faster (stronger friction).
+  /// Values closer to 1 decelerate slower (weaker friction).
+  final double drag;
+}
 
 @internal
 class RouletteRollEvent implements RouletteEvent {
   RouletteRollEvent(
     this.targetIndex, {
-    this.duration = defaultDuration,
+    this.animationConfig,
     this.minRotateCircles = defaultMinRotateCircles,
     this.clockwise = true,
-    this.curve = Curves.fastOutSlowIn,
     this.offset = 0,
   });
 
   final int targetIndex;
-  final Duration duration;
   final int minRotateCircles;
   final bool clockwise;
-  final Curve? curve;
   final double offset;
+  final AnimationConfig? animationConfig;
 }
 
 @internal
@@ -82,30 +128,34 @@ class RouletteController {
     _eventStreamController.add(RouletteStopEvent());
   }
 
-  /// Start an animation to [targetIndex], [targetIndex] item must be in [group].
-  /// The [duration] is the animation duration.
-  /// The [clockwise] determin whether the animator should run in closewise didrection.
-  /// Config [minRotateCircles] to determine the minimum rotate before settle.
-  /// Provide a [curve] to update the animation curve.
-  /// Provide a [offset] for roulette stop position, by default, 0 indicates the start of the part.
+  /// Rolls the roulette to the item at [targetIndex].
   ///
-  /// Returning a [Future] which indicates whether the animation is completed or cancelled.
-  /// Return value true indicates the animation is completed.
+  /// The wheel spins at least [minRotateCircles] full rotations before
+  /// settling. Set [clockwise] to `false` to spin counter-clockwise.
+  /// Use [offset] to shift the final stop position within the target
+  /// sector (0 = sector start, 1 = sector end).
+  ///
+  /// Pass an [animationConfig] to control how the animation is driven:
+  /// - [CurveAnimationConfig] — curve-based easing over a fixed duration
+  ///   (used by default when [animationConfig] is `null`).
+  /// - [PhysicsAnimationConfig] — friction-based deceleration whose
+  ///   duration is determined by the drag coefficient.
+  ///
+  /// Returns `true` if the animation completes normally, or `false` if it
+  /// is cancelled (e.g. by [stop] or another [rollTo] call).
   Future<bool> rollTo(
     int targetIndex, {
-    Duration duration = defaultDuration,
     int minRotateCircles = defaultMinRotateCircles,
     bool clockwise = true,
-    Curve? curve = Curves.fastOutSlowIn,
     double offset = 0,
+    AnimationConfig? animationConfig,
   }) {
     final completer = Completer<bool>();
     final event = RouletteRollEvent(
       targetIndex,
-      duration: duration,
       minRotateCircles: minRotateCircles,
       clockwise: clockwise,
-      curve: curve,
+      animationConfig: animationConfig,
       offset: offset,
     );
     _eventStreamController.add(event);

@@ -71,11 +71,14 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
+enum AnimationMode { curve, physics }
+
 class _HomePageState extends State<HomePage> {
   static final _random = Random();
 
   final _controller = RouletteController();
   bool _clockwise = true;
+  AnimationMode _animationMode = AnimationMode.curve;
 
   final colors = <Color>[
     Colors.red.withAlpha(50),
@@ -162,12 +165,45 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ],
               ),
+              SegmentedButton<AnimationMode>(
+                segments: const [
+                  ButtonSegment(
+                    value: AnimationMode.curve,
+                    label: Text('Curve'),
+                    icon: Icon(Icons.show_chart),
+                  ),
+                  ButtonSegment(
+                    value: AnimationMode.physics,
+                    label: Text('Physics'),
+                    icon: Icon(Icons.speed),
+                  ),
+                ],
+                selected: {_animationMode},
+                onSelectionChanged: (selected) {
+                  setState(() {
+                    _animationMode = selected.first;
+                  });
+                },
+              ),
+              const SizedBox(height: 8),
               FilledButton(
                 onPressed: () async {
+                  final AnimationConfig config;
+                  switch (_animationMode) {
+                    case AnimationMode.curve:
+                      config = const CurveAnimationConfig(
+                        curve: Curves.fastOutSlowIn,
+                        duration: Duration(seconds: 5),
+                      );
+                    case AnimationMode.physics:
+                      config = const PhysicsAnimationConfig(drag: 0.3);
+                  }
+
                   final completed = await _controller.rollTo(
                     3,
                     clockwise: _clockwise,
                     offset: _random.nextDouble(),
+                    animationConfig: config,
                   );
 
                   if (!context.mounted) return;

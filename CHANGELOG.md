@@ -1,3 +1,11 @@
+## 0.3.0 - 2026/3/4
+
+### New feature
+  * Physics-based animation support via `PhysicsAnimationConfig`. The roulette wheel now decelerates naturally using a friction simulation, with duration determined by the `drag` coefficient.
+
+### ⚠ Breaking changes:
+  * The `duration` parameter has been moved from `rollTo` into `CurveAnimationConfig`. When no `AnimationConfig` is provided, the default `CurveAnimationConfig` (with default duration and curve) is used automatically. For more information, check the [Migration Guide](https://github.com/do9core/roulette/pull/36) here.
+
 ## 0.2.2+1 - 2026/3/3
 
 ### Bugfix
