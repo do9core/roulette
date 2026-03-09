@@ -16,7 +16,7 @@
 /// @author do9core
 library roulette;
 
-export './src/roulette.dart' show Roulette;
+export './src/roulette.dart' show Roulette, TappableRoulette;
 export './src/roulette_controller.dart'
     show
         RouletteController,
