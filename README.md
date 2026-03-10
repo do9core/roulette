@@ -38,7 +38,7 @@ Add this to your `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  roulette: ^0.3.0
+  roulette: ^0.3.2
 ```
 
 ## Usage
@@ -90,6 +90,26 @@ Widget build(BuildContext context) {
     group: group,
     controller: controller,
     style: RouletteStyle(
+      // Customize appearance (e.g. sectionImageLayout for image sections)
+    ),
+  );
+}
+```
+
+### Add Tappable Roulette Widget
+
+Available from `0.3.1`, you can use `TappableRoulette` which wraps `Roulette` to detect which sector is tapped by the user.
+
+```dart
+@override
+Widget build(BuildContext context) {
+  return TappableRoulette(
+    group: group,
+    controller: controller,
+    onTap: (index) {
+      print('Tapped on $index sector');
+    },
+    style: RouletteStyle(
       // Customize appearance
     ),
   );
@@ -122,7 +142,34 @@ final offset = random.nextDouble();
 await controller.rollTo(2, offset: offset);
 ```
 
-You can also use `rollInfinite` to roll infinitely until you call `stop` method:
+### Animation Configurations
+
+You can customize the roll animation by passing an `AnimationConfig` to `rollTo`:
+
+**Curve-based animation** (default):
+
+```dart
+await controller.rollTo(
+  2,
+  animationConfig: CurveAnimationConfig(
+    curve: Curves.easeInOut,
+    duration: Duration(seconds: 3),
+  ),
+);
+```
+
+**Physics-based animation** (available in 0.3.0):
+
+```dart
+await controller.rollTo(
+  2,
+  animationConfig: PhysicsAnimationConfig(
+    drag: 0.3, // Lower = stronger friction, shorter spin
+  ),
+);
+```
+
+You can also use `rollInfinite` to roll infinitely until you call `stop` or `rollTo` method:
 
 ```dart
 // Roll infinitely

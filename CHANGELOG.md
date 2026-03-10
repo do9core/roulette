@@ -1,7 +1,36 @@
-## 0.3.0 - 2025/12/4
+# 0.3.2 - 2026/3/10
 
 ### New feature
   * You can now roll the Roulette infinitely with `rollInfinite` method, until you call `rollTo` or `stop` method. The example is also updated to show how to use it.
+
+## 0.3.1 - 2026/3/9
+
+### New feature
+  * Add `TappableRoulette` widget with sector tap detection.
+
+### Others
+  * Add `device_preview_plus` to the example app.
+
+## 0.3.0 - 2026/3/4
+
+### New feature
+  * Physics-based animation support via `PhysicsAnimationConfig`. The roulette wheel now decelerates naturally using a friction simulation, with duration determined by the `drag` coefficient.
+
+### ⚠ Breaking changes:
+  * The `duration` parameter has been moved from `rollTo` into `CurveAnimationConfig`. When no `AnimationConfig` is provided, the default `CurveAnimationConfig` (with default duration and curve) is used automatically. For more information, check the [Migration Guide](https://github.com/do9core/roulette/pull/36) here.
+
+## 0.2.2+1 - 2026/3/3
+
+### Bugfix
+  * Fix `SectionImageLayout.rotatedFit` incorrectly using `TileMode.clamp` instead of `TileMode.repeated`, which caused section background images to render incorrectly under this layout mode.
+
+## 0.2.2 - 2026/3/3
+
+### New feature
+  * Add an enum `SectionImageLayout` to control how a background image is laid out within each roulette section. See API documentation for details. Thanks to [@TheMrAleX](https://github.com/TheMrAleX) for the contribution.
+
+### Others
+  * Build with Flutter SDK 3.41, update lint version
 
 ## 0.2.1 - 2025/12/4
   * Build with latest Flutter SDK, update lint version and fix lint issue.

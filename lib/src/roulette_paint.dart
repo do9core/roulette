@@ -1,27 +1,29 @@
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:roulette/roulette.dart';
-import 'package:roulette/utils/transform_entry.dart';
-import 'package:roulette/utils/text.dart';
-
 import 'dart:math';
 import 'dart:ui' as ui;
 
-/// Animated roulette core by [AnimatedWidget]
-class RoulettePaint extends AnimatedWidget {
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+
+import 'roulette_style.dart';
+import 'roulette_group.dart';
+import 'roulette_unit.dart';
+import '../utils/transform_entry.dart';
+import '../utils/text.dart';
+
+/// Animated roulette core
+class RoulettePaint extends StatelessWidget {
   const RoulettePaint({
     Key? key,
-    required Animation<double> animation,
     required this.style,
     required this.group,
+    required this.rotation,
     required this.imageInfos,
-  }) : super(key: key, listenable: animation);
+  }) : super(key: key);
 
   final RouletteStyle style;
   final RouletteGroup group;
+  final double rotation;
   final Map<int, ImageInfo> imageInfos;
-
-  Animation<double> get _rotation => listenable as Animation<double>;
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +31,7 @@ class RoulettePaint extends AnimatedWidget {
       aspectRatio: 1.0,
       child: CustomPaint(
         painter: _RoulettePainter(
-          rotate: _rotation.value,
+          rotate: rotation,
           style: style,
           group: group,
           imageInfos: imageInfos,
@@ -133,37 +135,59 @@ class _RoulettePainter extends CustomPainter {
 
     // Rectangle in which the section is.
     var rect2 = path.getBounds();
+    final TileMode tileMode;
+    final Matrix4 matrix;
 
-    // Transforms into a square (biggest)
-    if (rect2.height > rect2.width) {
-      rect2 = Rect.fromLTWH(rect2.left, rect2.top, rect2.height, rect2.height);
-    } else {
-      rect2 = Rect.fromLTWH(rect2.left, rect2.top, rect2.width, rect2.width);
+    switch (style.sectionImageLayout) {
+      case SectionImageLayout.rotatedFit:
+        tileMode = TileMode.repeated;
+        if (rect2.height > rect2.width) {
+          rect2 =
+              Rect.fromLTWH(rect2.left, rect2.top, rect2.height, rect2.height);
+        } else {
+          rect2 =
+              Rect.fromLTWH(rect2.left, rect2.top, rect2.width, rect2.width);
+        }
+        // Calculates size of image in the square.
+        double scaleX = (rect2.width / image.width);
+        double scaleY = (rect2.height / image.height);
+
+        // Transformation matrix to scale and rotate image in the section.
+        matrix = composeMatrixFromOffsets(
+          translate: Offset(style.dividerThickness / 2 - 1,
+              rect2.top + rect2.height * 4 + style.dividerThickness / 2 + 1),
+          scale: (max(scaleX, scaleY)) - 0.002,
+          rotation: sweep / 2 + pi / 2,
+          anchor: Offset.zero,
+        );
+        break;
+
+      case SectionImageLayout.boundingBoxFit:
+        tileMode = TileMode.clamp;
+        // Prevent images from being rendered with repeating patterns.
+        // The image now occupies the intended area without being repeated.
+
+        // For use in the clean Matrix
+        double scaleX = rect2.width / image.width;
+        double scaleY = rect2.height / image.height;
+        double scale = max(scaleX, scaleY);
+
+        matrix = Matrix4.identity()
+          ..translateByDouble(rect2.left, rect2.top, 0.0, 1.0)
+          ..scaleByDouble(scale, scale, scale, 1);
+        break;
     }
 
-    // Calculates size of image in the square.
-    double scaleX = (rect2.width / image.width);
-    double scaleY = (rect2.height / image.height);
-
-    // Transformation matrix to scale and rotate image in the section.
-    Matrix4 matrix = composeMatrixFromOffsets(
-      translate: Offset(style.dividerThickness / 2 - 1,
-          rect2.top + rect2.height * 4 + style.dividerThickness / 2 + 1),
-      scale: (max(scaleX, scaleY)) - 0.002,
-      rotation: sweep / 2 + pi / 2,
-      anchor: Offset.zero,
-    );
-
-    // Draws the section with the image.
+    // Drawing the TileMap
     canvas.drawPath(
       path,
       Paint()
         ..shader = ImageShader(
           image,
-          TileMode.repeated,
-          TileMode.repeated,
+          tileMode,
+          tileMode,
           matrix.storage,
-          filterQuality: FilterQuality.medium,
+          filterQuality: FilterQuality.high,
         )
         ..style = PaintingStyle.fill
         ..strokeWidth = 0,
@@ -172,9 +196,13 @@ class _RoulettePainter extends CustomPainter {
 
   /// Draws every section of the roulette with its text or icon.
   ///
-  /// The text or the icon is transformed into a drawable paragraphe.
+  /// The text or the icon is transformed into a drawable paragraph.
   void _drawSections(Canvas canvas, double radius) {
     double drewSweep = 0.0; // Drew sweep angle
+
+    final paragraphStyle = ui.ParagraphStyle(
+      textAlign: TextAlign.center,
+    );
 
     for (var i = 0; i < group.divide; i++) {
       // Draws each section with unit
@@ -188,7 +216,7 @@ class _RoulettePainter extends CustomPainter {
       final IconData? icon = unit.icon;
 
       // If there is an icon, it is converted into a string text.
-      // Otherwise, the given text is rerieved.
+      // Otherwise, the given text is retrieved.
       final String? text =
           icon == null ? unit.text : String.fromCharCode(icon.codePoint);
 
@@ -209,9 +237,7 @@ class _RoulettePainter extends CustomPainter {
       final chord = 2 * (radius * style.textLayoutBias) * sin(sweep / 2);
 
       // Creates a builder for the paragraph that will be drawn on the canvas.
-      final pb = ui.ParagraphBuilder(ui.ParagraphStyle(
-        textAlign: TextAlign.center,
-      ))
+      final pb = ui.ParagraphBuilder(paragraphStyle)
         ..pushStyle(textStyle.asUiTextStyle())
         ..addText(text);
 
