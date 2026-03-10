@@ -251,7 +251,7 @@ class _HomePageState extends State<HomePage> {
                           switch (_animationMode) {
                             case AnimationMode.curve:
                               config = const CurveAnimationConfig(
-                                curve: Curves.fastOutSlowIn,
+                                curve: Curves.easeOut,
                                 duration: Duration(seconds: 5),
                               );
                             case AnimationMode.physics:
@@ -278,19 +278,28 @@ class _HomePageState extends State<HomePage> {
                             );
                           }
                         },
-                        child: const Text('ROLL'),
+                        child: const Text('Roll'),
+                      ),
+                      FilledButton(
+                        onPressed: () {
+                          _controller.rollInfinitely(
+                            period: const Duration(milliseconds: 200),
+                            clockwise: _clockwise,
+                          );
+                        },
+                        child: Text('Roll Infinitely'),
                       ),
                       FilledButton(
                         onPressed: () {
                           _controller.stop();
                         },
-                        child: const Text('CANCEL'),
+                        child: const Text('Cancel'),
                       ),
                       FilledButton(
                         onPressed: () {
                           _controller.resetAnimation();
                         },
-                        child: const Text('RESET'),
+                        child: const Text('Reset'),
                       ),
                     ],
                   ),
