@@ -2,6 +2,9 @@ name: roulette
 description: This is a library provide a simple roulette widget which usually used for lottery.
 version: 0.3.2
 repository: https://github.com/do9core/roulette
+issue_tracker: https://github.com/do9core/roulette/issues
+topics:
+  - widget
 
 environment:
   sdk: ">=2.12.0 <4.0.0"
