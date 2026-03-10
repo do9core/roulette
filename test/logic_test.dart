@@ -352,6 +352,201 @@ void main() {
     );
   });
 
+  group('rollInfinitely tests', () {
+    testWidgets(
+      'ensure rollInfinitely starts animation',
+      (WidgetTester tester) async {
+        final controller = RouletteController();
+        await tester.pumpWidget(
+          RouletteWidgetTest(
+            group: RouletteGroup.uniform(5),
+            controller: controller,
+          ),
+        );
+        final widgetState = tester.state<RouletteState>(find.byType(Roulette));
+
+        controller.rollInfinitely();
+        await tester.pump(); // process async stream event delivery
+        await tester.pump(); // register the ticker's initial frame
+        await tester.pump(const Duration(milliseconds: 100));
+
+        // Animation value should have changed from 0
+        final value = widgetState.rotateAnimation.value.value;
+        expect(value, isNot(0.0));
+
+        // Clean up
+        controller.stop();
+        await tester.pump();
+      },
+    );
+
+    testWidgets(
+      'ensure rollInfinitely is continuous (animation keeps running)',
+      (WidgetTester tester) async {
+        final controller = RouletteController();
+        await tester.pumpWidget(
+          RouletteWidgetTest(
+            group: RouletteGroup.uniform(5),
+            controller: controller,
+          ),
+        );
+        final widgetState = tester.state<RouletteState>(find.byType(Roulette));
+
+        controller.rollInfinitely();
+        await tester.pump(const Duration(milliseconds: 200));
+        final firstValue = widgetState.rotateAnimation.value.value;
+
+        await tester.pump(const Duration(milliseconds: 200));
+        final secondValue = widgetState.rotateAnimation.value.value;
+
+        // Should have advanced further
+        expect(secondValue, greaterThan(firstValue));
+
+        controller.stop();
+        await tester.pump();
+      },
+    );
+
+    testWidgets(
+      'ensure stop cancels rollInfinitely and future resolves',
+      (WidgetTester tester) async {
+        final controller = RouletteController();
+        await tester.pumpWidget(
+          RouletteWidgetTest(
+            group: RouletteGroup.uniform(5),
+            controller: controller,
+          ),
+        );
+
+        final future = controller.rollInfinitely();
+        await tester.pump(const Duration(milliseconds: 500));
+        controller.stop();
+        await tester.pump();
+
+        // The future should resolve (not hang)
+        await future;
+      },
+    );
+
+    testWidgets(
+      'ensure rollTo cancels rollInfinitely and settles at target',
+      (WidgetTester tester) async {
+        final controller = RouletteController();
+        await tester.pumpWidget(
+          RouletteWidgetTest(
+            group: RouletteGroup.uniform(5),
+            controller: controller,
+          ),
+        );
+        final widgetState = tester.state<RouletteState>(find.byType(Roulette));
+
+        final infiniteFuture = controller.rollInfinitely();
+        await tester.pump(const Duration(milliseconds: 500));
+
+        // Now rollTo should cancel the infinite roll
+        const minCircles = 1;
+        final rollToResult = controller.rollTo(1, minRotateCircles: minCircles);
+        await tester.pumpAndSettle();
+
+        // Infinite roll future should have resolved
+        await infiniteFuture;
+
+        // rollTo should complete successfully
+        expect(await rollToResult, isTrue);
+
+        // Should have settled at the expected target position
+        final animation = widgetState.rotateAnimation.value;
+        expect(
+          animation.value,
+          closeTo((minCircles + 3 / 5) * pi * 2, 1e-10),
+        );
+      },
+    );
+
+    testWidgets(
+      'ensure another rollInfinitely cancels the previous one',
+      (WidgetTester tester) async {
+        final controller = RouletteController();
+        await tester.pumpWidget(
+          RouletteWidgetTest(
+            group: RouletteGroup.uniform(5),
+            controller: controller,
+          ),
+        );
+
+        final firstFuture = controller.rollInfinitely();
+        await tester.pump(const Duration(milliseconds: 500));
+
+        // Start a second infinite roll
+        final secondFuture = controller.rollInfinitely();
+        await tester.pump(const Duration(milliseconds: 100));
+
+        // First future should have resolved (cancelled)
+        await firstFuture;
+
+        // Second one should still be running; clean up
+        controller.stop();
+        await tester.pump();
+        await secondFuture;
+      },
+    );
+
+    testWidgets(
+      'ensure rollInfinitely counter-clockwise rotates negatively',
+      (WidgetTester tester) async {
+        final controller = RouletteController();
+        await tester.pumpWidget(
+          RouletteWidgetTest(
+            group: RouletteGroup.uniform(5),
+            controller: controller,
+          ),
+        );
+        final widgetState = tester.state<RouletteState>(find.byType(Roulette));
+
+        controller.rollInfinitely(clockwise: false);
+        await tester.pump(); // process async stream event delivery
+        await tester.pump(); // register the ticker's initial frame
+        await tester.pump(const Duration(milliseconds: 200));
+
+        final value = widgetState.rotateAnimation.value.value;
+        expect(value, lessThan(0.0));
+
+        controller.stop();
+        await tester.pump();
+      },
+    );
+
+    testWidgets(
+      'ensure rollInfinitely with custom period works',
+      (WidgetTester tester) async {
+        final controller = RouletteController();
+        await tester.pumpWidget(
+          RouletteWidgetTest(
+            group: RouletteGroup.uniform(5),
+            controller: controller,
+          ),
+        );
+        final widgetState = tester.state<RouletteState>(find.byType(Roulette));
+
+        // Use a shorter period for faster rotation
+        controller.rollInfinitely(
+          period: const Duration(milliseconds: 500),
+        );
+        await tester.pump(); // process async stream event delivery
+        await tester.pump(); // register the ticker's initial frame
+        await tester.pump(const Duration(milliseconds: 250));
+
+        final value = widgetState.rotateAnimation.value.value;
+        // At half the period, animation should be roughly halfway through one cycle
+        expect(value, greaterThan(0.0));
+        expect(value, closeTo(pi, 0.1));
+
+        controller.stop();
+        await tester.pump();
+      },
+    );
+  });
+
   group('other unit tests', () {
     test('conflict when set text and icon simultaneously', () {
       expect(
