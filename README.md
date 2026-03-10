@@ -35,7 +35,7 @@ Add this to your `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  roulette: ^0.3.0
+  roulette: ^0.3.1
 ```
 
 ## Usage
@@ -88,6 +88,26 @@ Widget build(BuildContext context) {
     controller: controller,
     style: RouletteStyle(
       // Customize appearance (e.g. sectionImageLayout for image sections)
+    ),
+  );
+}
+```
+
+### Add Tappable Roulette Widget
+
+Available from `0.3.1`, you can use `TappableRoulette` which wraps `Roulette` to detect which sector is tapped by the user.
+
+```dart
+@override
+Widget build(BuildContext context) {
+  return TappableRoulette(
+    group: group,
+    controller: controller,
+    onTap: (index) {
+      print('Tapped on $index sector');
+    },
+    style: RouletteStyle(
+      // Customize appearance
     ),
   );
 }

@@ -1,12 +1,17 @@
 import 'dart:math';
 
+import 'package:device_preview_plus/device_preview_plus.dart';
 import 'package:flutter/material.dart';
 
 import 'package:roulette/roulette.dart';
 import 'arrow.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    DevicePreview(
+      builder: (context) => const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -44,7 +49,8 @@ class MyRoulette extends StatelessWidget {
           height: 260,
           child: Padding(
             padding: const EdgeInsets.only(top: 30),
-            child: Roulette(
+            // Use Roulette if you don't need onTap callback
+            child: TappableRoulette(
               group: group,
               // Provide controller to update its state
               controller: controller,
@@ -55,11 +61,33 @@ class MyRoulette extends StatelessWidget {
                 centerStickSizePercent: 0.05,
                 centerStickerColor: Colors.black,
               ),
+              // Only available in TappableRoulette
+              onTap: (index) => showTappedSector(context, index),
             ),
           ),
         ),
         const Arrow(),
       ],
+    );
+  }
+
+  void showTappedSector(BuildContext context, int index) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Roulette'),
+          content: Text('You tapped $index sector'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('OK'),
+            )
+          ],
+        );
+      },
     );
   }
 }
@@ -79,6 +107,7 @@ class _HomePageState extends State<HomePage> {
   final _controller = RouletteController();
   bool _clockwise = true;
   AnimationMode _animationMode = AnimationMode.curve;
+  double _drag = 0.3;
 
   final colors = <Color>[
     Colors.red.withAlpha(50),
@@ -147,83 +176,125 @@ class _HomePageState extends State<HomePage> {
                 controller: _controller,
               ),
               const SizedBox(height: 40),
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Text(
-                    "Clockwise: ",
-                    style: TextStyle(fontSize: 18),
-                  ),
-                  Checkbox(
-                    value: _clockwise,
-                    onChanged: (onChanged) {
-                      setState(() {
-                        _controller.resetAnimation();
-                        _clockwise = !_clockwise;
-                      });
-                    },
-                  ),
-                ],
-              ),
-              SegmentedButton<AnimationMode>(
-                segments: const [
-                  ButtonSegment(
-                    value: AnimationMode.curve,
-                    label: Text('Curve'),
-                    icon: Icon(Icons.show_chart),
-                  ),
-                  ButtonSegment(
-                    value: AnimationMode.physics,
-                    label: Text('Physics'),
-                    icon: Icon(Icons.speed),
-                  ),
-                ],
-                selected: {_animationMode},
-                onSelectionChanged: (selected) {
-                  setState(() {
-                    _animationMode = selected.first;
-                  });
-                },
-              ),
-              const SizedBox(height: 8),
-              FilledButton(
-                onPressed: () async {
-                  final AnimationConfig config;
-                  switch (_animationMode) {
-                    case AnimationMode.curve:
-                      config = const CurveAnimationConfig(
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    spacing: 8,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Text(
+                            "Clockwise: ",
+                            style: TextStyle(fontSize: 18),
+                          ),
+                          Checkbox(
+                            value: _clockwise,
+                            onChanged: (onChanged) {
+                              setState(() {
+                                _controller.resetAnimation();
+                                _clockwise = !_clockwise;
+                              });
+                            },
+                          ),
+                        ],
+                      ),
+                      SegmentedButton<AnimationMode>(
+                        segments: const [
+                          ButtonSegment(
+                            value: AnimationMode.curve,
+                            label: Text('Curve'),
+                            icon: Icon(Icons.show_chart),
+                          ),
+                          ButtonSegment(
+                            value: AnimationMode.physics,
+                            label: Text('Physics'),
+                            icon: Icon(Icons.speed),
+                          ),
+                        ],
+                        selected: {_animationMode},
+                        onSelectionChanged: (selected) {
+                          setState(() {
+                            _animationMode = selected.first;
+                          });
+                        },
+                      ),
+                      AnimatedSize(
+                        duration: Durations.medium1,
                         curve: Curves.fastOutSlowIn,
-                        duration: Duration(seconds: 5),
-                      );
-                    case AnimationMode.physics:
-                      config = const PhysicsAnimationConfig(drag: 0.3);
-                  }
+                        child: _animationMode == AnimationMode.physics
+                            ? Row(
+                                key: ValueKey('physics'),
+                                children: [
+                                  Expanded(
+                                    child: Slider(
+                                      value: _drag,
+                                      min: 0.01,
+                                      max: 0.99,
+                                      onChanged: (value) {
+                                        setState(() {
+                                          _drag = value;
+                                        });
+                                      },
+                                    ),
+                                  ),
+                                  Text(_drag.toStringAsFixed(2)),
+                                ],
+                              )
+                            : SizedBox.shrink(key: ValueKey('curve')),
+                      ),
+                      const SizedBox(height: 8),
+                      FilledButton(
+                        onPressed: () async {
+                          final AnimationConfig config;
+                          switch (_animationMode) {
+                            case AnimationMode.curve:
+                              config = const CurveAnimationConfig(
+                                curve: Curves.fastOutSlowIn,
+                                duration: Duration(seconds: 5),
+                              );
+                            case AnimationMode.physics:
+                              config = PhysicsAnimationConfig(drag: _drag);
+                          }
 
-                  final completed = await _controller.rollTo(
-                    3,
-                    clockwise: _clockwise,
-                    offset: _random.nextDouble(),
-                    animationConfig: config,
-                  );
+                          final completed = await _controller.rollTo(
+                            3,
+                            clockwise: _clockwise,
+                            offset: _random.nextDouble(),
+                            animationConfig: config,
+                          );
 
-                  if (!context.mounted) return;
-                  if (completed) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Animation completed')),
-                    );
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Animation cancelled')),
-                    );
-                  }
-                },
-                child: const Text('ROLL'),
-              ),
-              FilledButton(
-                onPressed: () {
-                  _controller.stop();
-                },
-                child: const Text('CANCEL'),
+                          if (!context.mounted) return;
+                          if (completed) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content: Text('Animation completed')),
+                            );
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content: Text('Animation cancelled')),
+                            );
+                          }
+                        },
+                        child: const Text('ROLL'),
+                      ),
+                      FilledButton(
+                        onPressed: () {
+                          _controller.stop();
+                        },
+                        child: const Text('CANCEL'),
+                      ),
+                      FilledButton(
+                        onPressed: () {
+                          _controller.resetAnimation();
+                        },
+                        child: const Text('RESET'),
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ],
           ),

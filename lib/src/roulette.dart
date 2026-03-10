@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'dart:math' as math;
 import 'dart:ui' as ui;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:roulette/utils/helpers.dart';
 
@@ -14,11 +15,29 @@ import 'roulette_paint.dart';
 /// This is an animatable roulette widget.
 /// You need to present a [RouletteController] to control this widget.
 class Roulette extends StatefulWidget {
+  /// Creates a [Roulette] widget.
   const Roulette({
+    Key? key,
+    required RouletteGroup group,
+    required RouletteController controller,
+    RouletteStyle style = const RouletteStyle(),
+  }) : this._internal(
+          key: key,
+          group: group,
+          controller: controller,
+          style: style,
+        );
+
+  /// Internal constructor that accepts an [onRotationChanged] callback.
+  ///
+  /// This is used by [TappableRoulette] to observe the current rotation
+  /// angle without exposing rotation tracking on [RouletteController].
+  const Roulette._internal({
     Key? key,
     required this.group,
     required this.controller,
     this.style = const RouletteStyle(),
+    this.onRotationChanged,
   }) : super(key: key);
 
   /// Controls the roulette.
@@ -29,6 +48,10 @@ class Roulette extends StatefulWidget {
 
   /// The [RouletteGroup] to display.
   final RouletteGroup group;
+
+  /// Called on every frame with the current rotation angle in radians.
+  @internal
+  final ValueChanged<double>? onRotationChanged;
 
   @override
   State<Roulette> createState() => RouletteState();
@@ -207,12 +230,18 @@ class RouletteState extends State<Roulette>
         return ValueListenableBuilder(
           valueListenable: rotateAnimation,
           builder: (context, Animation<double> animation, _) {
-            return RoulettePaint(
-              key: widget.key,
+            return AnimatedBuilder(
               animation: animation,
-              style: widget.style,
-              group: widget.group,
-              imageInfos: images,
+              builder: (context, child) {
+                widget.onRotationChanged?.call(animation.value);
+                return RoulettePaint(
+                  key: widget.key,
+                  rotation: animation.value,
+                  style: widget.style,
+                  group: widget.group,
+                  imageInfos: images,
+                );
+              },
             );
           },
         );
@@ -258,4 +287,89 @@ ImageInfo _createErrorImage(Size size) {
       size.height.toInt(),
     ),
   );
+}
+
+/// A callback invoked when a sector of the roulette is tapped.
+///
+/// [index] is the 0-based index of the tapped [RouletteUnit] within the
+/// [RouletteGroup].
+typedef SectorTapCallback = void Function(int index);
+
+/// A tappable variant of [Roulette].
+///
+/// This widget wraps [Roulette] with hit-testing so that taps on the wheel
+/// report back which sector was tapped via [onTap]. The hit-test respects
+/// the current rotation of the wheel and variable sector sizes due to
+/// differing [RouletteUnit.weight] values.
+///
+/// Taps that land outside the wheel circle or inside the center sticker
+/// (controlled by [RouletteStyle.centerStickSizePercent]) are ignored.
+class TappableRoulette extends StatefulWidget {
+  const TappableRoulette({
+    Key? key,
+    required this.group,
+    required this.controller,
+    this.style = const RouletteStyle(),
+    this.onTap,
+  }) : super(key: key);
+
+  /// Controls the roulette animation.
+  final RouletteController controller;
+
+  /// The display style of the roulette.
+  final RouletteStyle style;
+
+  /// The [RouletteGroup] to display.
+  final RouletteGroup group;
+
+  /// Called when a sector is tapped. The callback receives the 0-based
+  /// index of the tapped sector.
+  final SectorTapCallback? onTap;
+
+  @override
+  State<TappableRoulette> createState() => _TappableRouletteState();
+}
+
+class _TappableRouletteState extends State<TappableRoulette> {
+  double _currentRotation = 0;
+
+  void _onRotationChanged(double rotation) {
+    _currentRotation = rotation;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        // The Roulette uses AspectRatio(1.0), so width == height.
+        final size = Size(constraints.maxWidth, constraints.maxWidth);
+        return GestureDetector(
+          onTapUp: (details) => _handleTapUp(details, size),
+          child: Roulette._internal(
+            group: widget.group,
+            controller: widget.controller,
+            style: widget.style,
+            onRotationChanged: _onRotationChanged,
+          ),
+        );
+      },
+    );
+  }
+
+  void _handleTapUp(TapUpDetails details, Size size) {
+    final callback = widget.onTap;
+    if (callback == null) return;
+
+    final index = hitTestSector(
+      size: size,
+      group: widget.group,
+      rotation: _currentRotation,
+      localPosition: details.localPosition,
+      centerStickerPercent: widget.style.centerStickSizePercent,
+    );
+
+    if (index != null) {
+      callback(index);
+    }
+  }
 }

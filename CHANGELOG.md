@@ -1,3 +1,11 @@
+## 0.3.1 - 2026/3/9
+
+### New feature
+  * Add `TappableRoulette` widget with sector tap detection.
+
+### Others
+  * Add `device_preview_plus` to the example app.
+
 ## 0.3.0 - 2026/3/4
 
 ### New feature

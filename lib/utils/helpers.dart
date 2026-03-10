@@ -81,6 +81,56 @@ class NormalizedFrictionSimulation extends Simulation {
   bool isDone(double time) => _inner.isDone(time);
 }
 
+/// Determines which sector of a roulette the given [localPosition] falls in.
+///
+/// [size] is the widget size (assumed square).
+/// [group] is the [RouletteGroup] whose weighted sectors to test against.
+/// [rotation] is the current rotation angle in radians applied to the wheel.
+/// [centerStickerPercent] is the radius fraction of the center sticker
+/// (taps inside this circle return `null`).
+///
+/// Returns the 0-based sector index, or `null` if the tap is outside the
+/// wheel circle or inside the center sticker.
+int? hitTestSector({
+  required Size size,
+  required RouletteGroup group,
+  required double rotation,
+  required Offset localPosition,
+  double centerStickerPercent = 0,
+}) {
+  final radius = size.width / 2;
+  final center = Offset(size.width / 2, size.height / 2);
+  final delta = localPosition - center;
+  final distance = delta.distance;
+
+  // Outside the circle.
+  if (distance > radius) return null;
+
+  // Inside the center sticker exclusion zone.
+  if (centerStickerPercent > 0 && distance < radius * centerStickerPercent) {
+    return null;
+  }
+
+  // The painter draws starting at angle -π/2 + rotation, so we reverse that
+  // to obtain the angle in "sector space".
+  final rawAngle = atan2(delta.dy, delta.dx);
+  // Subtract the base rotation (-π/2 + rotation) to get the sector-local angle.
+  var angle = rawAngle - (-pi / 2 + rotation);
+  // Normalize to [0, 2π).
+  angle = angle % (2 * pi);
+  if (angle < 0) angle += 2 * pi;
+
+  // Walk through sectors and find which one the angle falls in.
+  double cumulative = 0;
+  for (var i = 0; i < group.divide; i++) {
+    final sweep = 2 * pi * group.units[i].weight / group.totalWeights;
+    cumulative += sweep;
+    if (angle < cumulative) return i;
+  }
+  // Floating-point edge case – attribute to last sector.
+  return group.divide - 1;
+}
+
 typedef DoubleSelector<T> = double Function(T source);
 
 extension DoubleSum<T> on Iterable<T> {
