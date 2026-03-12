@@ -1,3 +1,8 @@
+# 0.3.2 - 2026/3/10
+
+### New feature
+  * You can now roll the Roulette infinitely with `rollInfinitely` method, until you call `rollTo` or `stop` method. The example is also updated to show how to use it.
+
 ## 0.3.1 - 2026/3/9
 
 ### New feature

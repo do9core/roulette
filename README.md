@@ -35,7 +35,7 @@ Add this to your `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  roulette: ^0.3.1
+  roulette: ^0.3.2
 ```
 
 ## Usage
@@ -164,6 +164,26 @@ await controller.rollTo(
     drag: 0.3, // Lower = stronger friction, shorter spin
   ),
 );
+```
+
+### Roll infinitely before determine the result (available in 0.3.2)
+
+You can also use `rollInfinitely` to roll infinitely until you call `stop` or `rollTo` method:
+
+```dart
+// Roll infinitely
+controller.rollInfinitely();
+
+// Getting the result value somewhere...
+try {
+  final result = await service.request()
+  final index = values.indexOf(result);
+  // Stop rolling and settle to index
+  controller.rollTo(index, offset: random.nextDouble());
+} catch (e, st) {
+  // Or stop rolling immediately, stop with this method has no animation
+  // controller.stop();
+}
 ```
 
 Please refer to API documentation for more details.

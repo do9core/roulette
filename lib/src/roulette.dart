@@ -102,6 +102,8 @@ class RouletteState extends State<Roulette>
       _handleStop();
     } else if (event is RouletteResetEvent) {
       _handleReset();
+    } else if (event is InfiniteRollEvent) {
+      _handleInfiniteRoll(event);
     }
   }
 
@@ -153,6 +155,22 @@ class RouletteState extends State<Roulette>
 
     tickerFuture.orCancel
         .then((_) => _reportEvent(OnRollEndEvent(event)))
+        .catchError((_) => _reportEvent(OnRollCancelledEvent(event)));
+  }
+
+  void _handleInfiniteRoll(InfiniteRollEvent event) {
+    if (_animationController.isAnimating) {
+      _animationController.stop();
+    }
+
+    rotateAnimation.value = makeInfiniteRollAnimation(
+      _animationController,
+      clockwise: event.clockwise,
+      curve: event.curve,
+    );
+    _animationController
+        .repeat(period: event.period)
+        .orCancel
         .catchError((_) => _reportEvent(OnRollCancelledEvent(event)));
   }
 
