@@ -11,10 +11,8 @@ jobs:
     name: "Static analyze and Logic tests"
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-
-      - name: Install Flutter
-        uses: britannio/action-install-flutter@v1.1
+      - uses: actions/checkout@v7
+      - uses: jdx/mise-action@v4
 
       - name: Install dependencies
         run: flutter pub get
@@ -33,18 +31,11 @@ jobs:
     # Should run on same os with golden files
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v7
+      - uses: jdx/mise-action@v4
 
-      - name: Read flutter version from fvm config
-        id: fvm
-        uses: zoexx/github-action-json-file-properties@release
-        with:
-          file_path: ".fvmrc"
-
-      - name: Install Flutter
-        uses: britannio/action-install-flutter@v1.1
-        with:
-          version: ${{ steps.fvm.outputs.flutter }}
+      - name: Install dependencies
+        run: flutter pub get
 
       - name: Run presentation tests
         run: flutter test test/presentation_test.dart
