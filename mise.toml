@@ -1,6 +1,9 @@
 [tools]
 flutter = "3.47"
 
+[tasks.verify]
+run = ["dart format --output=none --set-exit-if-changed .", "dart analyze --fatal-infos"]
+
 [tasks."test:logic"]
 run = "flutter test test/logic_test.dart test/tappable_roulette_test.dart"
 
