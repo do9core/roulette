@@ -20,7 +20,7 @@ class Roulette extends StatefulWidget {
     Key? key,
     required RouletteGroup group,
     required RouletteController controller,
-    RouletteStyle style = const RouletteStyle(),
+    required RouletteStyle style,
   }) : this._internal(
           key: key,
           group: group,
@@ -36,7 +36,7 @@ class Roulette extends StatefulWidget {
     Key? key,
     required this.group,
     required this.controller,
-    this.style = const RouletteStyle(),
+    required this.style,
     this.onRotationChanged,
   }) : super(key: key);
 
@@ -327,7 +327,7 @@ class TappableRoulette extends StatefulWidget {
     Key? key,
     required this.group,
     required this.controller,
-    this.style = const RouletteStyle(),
+    required this.style,
     this.onTap,
   }) : super(key: key);
 

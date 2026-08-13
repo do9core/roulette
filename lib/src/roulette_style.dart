@@ -34,9 +34,30 @@ class RouletteStyle {
   /// Default section icon style
   static const defaultIconStyle = TextStyle(fontSize: 40);
 
+  static const _portedCenterStickerColor = Color.fromRGBO(33, 150, 243, 1);
+  static const _portedDividerColor = Color.fromRGBO(255, 255, 255, 1);
+
+  @Deprecated(
+      'Use RouletteStyle instead. Specify defaultCenterStickerColor and dividerColor explicitly.')
+  const RouletteStyle.material({
+    double dividerThickness = 5,
+    double centerStickSizePercent = 0.1,
+    double textLayoutBias = 0.85,
+    TextStyle textStyle = defaultTextStyle,
+    SectionImageLayout sectionImageLayout = SectionImageLayout.rotatedFit,
+  }) : this(
+          centerStickerColor: _portedCenterStickerColor,
+          dividerColor: _portedDividerColor,
+          dividerThickness: dividerThickness,
+          centerStickSizePercent: centerStickSizePercent,
+          textLayoutBias: textLayoutBias,
+          textStyle: textStyle,
+          sectionImageLayout: sectionImageLayout,
+        );
+
   const RouletteStyle({
-    this.centerStickerColor = const Color.fromRGBO(0, 0, 0, 0),
-    this.dividerColor = const Color.fromRGBO(0, 0, 0, 0),
+    required this.centerStickerColor,
+    required this.dividerColor,
     this.dividerThickness = 5,
     this.centerStickSizePercent = 0.1,
     this.textLayoutBias = 0.85,

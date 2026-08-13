@@ -211,6 +211,7 @@ void main() {
             group: group,
             controller: controller,
             onTap: (index) => tappedIndex = index,
+            style: testRouletteStyle,
           ),
         ),
       );
@@ -239,6 +240,7 @@ void main() {
             group: group,
             controller: controller,
             onTap: (index) => tappedIndex = index,
+            style: testRouletteStyle,
           ),
         ),
       );
@@ -265,6 +267,7 @@ void main() {
             group: group,
             controller: controller,
             onTap: (index) => tappedIndex = index,
+            style: testRouletteStyle,
           ),
         ),
       );
