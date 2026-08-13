@@ -1,2 +1,8 @@
 [tools]
-flutter = '3.44'
+flutter = "3.47"
+
+[tasks."test:logic"]
+run = "flutter test test/logic_test.dart test/tappable_roulette_test.dart"
+
+[tasks."test:presentation"]
+run = "flutter test test/presentation_test.dart"
