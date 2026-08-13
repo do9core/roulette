@@ -16,7 +16,7 @@ void main() {
     group('uniform sectors, no rotation', () {
       // 4 uniform sectors, each 90°.
       // Sector 0: 12 o'clock → 3 o'clock (drawn from -π/2 CW)
-      final group = RouletteGroup.uniform(4, colorBuilder: colors.black);
+      final group = RouletteGroup.uniform(4, colorBuilder: colors.white);
 
       test('top-center (12 o\'clock direction) hits sector 0', () {
         // Slightly above center — in the "up" direction.
@@ -64,7 +64,7 @@ void main() {
       // 4 uniform sectors, rotate by π/2 (90° CW).
       // After rotation the sector layout shifts: sector 0 now starts at
       // angle 0 (3 o'clock) instead of -π/2 (12 o'clock).
-      final group = RouletteGroup.uniform(4, colorBuilder: colors.black);
+      final group = RouletteGroup.uniform(4, colorBuilder: colors.white);
       const rotation = pi / 2; // 90° rotation
 
       test('top-center hits the last sector after rotation', () {
@@ -143,7 +143,7 @@ void main() {
     });
 
     group('boundary conditions', () {
-      final group = RouletteGroup.uniform(4, colorBuilder: colors.black);
+      final group = RouletteGroup.uniform(4, colorBuilder: colors.white);
 
       test('outside circle returns null', () {
         final result = hitTestSector(
@@ -200,7 +200,7 @@ void main() {
       await tester.configScreenSize(width: 400, height: 400);
 
       final controller = RouletteController();
-      final group = RouletteGroup.uniform(4, colorBuilder: colors.black);
+      final group = RouletteGroup.uniform(4, colorBuilder: colors.white);
       int? tappedIndex;
 
       await tester.pumpWidget(
@@ -229,7 +229,7 @@ void main() {
       await tester.configScreenSize(width: 400, height: 400);
 
       final controller = RouletteController();
-      final group = RouletteGroup.uniform(4, colorBuilder: colors.black);
+      final group = RouletteGroup.uniform(4, colorBuilder: colors.white);
       int? tappedIndex;
 
       await tester.pumpWidget(
@@ -256,7 +256,7 @@ void main() {
       await tester.configScreenSize(width: 400, height: 400);
 
       final controller = RouletteController();
-      final group = RouletteGroup.uniform(4, colorBuilder: colors.black);
+      final group = RouletteGroup.uniform(4, colorBuilder: colors.white);
       int? tappedIndex;
 
       await tester.pumpWidget(

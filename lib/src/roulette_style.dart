@@ -38,7 +38,7 @@ class RouletteStyle {
   static const _portedDividerColor = Color.fromRGBO(255, 255, 255, 1);
 
   @Deprecated(
-      'Use RouletteStyle instead. Specify defaultCenterStickerColor and dividerColor explicitly.')
+      'Use RouletteStyle instead. Specify centerStickerColor and dividerColor explicitly.')
   const RouletteStyle.material({
     double dividerThickness = 5,
     double centerStickSizePercent = 0.1,
