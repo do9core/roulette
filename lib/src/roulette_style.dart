@@ -40,14 +40,16 @@ class RouletteStyle {
   @Deprecated(
       'Use RouletteStyle instead. Specify centerStickerColor and dividerColor explicitly.')
   const RouletteStyle.material({
+    Color centerStickerColor = _portedCenterStickerColor,
+    Color dividerColor = _portedDividerColor,
     double dividerThickness = 5,
     double centerStickSizePercent = 0.1,
     double textLayoutBias = 0.85,
     TextStyle textStyle = defaultTextStyle,
     SectionImageLayout sectionImageLayout = SectionImageLayout.rotatedFit,
   }) : this(
-          centerStickerColor: _portedCenterStickerColor,
-          dividerColor: _portedDividerColor,
+          centerStickerColor: centerStickerColor,
+          dividerColor: dividerColor,
           dividerThickness: dividerThickness,
           centerStickSizePercent: centerStickSizePercent,
           textLayoutBias: textLayoutBias,

@@ -3,7 +3,7 @@
 ### ⚠ Breaking changes:
   * Dropped the dependency on `package:flutter/material.dart` — the library now only imports `package:flutter/widgets.dart`. Material colors (`Colors.*`) and icons (`Icons.*`) are no longer used inside the package; consumers can still pass any `Color` / `IconData` from their own material-based app.
   * `Roulette.style` and `TappableRoulette.style` are now required parameters.
-  * `RouletteStyle` now requires `centerStickerColor` and `dividerColor` (previously defaulted to `Colors.blue` / `Colors.white`). The deprecated `RouletteStyle.material()` constructor ports the old default colors — prefer specifying the colors explicitly.
+  * `RouletteStyle` now requires `centerStickerColor` and `dividerColor` (previously defaulted to `Colors.blue` / `Colors.white`). The deprecated `RouletteStyle.material()` constructor ports the old default colors — prefer specifying the colors explicitly. The ported implementation will be removed in next release.
   * `RouletteUnit`, `RouletteUnit.noText` and `RouletteUnit.icon` now require an explicit `color`.
   * `RouletteUnit.text` units without an explicit color now render transparent instead of `Colors.blue`.
   * `RouletteGroup.uniform` and `RouletteGroup.uniformIcons` now require `colorBuilder` (and `iconBuilder` respectively).
