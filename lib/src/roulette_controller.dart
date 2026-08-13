@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:meta/meta.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import 'roulette_group.dart';
 import '../utils/constants.dart';

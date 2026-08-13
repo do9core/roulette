@@ -4,7 +4,7 @@ import 'dart:math' as math;
 import 'dart:ui' as ui;
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:roulette/utils/helpers.dart';
 
 import 'roulette_group.dart';
@@ -273,7 +273,7 @@ ImageInfo _createErrorImage(Size size) {
   final canvas = Canvas(recorder);
   final paint = Paint();
 
-  paint.color = Colors.red[900]!;
+  paint.color = const Color.fromRGBO(255, 0, 0, 1);
   paint.style = PaintingStyle.fill;
   canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), paint);
 
@@ -286,7 +286,7 @@ ImageInfo _createErrorImage(Size size) {
     style: TextStyle(
       fontWeight: FontWeight.w900,
       fontSize: math.min(size.width, size.height) * 0.15,
-      color: Colors.white,
+      color: const Color.fromRGBO(255, 255, 255, 1),
     ),
   );
   textPainter.layout(maxWidth: size.width);

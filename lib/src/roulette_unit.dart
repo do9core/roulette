@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import 'roulette_style.dart';
 
@@ -19,21 +19,21 @@ class RouletteUnit {
   /// Create a sector with text
   const RouletteUnit.text(
     String text, {
+    required Color color,
     TextStyle textStyle = RouletteStyle.defaultTextStyle,
-    Color color = Colors.blue,
     double weight = 1.0,
   }) : this(text: text, textStyle: textStyle, color: color, weight: weight);
 
   /// Create a sector with only color but no text
   const RouletteUnit.noText({
-    Color color = Colors.blue,
+    required Color color,
     double weight = 1.0,
   }) : this(color: color, weight: weight);
 
   /// Create a sector with an icon
   const RouletteUnit.icon(
     IconData icon, {
-    Color color = Colors.blue,
+    required Color color,
     double weight = 1.0,
     TextStyle style = RouletteStyle.defaultIconStyle,
   }) : this(color: color, icon: icon, weight: weight, textStyle: style);
@@ -41,7 +41,7 @@ class RouletteUnit {
   /// Create a sector with an image
   const RouletteUnit.image(
     ImageProvider image, {
-    Color color = Colors.blue,
+    Color color = const Color.fromRGBO(0, 0, 0, 0),
     double weight = 1.0,
     TextStyle style = RouletteStyle.defaultIconStyle,
   }) : this(color: color, image: image, weight: weight, textStyle: style);

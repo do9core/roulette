@@ -3,7 +3,7 @@
 
 import 'dart:math';
 
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 /// Functional equivalent of [RSTransform] in [Matrix4] world,
 /// check [RSTransform.fromComponents] for more info about the parameters.

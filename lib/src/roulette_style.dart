@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import 'roulette_unit.dart';
 
@@ -32,15 +32,12 @@ class RouletteStyle {
   );
 
   /// Default section icon style
-  static const defaultIconStyle = TextStyle(
-    fontSize: 40,
-    color: Colors.white,
-  );
+  static const defaultIconStyle = TextStyle(fontSize: 40);
 
   const RouletteStyle({
+    this.centerStickerColor = const Color.fromRGBO(0, 0, 0, 0),
+    this.dividerColor = const Color.fromRGBO(0, 0, 0, 0),
     this.dividerThickness = 5,
-    this.dividerColor = Colors.white,
-    this.centerStickerColor = Colors.blue,
     this.centerStickSizePercent = 0.1,
     this.textLayoutBias = 0.85,
     this.textStyle = defaultTextStyle,

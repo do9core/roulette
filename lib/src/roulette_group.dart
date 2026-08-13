@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:roulette/roulette.dart';
 
 import '../utils/helpers.dart' show DoubleSum, IndexBuilder;
@@ -15,8 +15,8 @@ class RouletteGroup {
   /// [textStyleBuilder] is a function that return the text style of the unit.
   factory RouletteGroup.uniform(
     int itemCount, {
+    required IndexBuilder<Color> colorBuilder,
     IndexBuilder<String?>? textBuilder,
-    IndexBuilder<Color>? colorBuilder,
     IndexBuilder<TextStyle?>? textStyleBuilder,
   }) {
     final units = List.generate(
@@ -24,7 +24,7 @@ class RouletteGroup {
       (index) => RouletteUnit(
         text: textBuilder?.call(index),
         textStyle: textStyleBuilder?.call(index),
-        color: colorBuilder?.call(index) ?? Colors.blue,
+        color: colorBuilder(index),
         weight: 1,
       ),
     );
@@ -37,15 +37,15 @@ class RouletteGroup {
   /// [colorBuilder] is a function that return the color of the unit.
   factory RouletteGroup.uniformIcons(
     int itemCount, {
-    IndexBuilder<IconData>? iconBuilder,
-    IndexBuilder<Color>? colorBuilder,
+    required IndexBuilder<IconData> iconBuilder,
+    required IndexBuilder<Color> colorBuilder,
     IndexBuilder<TextStyle>? styleBuilder,
   }) {
     final units = List.generate(
       itemCount,
       (index) => RouletteUnit(
-        icon: iconBuilder?.call(index) ?? Icons.abc,
-        color: colorBuilder?.call(index) ?? Colors.blue,
+        icon: iconBuilder(index),
+        color: colorBuilder(index),
         textStyle:
             RouletteStyle.defaultIconStyle.merge(styleBuilder?.call(index)),
         weight: 1,
@@ -72,7 +72,7 @@ class RouletteGroup {
         RouletteUnit(
           text: textBuilder?.call(i),
           image: imageBuilder.call(i),
-          color: colorBuilder?.call(i) ?? Colors.blue,
+          color: colorBuilder?.call(i) ?? Color.fromRGBO(0, 0, 0, 0),
           textStyle:
               RouletteStyle.defaultIconStyle.merge(styleBuilder?.call(i)),
           weight: 1,
