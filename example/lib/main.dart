@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:device_preview_plus/device_preview_plus.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 import 'package:roulette/roulette.dart';
 import 'arrow.dart';
