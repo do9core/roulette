@@ -1,6 +1,6 @@
 import 'dart:ui' as ui;
 
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 extension TextStyleCast on TextStyle {
   ui.TextStyle asUiTextStyle() => ui.TextStyle(

@@ -17,14 +17,11 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Verify formatting
-        run: dart format --output=none --set-exit-if-changed .
-
-      - name: Analyze project source
-        run: dart analyze --fatal-infos
+      - name: Verify formatting and analyze project source
+        run: mise run verify
 
       - name: Run logic tests
-        run: flutter test test/logic_test.dart
+        run: mise run test:logic
 
   presentation-test:
     name: "Presentation tests"
@@ -38,4 +35,4 @@ jobs:
         run: flutter pub get
 
       - name: Run presentation tests
-        run: flutter test test/presentation_test.dart
+        run: mise run test:presentation

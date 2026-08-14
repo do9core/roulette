@@ -1,6 +1,11 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:roulette/roulette.dart';
+
+const testRouletteStyle = RouletteStyle(
+  centerStickerColor: Colors.blue,
+  dividerColor: Colors.white,
+);
 
 class RouletteWidgetTest extends StatelessWidget {
   const RouletteWidgetTest({
@@ -21,6 +26,7 @@ class RouletteWidgetTest extends StatelessWidget {
         child: Roulette(
           group: group,
           controller: controller,
+          style: testRouletteStyle,
         ),
       ),
     );

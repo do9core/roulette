@@ -20,7 +20,11 @@ void main() {
           colorBuilder: (index) => Colors.pink,
         );
         final controller = RouletteController();
-        await tester.pumpWidget(Roulette(group: group, controller: controller));
+        await tester.pumpWidget(Roulette(
+          group: group,
+          controller: controller,
+          style: testRouletteStyle,
+        ));
         expect(find.byType(RoulettePaint), findsOneWidget);
       },
     );

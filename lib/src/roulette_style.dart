@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import 'roulette_unit.dart';
 
@@ -32,15 +32,35 @@ class RouletteStyle {
   );
 
   /// Default section icon style
-  static const defaultIconStyle = TextStyle(
-    fontSize: 40,
-    color: Colors.white,
-  );
+  static const defaultIconStyle = TextStyle(fontSize: 40);
+
+  static const _portedCenterStickerColor = Color.fromRGBO(33, 150, 243, 1);
+  static const _portedDividerColor = Color.fromRGBO(255, 255, 255, 1);
+
+  @Deprecated(
+      'Use RouletteStyle instead. Specify centerStickerColor and dividerColor explicitly.')
+  const RouletteStyle.material({
+    Color centerStickerColor = _portedCenterStickerColor,
+    Color dividerColor = _portedDividerColor,
+    double dividerThickness = 5,
+    double centerStickSizePercent = 0.1,
+    double textLayoutBias = 0.85,
+    TextStyle textStyle = defaultTextStyle,
+    SectionImageLayout sectionImageLayout = SectionImageLayout.rotatedFit,
+  }) : this(
+          centerStickerColor: centerStickerColor,
+          dividerColor: dividerColor,
+          dividerThickness: dividerThickness,
+          centerStickSizePercent: centerStickSizePercent,
+          textLayoutBias: textLayoutBias,
+          textStyle: textStyle,
+          sectionImageLayout: sectionImageLayout,
+        );
 
   const RouletteStyle({
+    required this.centerStickerColor,
+    required this.dividerColor,
     this.dividerThickness = 5,
-    this.dividerColor = Colors.white,
-    this.centerStickerColor = Colors.blue,
     this.centerStickSizePercent = 0.1,
     this.textLayoutBias = 0.85,
     this.textStyle = defaultTextStyle,

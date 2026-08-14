@@ -1,38 +1,43 @@
 import 'dart:math';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:roulette/roulette.dart';
 import 'package:roulette/src/roulette.dart';
 import 'package:roulette/utils/helpers.dart';
 import 'package:roulette/src/roulette_paint.dart';
 
+import 'colors.dart' as colors;
 import 'test_component.dart';
 
 void main() {
   group('helpers tests', () {
     group('calculate end rotate test', () {
       test('ensure end rotate on target unit with no offset, clockwise', () {
-        final group = RouletteGroup.uniform(5);
+        final group =
+            RouletteGroup.uniform(5, colorBuilder: colors.transparent);
         final actual = calculateEndRotate(group, 0, true, 0);
         expect(actual, 4 / 5 * pi * 2);
       });
 
       test('ensure end rotate on target unit with offset, clockwise', () {
-        final group = RouletteGroup.uniform(5);
+        final group =
+            RouletteGroup.uniform(5, colorBuilder: colors.transparent);
         final actual = calculateEndRotate(group, 0, true, 0, offset: 1);
         expect(actual, pi * 2);
       });
 
       test('ensure end rotate on target unit with no offset, not clockwise',
           () {
-        final group = RouletteGroup.uniform(5);
+        final group =
+            RouletteGroup.uniform(5, colorBuilder: colors.transparent);
         final actual = calculateEndRotate(group, 0, false, 0);
         expect(actual, 0.0);
       });
 
       test('ensure end rotate on target unit with offset, not clockwise', () {
-        final group = RouletteGroup.uniform(5);
+        final group =
+            RouletteGroup.uniform(5, colorBuilder: colors.transparent);
         final actual = calculateEndRotate(group, 0, true, 0, offset: 1);
         expect(actual, pi * 2);
       });
@@ -41,7 +46,7 @@ void main() {
     testWidgets('continuos rotation test', (WidgetTester tester) async {
       final controller = RouletteController();
       await tester.pumpWidget(RouletteWidgetTest(
-        group: RouletteGroup.uniform(5),
+        group: RouletteGroup.uniform(5, colorBuilder: colors.transparent),
         controller: controller,
       ));
       final widgetState = tester.state<RouletteState>(find.byType(Roulette));
@@ -61,7 +66,7 @@ void main() {
         final controller = RouletteController();
         await tester.pumpWidget(
           RouletteWidgetTest(
-            group: RouletteGroup.uniform(5),
+            group: RouletteGroup.uniform(5, colorBuilder: colors.transparent),
             controller: controller,
           ),
         );
@@ -82,7 +87,7 @@ void main() {
         final controller = RouletteController();
         await tester.pumpWidget(
           RouletteWidgetTest(
-            group: RouletteGroup.uniform(5),
+            group: RouletteGroup.uniform(5, colorBuilder: colors.transparent),
             controller: controller,
           ),
         );
@@ -101,7 +106,7 @@ void main() {
         final controller = RouletteController();
         await tester.pumpWidget(
           RouletteWidgetTest(
-            group: RouletteGroup.uniform(5),
+            group: RouletteGroup.uniform(5, colorBuilder: colors.transparent),
             controller: controller,
           ),
         );
@@ -117,7 +122,7 @@ void main() {
         final controller = RouletteController();
         await tester.pumpWidget(
           RouletteWidgetTest(
-            group: RouletteGroup.uniform(5),
+            group: RouletteGroup.uniform(5, colorBuilder: colors.transparent),
             controller: controller,
           ),
         );
@@ -137,7 +142,7 @@ void main() {
         final controller = RouletteController();
         await tester.pumpWidget(
           RouletteWidgetTest(
-            group: RouletteGroup.uniform(5),
+            group: RouletteGroup.uniform(5, colorBuilder: colors.transparent),
             controller: controller,
           ),
         );
@@ -163,7 +168,7 @@ void main() {
         final controller = RouletteController();
         await tester.pumpWidget(
           RouletteWidgetTest(
-            group: RouletteGroup.uniform(5),
+            group: RouletteGroup.uniform(5, colorBuilder: colors.transparent),
             controller: controller,
           ),
         );
@@ -186,7 +191,7 @@ void main() {
         final controller = RouletteController();
         await tester.pumpWidget(
           RouletteWidgetTest(
-            group: RouletteGroup.uniform(5),
+            group: RouletteGroup.uniform(5, colorBuilder: colors.transparent),
             controller: controller,
           ),
         );
@@ -220,7 +225,7 @@ void main() {
         final controller = RouletteController();
         await tester.pumpWidget(
           RouletteWidgetTest(
-            group: RouletteGroup.uniform(5),
+            group: RouletteGroup.uniform(5, colorBuilder: colors.transparent),
             controller: controller,
           ),
         );
@@ -243,7 +248,7 @@ void main() {
         final controller = RouletteController();
         await tester.pumpWidget(
           RouletteWidgetTest(
-            group: RouletteGroup.uniform(5),
+            group: RouletteGroup.uniform(5, colorBuilder: colors.transparent),
             controller: controller,
           ),
         );
@@ -263,7 +268,7 @@ void main() {
         final controller = RouletteController();
         await tester.pumpWidget(
           RouletteWidgetTest(
-            group: RouletteGroup.uniform(5),
+            group: RouletteGroup.uniform(5, colorBuilder: colors.transparent),
             controller: controller,
           ),
         );
@@ -285,7 +290,7 @@ void main() {
         final controller = RouletteController();
         await tester.pumpWidget(
           RouletteWidgetTest(
-            group: RouletteGroup.uniform(5),
+            group: RouletteGroup.uniform(5, colorBuilder: colors.transparent),
             controller: controller,
           ),
         );
@@ -317,7 +322,7 @@ void main() {
         final controller = RouletteController();
         await tester.pumpWidget(
           RouletteWidgetTest(
-            group: RouletteGroup.uniform(5),
+            group: RouletteGroup.uniform(5, colorBuilder: colors.transparent),
             controller: controller,
           ),
         );
@@ -359,7 +364,7 @@ void main() {
         final controller = RouletteController();
         await tester.pumpWidget(
           RouletteWidgetTest(
-            group: RouletteGroup.uniform(5),
+            group: RouletteGroup.uniform(5, colorBuilder: colors.transparent),
             controller: controller,
           ),
         );
@@ -386,7 +391,7 @@ void main() {
         final controller = RouletteController();
         await tester.pumpWidget(
           RouletteWidgetTest(
-            group: RouletteGroup.uniform(5),
+            group: RouletteGroup.uniform(5, colorBuilder: colors.transparent),
             controller: controller,
           ),
         );
@@ -413,7 +418,7 @@ void main() {
         final controller = RouletteController();
         await tester.pumpWidget(
           RouletteWidgetTest(
-            group: RouletteGroup.uniform(5),
+            group: RouletteGroup.uniform(5, colorBuilder: colors.transparent),
             controller: controller,
           ),
         );
@@ -434,7 +439,7 @@ void main() {
         final controller = RouletteController();
         await tester.pumpWidget(
           RouletteWidgetTest(
-            group: RouletteGroup.uniform(5),
+            group: RouletteGroup.uniform(5, colorBuilder: colors.transparent),
             controller: controller,
           ),
         );
@@ -469,7 +474,7 @@ void main() {
         final controller = RouletteController();
         await tester.pumpWidget(
           RouletteWidgetTest(
-            group: RouletteGroup.uniform(5),
+            group: RouletteGroup.uniform(5, colorBuilder: colors.transparent),
             controller: controller,
           ),
         );
@@ -497,7 +502,7 @@ void main() {
         final controller = RouletteController();
         await tester.pumpWidget(
           RouletteWidgetTest(
-            group: RouletteGroup.uniform(5),
+            group: RouletteGroup.uniform(5, colorBuilder: colors.transparent),
             controller: controller,
           ),
         );
@@ -522,7 +527,7 @@ void main() {
         final controller = RouletteController();
         await tester.pumpWidget(
           RouletteWidgetTest(
-            group: RouletteGroup.uniform(5),
+            group: RouletteGroup.uniform(5, colorBuilder: colors.transparent),
             controller: controller,
           ),
         );
@@ -571,7 +576,11 @@ void main() {
           colorBuilder: (index) => Colors.pink,
         );
         final controller = RouletteController();
-        await tester.pumpWidget(Roulette(group: group, controller: controller));
+        await tester.pumpWidget(Roulette(
+          group: group,
+          controller: controller,
+          style: testRouletteStyle,
+        ));
         expect(find.byType(RoulettePaint), findsOneWidget);
       },
     );

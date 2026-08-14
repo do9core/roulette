@@ -2,6 +2,14 @@
 [![Verify & Test](https://github.com/do9core/roulette/actions/workflows/verify_and_test.yml/badge.svg)](https://github.com/do9core/roulette/actions/workflows/verify_and_test.yml)
 [![License](https://img.shields.io/github/license/do9core/roulette)](https://www.apache.org/licenses/LICENSE-2.0)
 
+> **Project Status: Stable & Open for Contributions**
+>
+> This project has reached its primary goals. The author actively maintains it for compatibility with the latest SDKs and critical bug fixes, but is no longer actively developing new features.
+>
+> Feature Requests: Suggestions are welcome! Please open an Issue for discussion.
+>
+> Contributions: If you need a new feature, Pull Requests are highly encouraged and appreciated.
+
 This is a Flutter library that provides a simple wheel widget for lottery usage.
 
 ## Features
@@ -35,8 +43,12 @@ Add this to your `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  roulette: ^0.3.2
+  roulette: ^1.0.0-rc.1
 ```
+
+> **Note (v1.0.0-rc.1):** The package no longer depends on `package:flutter/material.dart`.
+> `RouletteStyle` now requires `centerStickerColor` and `dividerColor` — use the deprecated
+> `RouletteStyle.material()` to keep the previous default look. It's highly recommend to specify the colors explicitly, the material ported version will be removed in future.
 
 ## Usage
 
@@ -87,6 +99,8 @@ Widget build(BuildContext context) {
     group: group,
     controller: controller,
     style: RouletteStyle(
+      centerStickerColor: Colors.white,
+      dividerColor: Colors.black38,
       // Customize appearance (e.g. sectionImageLayout for image sections)
     ),
   );
@@ -107,6 +121,8 @@ Widget build(BuildContext context) {
       print('Tapped on $index sector');
     },
     style: RouletteStyle(
+      centerStickerColor: Colors.white,
+      dividerColor: Colors.black38,
       // Customize appearance
     ),
   );
