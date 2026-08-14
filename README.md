@@ -43,10 +43,10 @@ Add this to your `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  roulette: ^1.0.0
+  roulette: ^1.0.0-rc.1
 ```
 
-> **Note (v1.0.0):** The package no longer depends on `package:flutter/material.dart`.
+> **Note (v1.0.0-rc.1):** The package no longer depends on `package:flutter/material.dart`.
 > `RouletteStyle` now requires `centerStickerColor` and `dividerColor` — use the deprecated
 > `RouletteStyle.material()` to keep the previous default look. It's highly recommend to specify the colors explicitly, the material ported version will be removed in future.
 

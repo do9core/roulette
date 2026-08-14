@@ -1,4 +1,4 @@
-# 1.0.0 - 2026/8/13
+# 1.0.0-rc.1 - 2026/8/14
 
 ### ⚠ Breaking changes:
   * Dropped the dependency on `package:flutter/material.dart` — the library now only imports `package:flutter/widgets.dart`. Material colors (`Colors.*`) and icons (`Icons.*`) are no longer used inside the package; consumers can still pass any `Color` / `IconData` from their own material-based app.
