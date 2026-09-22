@@ -58,7 +58,7 @@ class RouletteUnit {
   /// Image of this sector
   final ImageProvider? image;
 
-  /// Backgroud color of the sector
+  /// Background color of the sector
   final Color color;
 
   /// Weight of this sector
