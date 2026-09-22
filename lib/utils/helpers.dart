@@ -47,7 +47,7 @@ Animation<double> makeInfiniteRollAnimation(
 ///
 /// [group] is the [RouletteGroup] to run rotate animation.
 /// [targetIndex] is the end index in the [group].
-/// [clockwise] determin whether the animator should run in closewise didrection.
+/// [clockwise] determine whether the animator should run in clockwise direction.
 /// [minRotateCircles] circles rolled before.
 /// [random] Provide a random number generator for randomization, default null and no random value.
 double calculateEndRotate(

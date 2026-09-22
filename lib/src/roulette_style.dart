@@ -79,7 +79,7 @@ class RouletteStyle {
   /// The size percent of the circle at center
   final double centerStickSizePercent;
 
-  /// The text layout offset, used to determin where to draw the text
+  /// The text layout offset, used to determine where to draw the text
   final double textLayoutBias;
 
   /// The text style of the [Roulette], can be override by the [RouletteUnit]'s textStyle.

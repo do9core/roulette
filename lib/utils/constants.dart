@@ -1,4 +1,4 @@
-/// Rotate values which used to simulate begining
+/// Rotate values which used to simulate beginning
 const int defaultMinRotateCircles = 12;
 
 /// Default rotate animation run time
