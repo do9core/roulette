@@ -1,3 +1,18 @@
+# 1.0.0 - 2026/11/19
+
+### Breaking changes
+
+* Roulette now uses Flutter's widgets library without importing `package:flutter/material.dart`. Apps can still pass their own Material colors and icons.
+* `Roulette` and `TappableRoulette` require a `style`. Set `centerStickerColor` and `dividerColor` explicitly when constructing a `RouletteStyle`. The `RouletteStyle.material()` constructor from the release candidate has been removed. To keep the previous colors in a Material app, use `RouletteStyle(centerStickerColor: Colors.blue, dividerColor: Colors.white)`.
+* Pass an explicit `color` to `RouletteUnit.text`, `RouletteUnit.noText`, and `RouletteUnit.icon`.
+* `RouletteGroup.uniform` requires `colorBuilder`. `RouletteGroup.uniformIcons` requires both `colorBuilder` and `iconBuilder`.
+* `RouletteUnit.image` and `RouletteGroup.uniformImages` use a transparent background by default. Pass `color` or `colorBuilder` to keep the previous blue background.
+* The default icon style no longer sets a white foreground. To keep white icons, pass `TextStyle(color: Colors.white)` via `RouletteUnit.icon`'s `style` or `RouletteGroup.uniformIcons`'s `styleBuilder`.
+
+### Tooling
+
+* Development and CI now use mise with Flutter 3.50. The tests and example use `material_ui`.
+
 # 1.0.0-rc.1 - 2026/8/14
 
 ### ⚠ Breaking changes:

@@ -43,12 +43,10 @@ Add this to your `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  roulette: ^1.0.0-rc.1
+  roulette: ^1.0.0
 ```
 
-> **Note (v1.0.0-rc.1):** The package no longer depends on `package:flutter/material.dart`.
-> `RouletteStyle` now requires `centerStickerColor` and `dividerColor` — use the deprecated
-> `RouletteStyle.material()` to keep the previous default look. It's highly recommend to specify the colors explicitly, the material ported version will be removed in future.
+> Starting in 1.0.0, Roulette uses Flutter's widgets library and accepts colors and icons from any design system. Pass a `RouletteStyle` with explicit `centerStickerColor` and `dividerColor` to both roulette widgets. To preserve the previous colors in a Material app, set `centerStickerColor: Colors.blue` and `dividerColor: Colors.white`. See the [changelog](CHANGELOG.md) for the other migration steps.
 
 ## Usage
 
@@ -80,7 +78,8 @@ final group = RouletteGroup.uniform(
   colorBuilder: (index) => Colors.blue,
   textBuilder: (index) => values[index].toString(),
   textStyleBuilder: (index) {
-    // Customize text style, don't forget to return it
+    // Customize text style
+    return TextStyle(fontSize: 20);
   },
 );
 
@@ -184,12 +183,20 @@ await controller.rollTo(
 
 ### Roll infinitely before determine the result (available in 0.3.2)
 
-You can also use `rollInfinitely` to roll infinitely until you call `stop` or `rollTo` method:
+You can also use `rollInfinitely` to roll infinitely:
 
 ```dart
-// Roll infinitely
-controller.rollInfinitely();
+ElevatedButton(
+  onPressed: () {
+    // Roll infinitely
+    controller.rollInfinitely();    
+  }
+);
+```
 
+Until you call `stop` or `rollTo`:
+
+```dart
 // Getting the result value somewhere...
 try {
   final result = await service.request()
@@ -198,7 +205,7 @@ try {
   controller.rollTo(index, offset: random.nextDouble());
 } catch (e, st) {
   // Or stop rolling immediately, stop with this method has no animation
-  // controller.stop();
+  controller.stop();
 }
 ```
 
