@@ -1,5 +1,5 @@
 [tools]
-flutter = "3.47"
+flutter = "3.50"
 
 [tasks.verify]
 run = ["dart format --output=none --set-exit-if-changed .", "dart analyze --fatal-infos"]
