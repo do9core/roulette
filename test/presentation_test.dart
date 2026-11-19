@@ -73,6 +73,7 @@ void main() {
       );
 
       testWidgets('ensure roulette with icons displayed', (tester) async {
+        await tester.configScreenSize();
         final group = RouletteGroup.uniformIcons(
           5,
           iconBuilder: (index) => Icons.message,
@@ -91,6 +92,7 @@ void main() {
       });
 
       testWidgets('ensure roulette with image displayed', (tester) async {
+        await tester.configScreenSize();
         final image = MemoryImage(Uint8List.fromList(kBluePortraitPng));
         final controller = RouletteController();
         final group = RouletteGroup.uniformImages(
